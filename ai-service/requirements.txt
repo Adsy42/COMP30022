@@ -1,7 +1,7 @@
 # Minimal dependencies - add more as needed
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-python-dotenv==1.0.0
+python-dotenv==1.1.1
 pydantic==2.5.0
 
 # Development and testing dependencies

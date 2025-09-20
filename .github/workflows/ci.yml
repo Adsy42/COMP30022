@@ -171,7 +171,7 @@ jobs:
       - name: Validate conventional commit format
         run: |
           TITLE="${{ github.event.pull_request.title }}"
-          if ! echo "$TITLE" | grep -qE '^(feat|fix|docs|style|refactor|test|chore)\(SPRNT2-[0-9]+\):'; then
+          if ! echo "$TITLE" | grep -qE '^(feat|fix|docs|style|refactor|test|chore|hotfix)\(SPRNT2-[0-9]+\):'; then
             echo "❌ PR title must follow conventional commit format"
             echo "Format: type(SPRNT2-XX): description"
             echo "Example: feat(SPRNT2-14): add chat interface"

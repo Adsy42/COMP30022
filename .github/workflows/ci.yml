@@ -132,8 +132,20 @@ jobs:
 
       - name: Test Docker Compose
         run: |
-          docker-compose -f docker-compose.yml config
+          docker compose -f docker-compose.yml config
           echo "Docker Compose configuration is valid"
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Start containers
+        run: docker compose up -d
+
+      - name: Check running containers
+        run: docker compose ps
+
+      - name: Stop containers
+        run: docker compose down
 
   # Jira Integration
   jira-integration:

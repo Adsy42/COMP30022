@@ -9,6 +9,8 @@
     "lint": "next lint",
     "test": "npx jest",
     "format": "prettier --write ."
+  ,
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "next": "14.0.0",

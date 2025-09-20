@@ -14,5 +14,5 @@ python-dateutil==2.8.2
 # Development and testing dependencies
 pytest
 pytest-flask
-black==23.11.0
+black==25.9.0
 ruff==0.1.6

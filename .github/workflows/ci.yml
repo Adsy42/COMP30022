@@ -154,20 +154,6 @@ jobs:
     if: github.event_name == 'pull_request'
 
     steps:
-      - name: Extract Jira ticket from PR title
-        id: extract
-        run: |
-          TITLE="${{ github.event.pull_request.title }}"
-          TICKET=$(echo "$TITLE" | grep -oE 'SPRNT2-[0-9]+' || echo "")
-          echo "ticket=$TICKET" >> $GITHUB_OUTPUT
-
-      - name: Validate Jira ticket reference
-        if: steps.extract.outputs.ticket == ''
-        run: |
-          echo "❌ PR title must include Jira ticket reference (SPRNT2-XX)"
-          echo "Current title: ${{ github.event.pull_request.title }}"
-          exit 1
-
       - name: Validate conventional commit format
         run: |
           TITLE="${{ github.event.pull_request.title }}"

@@ -20,7 +20,7 @@ format: ## Format all code in containers
 	docker-compose exec backend black .
 	@echo "Formatting AI service..."
 	docker-compose exec ai-service black .
-	@echo "Formatting frontend..."
+	@echo "Formatting frontend (auto-fix)..."
 	docker-compose exec frontend npm run format
 
 lint: ## Lint all code in containers

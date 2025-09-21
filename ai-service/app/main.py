@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI(
-    title="AI Service",
-    description="Customizable AI microservice - add your functionality here",
-    version="1.0.0",
+    title="Legal AI RAG Service",
+    description="AI microservice with RAG capabilities for legal contract information using Pinecone",
+    version="1.0.0"
 )
 
 # CORS middleware
@@ -20,25 +20,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# TODO: Add your API routes here
-# Example:
-# from .api import your_routes
-# app.include_router(your_routes.router, prefix="/api", tags=["your_tag"])
+# Include API routes (commented out for now - will add when ready)
+# from .api import chat, embeddings
 
+# app.include_router(chat.router)
+# app.include_router(embeddings.router)
 
 @app.get("/")
 async def root():
-    return {"message": "AI Service is running - customize this service as needed"}
-
+    return {"message": "Legal AI RAG Service is running"}
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
-
-
-# Example endpoint - customize or remove as needed
-@app.get("/example")
-async def example_endpoint():
-    return {
-        "message": "This is an example endpoint - replace with your AI functionality"
-    }

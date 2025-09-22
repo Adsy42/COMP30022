@@ -1,5 +1,5 @@
 # Minimal dependencies - add more as needed
-fastapi==0.104.1
+fastapi==0.117.1
 uvicorn[standard]==0.24.0
 python-dotenv==1.0.0
 pydantic==2.5.0

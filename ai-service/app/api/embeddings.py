@@ -9,10 +9,24 @@ from ..core.rag import RAGServicePinecone, resources
 
 router = APIRouter(prefix="/api", tags=["embeddings"])
 
-# Initialize services
-rag_service = RAGServicePinecone()
-document_processor = DocumentProcessor()
-faq_processor = FAQProcessor()
+
+# Lazy initialization - only create services when needed
+def get_rag_service():
+    if not hasattr(get_rag_service, "_instance"):
+        get_rag_service._instance = RAGServicePinecone()
+    return get_rag_service._instance
+
+
+def get_document_processor():
+    if not hasattr(get_document_processor, "_instance"):
+        get_document_processor._instance = DocumentProcessor()
+    return get_document_processor._instance
+
+
+def get_faq_processor():
+    if not hasattr(get_faq_processor, "_instance"):
+        get_faq_processor._instance = FAQProcessor()
+    return get_faq_processor._instance
 
 
 @router.post("/upload/document")
@@ -35,9 +49,11 @@ async def upload_document(file: UploadFile = File(...)):
             buffer.write(content)
 
         # Process document
+        document_processor = get_document_processor()
         chunks = document_processor.process_document(file_path)
 
         # Add to vector store
+        rag_service = get_rag_service()
         rag_service.add_documents(chunks, resource_id)
 
         # Store metadata
@@ -83,9 +99,11 @@ async def upload_faq(file: UploadFile = File(...)):
             buffer.write(content)
 
         # Process FAQ
+        faq_processor = get_faq_processor()
         faq_data = faq_processor.process_faq(file_path)
 
         # Add to vector store
+        rag_service = get_rag_service()
         rag_service.add_faq(faq_data, resource_id)
 
         # Store metadata

@@ -8,16 +8,31 @@ from ..core.faq_processor import FAQProcessor
 
 router = APIRouter(prefix="/api", tags=["chat"])
 
-# Initialize services
-rag_service = RAGServicePinecone()
-document_processor = DocumentProcessor()
-faq_processor = FAQProcessor()
+
+# Lazy initialization - only create services when needed
+def get_rag_service():
+    if not hasattr(get_rag_service, "_instance"):
+        get_rag_service._instance = RAGServicePinecone()
+    return get_rag_service._instance
+
+
+def get_document_processor():
+    if not hasattr(get_document_processor, "_instance"):
+        get_document_processor._instance = DocumentProcessor()
+    return get_document_processor._instance
+
+
+def get_faq_processor():
+    if not hasattr(get_faq_processor, "_instance"):
+        get_faq_processor._instance = FAQProcessor()
+    return get_faq_processor._instance
 
 
 @router.post("/query", response_model=QueryResponse)
 async def query_documents(request: QueryRequest):
     """Query the knowledge base"""
     try:
+        rag_service = get_rag_service()
         result = rag_service.query(
             question=request.question,
             max_results=request.max_results,
@@ -38,6 +53,7 @@ async def query_documents(request: QueryRequest):
 async def get_index_stats():
     """Get Pinecone index statistics"""
     try:
+        rag_service = get_rag_service()
         stats = rag_service.get_index_stats()
         # Check if stats contains an error
         if "error" in stats:
@@ -63,6 +79,7 @@ async def delete_resource(resource_id: str):
 
     try:
         # Remove from vector store
+        rag_service = get_rag_service()
         rag_service.delete_resource(resource_id)
 
         # Remove from metadata

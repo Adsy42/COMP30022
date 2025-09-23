@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 
 class TestQueryEndpoint:
@@ -12,13 +12,15 @@ class TestQueryEndpoint:
             "max_results": 5,
         }
 
-        # Mock the RAG service to avoid actual API calls
-        with patch("app.api.chat.rag_service") as mock_rag:
+        # Mock the lazy RAG service to avoid actual API calls
+        with patch("app.api.chat.get_rag_service") as mock_get_rag:
+            mock_rag = MagicMock()
             mock_rag.query.return_value = {
                 "answer": "Test answer",
                 "sources": ["test.pdf"],
                 "confidence": 0.8,
             }
+            mock_get_rag.return_value = mock_rag
 
             response = client.post("/api/query", json=query_data)
             # Should return 200 or 500 (depending on service initialization)

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -7,6 +7,6 @@
 
 body {
   background: #ffffff; /* force white background */
-  color: #171717;      /* force dark text */
+  color: #171717; /* force dark text */
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
 }

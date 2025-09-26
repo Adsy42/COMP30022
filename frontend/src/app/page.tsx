@@ -1,6 +1,6 @@
-import Button from "@/components/Button";
-import Navbar from "@/components/Navbar";
-import Link from "next/link";
+import Button from '@/components/Button'
+import Navbar from '@/components/Navbar'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -8,8 +8,12 @@ export default function Home() {
       <Navbar
         actions={
           <>
-              <Link href="/chat"><Button>Start Chat</Button></Link>
-              <Link href="/login"><Button variant="outline">Sign In</Button></Link>
+            <Link href="/chat">
+              <Button>Start Chat</Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline">Sign In</Button>
+            </Link>
           </>
         }
       />

@@ -7,6 +7,16 @@
 
 body {
   background: #ffffff; /* force white background */
-  color: #171717; /* force dark text */
+  color: #171717;      /* force dark text */
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
 }
+
+/* Utility to hide scrollbars but keep scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+

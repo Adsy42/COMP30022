@@ -22,8 +22,13 @@ export default function ChatInput() {
     function submit() {
       const input = text.trim();  // copy contents into input variable
       if (!input) return;
-      console.log(input);         // TODO: replace with actual functionality
-      setText("");                // clear the input box
+
+      // TODO: replace with actual functionality
+      console.log(input);
+      
+      // clear the input box
+      setText("");                
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
       toggleOn();                 // disable input
   
       // TODO: Remove this later. Fake bot reply after 1s → re-enable

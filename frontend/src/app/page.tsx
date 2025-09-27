@@ -5,7 +5,7 @@ import Hero from "@/components/Hero";
 
 export default function Home() {
   return (
-    <main>
+    <main className="h-screen flex flex-col overflow-hidden">
       <Navbar
         actions={
           <div className="flex gap-3">
@@ -18,7 +18,10 @@ export default function Home() {
           </div>
         }
       />
-      <Hero />
+      {/* Hero fills the remaining space without scrolling */}
+      <div className="flex-1 flex items-center justify-center">
+        <Hero />
+      </div>
     </main>
   );
 }

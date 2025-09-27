@@ -6,26 +6,45 @@ export default function ChoiceGroup({
   mode = "single",
   options,
   className = "",
+  onChange,
 }: {
-  mode?: Mode;
+  mode: Mode;
   options: string[];
   className?: string;
+  onChange?: (selected: string[]) => void;
 }) {
   // For now, keep selection internal. (Step 2 can expose it via onChange.)
   const [selected, setSelected] = React.useState<string[]>([]);
   const isSelected = (o: string) => selected.includes(o);
 
+  // const toggle = (o: string) => {
+  //   if (mode === "single") {
+  //     const next = [o];
+  //     setSelected(next);
+  //     if (onChange) onChange(next);  // 👈 notify parent
+  //   } else {
+  //     setSelected(prev => {
+  //       const next = prev.includes(o) ? prev.filter(v => v !== o) : [...prev, o];
+  //       if (onChange) onChange(next); // 👈 notify parent
+  //       return next;
+  //     });
+  //   }
+  // }; 
+  
   const toggle = (o: string) => {
     if (mode === "single") {
-      const next = [o];
-      setSelected(next);
+      setSelected([o]);
     } else {
-      setSelected(prev => {
-        const next = prev.includes(o) ? prev.filter(v => v !== o) : [...prev, o];
-        return next;
-      });
+      setSelected(prev => (
+        prev.includes(o) ? prev.filter(v => v !== o) : [...prev, o]
+      ));
     }
-  };  
+  };
+
+  React.useEffect(() => {
+    if (onChange) onChange(selected);
+  }, [selected, onChange]);
+
 
   const groupRole = mode === "single" ? "radiogroup" : "group";
   const itemRole = mode === "single" ? "radio" : "checkbox";

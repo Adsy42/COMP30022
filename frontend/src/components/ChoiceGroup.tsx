@@ -1,3 +1,30 @@
+/**
+ * ChoiceGroup Component
+ * ---------------------
+ * A horizontally scrollable group of selectable buttons (chips).
+ * Supports single-select (radio-like) or multi-select (checkbox-like) modes.
+ *
+ * Props:
+ * - mode: 'single' | 'multi'
+ *   Selection behavior. Defaults to 'single'.
+ *
+ * - options: string[]
+ *   List of option labels to render as buttons.
+ *
+ * - className?: string
+ *   Optional extra classes for container.
+ *
+ * - onChange?: (selected: string[]) => void
+ *   Callback fired whenever the selection changes. Receives the full selected list.
+ *
+ * Behavior:
+ * - Maintains selection state internally, but emits changes via onChange.
+ * - `single` mode replaces current selection with the clicked option.
+ * - `multi` mode toggles clicked option on/off.
+ * - Uses WAI-ARIA roles (`radiogroup`/`group`, `radio`/`checkbox`) for accessibility.
+ * - Styling: selected = blue, unselected = gray with hover/active states.
+ */
+
 import * as React from 'react'
 
 type Mode = 'single' | 'multi'

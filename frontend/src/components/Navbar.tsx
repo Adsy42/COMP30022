@@ -1,3 +1,32 @@
+/**
+ * Navbar — sticky top navigation bar
+ * ----------------------------------
+ * Presents a branded left section (logo + title) and a right-aligned actions slot.
+ *
+ * Props:
+ * - actions?: React.ReactNode
+ *     Optional right-side content (e.g., buttons, user menu, links).
+ *
+ * Accessibility & UX:
+ * - Uses <header> + <nav> landmarks for semantics.
+ * - Sticks to top with subtle border/shadow separation.
+ * - Brand link routes to "/" via Next.js <Link>.
+ *
+ * Styling:
+ * - Tailwind classes for layout, spacing, and borders.
+ * - Responsive gap on the actions container (sm:gap-3).
+ *
+ * Example:
+ *   <Navbar
+ *     actions={
+ *       <>
+ *         <Button variant="outline">Docs</Button>
+ *         <Button>Sign in</Button>
+ *       </>
+ *     }
+ *   />
+ */
+
 import Link from 'next/link'
 import Image from 'next/image'
 import * as React from 'react'

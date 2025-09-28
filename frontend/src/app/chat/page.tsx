@@ -1,3 +1,42 @@
+/**
+ * ChatPage Component
+ * ------------------
+ * Main chat screen combining Navbar, ChoiceGroup, and ChatInput.
+ * WIP. Needs chat bubbles and API wiring.
+ *
+ * State:
+ * - q_type: 'freeform' | 'single' | 'multi'
+ *   Determines whether the user answers with free text, single-choice, or multi-choice.
+ *
+ * - input: string[]
+ *   Final submitted value (collected answer).
+ *
+ * - tempChoices: string[]
+ *   Temporary selections from ChoiceGroup before being confirmed.
+ *
+ * Derived State:
+ * - allowEmptySubmit: boolean
+ *   True if non-freeform and at least one choice selected.
+ *
+ * - needsOtherText: boolean
+ *   True if "Other (please specify)" is selected, requiring user to type text.
+ *
+ * - forceBusy: boolean
+ *   Keeps ChatInput disabled until freeform input is provided for "Other".
+ *
+ * Behavior:
+ * - Logs submitted input to console on change.
+ * - `handleSend`:
+ *   • Freeform mode: sets trimmed message as input.
+ *   • Choice mode: uses tempChoices, replacing "Other" with typed text if provided.
+ *   • Clears tempChoices after commit.
+ *
+ * UI Layout:
+ * - Navbar at top.
+ * - Fixed bottom section with ChoiceGroup (if not freeform) + ChatInput.
+ * - Responsive container with max-width constraints.
+ */
+
 'use client'
 
 import Navbar from '@/components/Navbar'
@@ -44,7 +83,13 @@ export default function ChatPage() {
             {q_type !== 'freeform' && (
               <ChoiceGroup
                 mode={q_type === 'single' ? 'single' : 'multi'}
-                options={['Pre-Award', 'Post-Award', 'qwieorpowiqer', 'asdjf;ksajdf;kjasdf;kljas;dk', OTHER]}
+                options={[
+                  'Pre-Award',
+                  'Post-Award',
+                  'qwieorpowiqer',
+                  'asdjf;ksajdf;kjasdf;kljas;dk',
+                  OTHER,
+                ]}
                 onChange={selected => setTempChoices(selected)}
               />
             )}

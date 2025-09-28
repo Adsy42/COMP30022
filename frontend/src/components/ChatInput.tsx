@@ -1,3 +1,34 @@
+/**
+ * ChatInput Component
+ * -------------------
+ * A controlled text input area with auto-expanding rows and a submit button.
+ *
+ * Props:
+ * - onSend?: (message: string) => void
+ *   Callback invoked when a message is submitted. Receives the trimmed input string.
+ *
+ * - allowEmptySubmit?: boolean (default: false)
+ *   If true, allows submitting even when the input is empty.
+ *
+ * - requireText?: boolean (default: false)
+ *   If true, submission requires a non-empty string. Overrides allowEmptySubmit.
+ *
+ * - externalBusy?: boolean (default: false)
+ *   External signal that disables input (e.g. waiting for a bot reply).
+ *
+ * Behavior:
+ * - Expands textarea height to fit content while typing.
+ * - Auto-focuses the textarea whenever it is re-enabled.
+ * - Submits message when:
+ *   • Enter is pressed without Shift
+ *   • Submit button is clicked
+ * - Clears input after submit, disables temporarily (`isWaiting`).
+ *
+ * Implementation Notes:
+ * - Uses internal `isWaiting` state + externalBusy to determine disabled state.
+ * - `textareaRef` is used to dynamically resize and refocus input.
+ */
+
 'use client'
 
 import { useState, useRef, useEffect } from 'react'

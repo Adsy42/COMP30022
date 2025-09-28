@@ -7,16 +7,22 @@
 
 body {
   background: #ffffff; /* force white background */
-  color: #171717;      /* force dark text */
+  color: #171717; /* force dark text */
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
 }
 
-/* Utility to hide scrollbars but keep scrolling */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Subtle horizontal bar for chip scroller */
+.chips-scroll {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;                 /* Firefox */
+  scrollbar-color: rgba(0,0,0,.18) transparent;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+.chips-scroll::-webkit-scrollbar { height: 6px; }          /* Chrome/Edge */
+.chips-scroll::-webkit-scrollbar-track { background: transparent; }
+.chips-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,.18);
+  border-radius: 9999px;
 }
-
+.chips-scroll:not(:hover)::-webkit-scrollbar-thumb { background-color: transparent; }
+.chips-scroll::-webkit-scrollbar-button { display: none; }

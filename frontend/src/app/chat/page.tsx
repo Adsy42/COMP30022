@@ -86,8 +86,6 @@ export default function ChatPage() {
                 options={[
                   'Pre-Award',
                   'Post-Award',
-                  'qwieorpowiqer',
-                  'asdjf;ksajdf;kjasdf;kljas;dk',
                   OTHER,
                 ]}
                 onChange={selected => setTempChoices(selected)}

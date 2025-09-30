@@ -1,87 +1,141 @@
-"use client";
+/**
+ * ChatInput Component
+ * -------------------
+ * A controlled text input area with auto-expanding rows and a submit button.
+ *
+ * Props:
+ * - onSend?: (message: string) => void
+ *   Callback invoked when a message is submitted. Receives the trimmed input string.
+ *
+ * - allowEmptySubmit?: boolean (default: false)
+ *   If true, allows submitting even when the input is empty.
+ *
+ * - requireText?: boolean (default: false)
+ *   If true, submission requires a non-empty string. Overrides allowEmptySubmit.
+ *
+ * - externalBusy?: boolean (default: false)
+ *   External signal that disables input (e.g. waiting for a bot reply).
+ *
+ * Behavior:
+ * - Expands textarea height to fit content while typing.
+ * - Auto-focuses the textarea whenever it is re-enabled.
+ * - Submits message when:
+ *   • Enter is pressed without Shift
+ *   • Submit button is clicked
+ * - Clears input after submit, disables temporarily (`isWaiting`).
+ *
+ * Implementation Notes:
+ * - Uses internal `isWaiting` state + externalBusy to determine disabled state.
+ * - `textareaRef` is used to dynamically resize and refocus input.
+ */
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+'use client'
 
-export default function ChatPage() {
-    const [text, setText] = useState("");       // contents state with empty default
-    const [isBusy, setIsBusy] = useState(false) // busy state with false default
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
-    // Helpers to use later
-    const toggleOn = () => setIsBusy(true);
-    const toggleOff = () => setIsBusy(false);
+import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 
-    // 
-    useEffect(() => {
-        if (!isBusy) {
-          textareaRef.current?.focus();
-        }
-      }, [isBusy]);
-  
-    function submit() {
-      const input = text.trim();  // copy contents into input variable
-      if (!input) return;
-      console.log(input);         // TODO: replace with actual functionality
-      setText("");                // clear the input box
-      toggleOn();                 // disable input
-  
-      // TODO: Remove this later. Fake bot reply after 1s → re-enable
-      setTimeout(() => {
-        toggleOff();
-      }, 1000);
+export default function ChatInput({
+  onSend,
+  allowEmptySubmit = false,
+  requireText = false,
+  externalBusy = false,
+}: {
+  onSend?: (message: string) => void
+  allowEmptySubmit?: boolean
+  requireText?: boolean
+  externalBusy?: boolean
+}) {
+  const [text, setText] = useState('') // contents state with empty default
+  const [isWaiting, setIsWaiting] = useState(false) // waiting state with false default
+  const busy = isWaiting || externalBusy
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Helpers to use later
+  const toggleOn = () => setIsWaiting(true)
+  const toggleOff = () => setIsWaiting(false)
+
+  // Take focus on re-enable
+  useEffect(() => {
+    if (!busy) {
+      textareaRef.current?.focus()
     }
-  
-    return (
-        <form
-        onSubmit={(e) => {
-            e.preventDefault(); // override default page refresh behavior
-            submit();
-        }}
-        className="fixed bottom-8 inset-x-0 mx-auto max-w-3xl px-6"
-        >
-        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-lg ring-1 ring-black/5">
-            <textarea
-            ref={textareaRef}
-            rows={1}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder={isBusy ? "" : "Start typing..."}   // remove placeholder when busy
-            disabled={isBusy}                               // greys out & locks input
-            className="flex-1 max-h-24 bg-transparent text-[15px] leading-6 text-slate-800 outline-none
+  }, [busy])
+
+  function submit() {
+    const input = text.trim() // copy contents into input variable
+    if (!input && !allowEmptySubmit) return
+
+    // Send to parent
+    if (onSend) onSend(input)
+
+    // clear the input box
+    setText('')
+    if (textareaRef.current) textareaRef.current.style.height = 'auto'
+    toggleOn() // disable input
+
+    // TODO: Remove this later. Fake bot reply after 1s → re-enable
+    setTimeout(() => {
+      toggleOff()
+    }, 1000)
+  }
+
+  return (
+    <form
+      onSubmit={e => {
+        e.preventDefault() // override default page refresh behavior
+        submit()
+      }}
+      className="w-full"
+    >
+      <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-lg ring-1 ring-black/5">
+        <textarea
+          ref={textareaRef}
+          rows={1}
+          value={text}
+          onChange={e => setText(e.target.value)}
+          placeholder={
+            busy ? '' : requireText ? 'Please specify...' : 'Start typing...'
+          }
+          disabled={busy} // greys out & locks input
+          className="flex-1 max-h-24 bg-transparent text-[15px] leading-6 text-slate-800 outline-none
                         placeholder:text-slate-400 resize-none overflow-hidden
                         disabled:opacity-60"
-            onInput={(e) => {
-                const el = e.currentTarget;
-                el.style.height = "auto";                     // reset height
-                el.style.height = `${el.scrollHeight}px`;     // grow to fit content
-            }}
+          onInput={e => {
+            const el = e.currentTarget
+            el.style.height = 'auto' // reset height
+            el.style.height = `${el.scrollHeight}px` // grow to fit content
+          }}
+          // Submit if Enter + !Shift
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault() // override default newline behavior
+              if (!requireText || text.trim() !== '') {
+                submit()
+              }
+            }
+          }}
+        />
 
-            // Submit if Enter + !Shift
-            onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();                         // override default newline behavior
-                submit();
-                }
-            }}
-            />
-
-            <button
-            type="submit"
-            disabled={isBusy || text.trim() === ""}         // lock send button too
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-black
-                        enabled:hover:bg-gray-100 active:scale-[.98] transition
-                        disabled:opacity-50"
-            >
-            <Image
-                src="/send.svg"
-                alt="Send"
-                width={28}
-                height={28}
-                className="h-7 w-7 -translate-x-[2.5px] pointer-events-none"
-            />
-            </button>
-        </div>
-        </form>
-    );
-  }
+        <button
+          type="submit"
+          disabled={
+            isWaiting ||
+            (!allowEmptySubmit && text.trim() === '') ||
+            (requireText && text.trim() === '')
+          }
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-black
+                            enabled:hover:bg-gray-100 active:scale-[.98] transition
+                            disabled:opacity-50"
+        >
+          <Image
+            src="/send.svg"
+            alt="Send"
+            width={28}
+            height={28}
+            className="h-7 w-7 -translate-x-[2.5px] pointer-events-none"
+          />
+        </button>
+      </div>
+    </form>
+  )
+}

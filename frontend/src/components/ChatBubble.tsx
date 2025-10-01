@@ -29,7 +29,7 @@ export default function ChatBubble({
     <div className={`w-full ${className}`}>
       {showLabel && (
         <div
-          className={`mb-2 text-xs ${isUser ? 'text-right' : 'text-left'} text-slate-600 font-bold`}
+          className={`mb-2 text-xs ${isUser ? 'text-right' : 'text-left'} text-slate-600 font-semibold`}
         >
           {label ?? (isUser ? 'You' : 'Support Assistant')}
         </div>

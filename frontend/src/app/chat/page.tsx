@@ -85,19 +85,28 @@ export default function ChatPage() {
           {/* Transcript grows/shrinks automatically. It scrolls if content is tall. */}
           <section className="flex-1 overflow-y-auto pt-6 pb-1 px-1 sm:px-2">
             <div className="mx-auto flex max-w-4xl flex-col gap-10 overflow-x-visible">
-              <ChatBubble role="bot"  text="what’s your name?" />
+              <ChatBubble role="bot" text="what’s your name?" />
               <ChatBubble role="user" text="Sarah Johnson" />
 
-              <ChatBubble role="bot"  text="Thanks, Sarah. What’s your email address? (required)" />
-              <ChatBubble role="user" text="sarah.johnson@unimelb.edu.au" />
-
-              <ChatBubble role="bot"  text="Great — which Grants team are you from? (required)" />
-              <ChatBubble role="user" text="RDS" />
-
-              <ChatBubble role="bot"  text="Got it, What’s the stage of your query? (required)" />
               <ChatBubble
                 role="bot"
-                text="An extremely long message. aj;lkajsdf;lkjadsf pqwoieurqweirsdfajs;dkfljsa sa;dfkj a;skdfjsakdjfa asd;fjas;kfdj;ksa ;asldkjf;askldjfasdf asdkfjweriqwpeiru aiurfqwpiourepwqei weiurpqwiureoqw pwqeiourpwqoieruqwerqw oqiweurpowqiuerpwqoiure pwqeorupwqier wqpeiourpqwoureiowq wpeioruqwpoi iwuqerpoiqweur pwq epoiurqpwoieu iqewrp iuwqpe iouwqepoi uwqpeoi urpqiowuerpwqieur pwqiuer"
+                text="Thanks, Sarah. What’s your email address? (required)"
+              />
+              <ChatBubble role="user" text="sarah.johnson@unimelb.edu.au" />
+
+              <ChatBubble
+                role="bot"
+                text="Great — which Grants team are you from? (required)"
+              />
+              <ChatBubble role="user" text="RDS" />
+
+              <ChatBubble
+                role="bot"
+                text="Got it, What’s the stage of your query? (required)"
+              />
+              <ChatBubble
+                role="bot"
+                text="An extremely long message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet enim velit, eu porttitor est ultricies molestie. Cras et arcu ultricies, rutrum sapien ac, sodales arcu. Vestibulum mattis felis dolor, sit amet tincidunt felis commodo in. Nullam ante nibh, lacinia non aliquam in, euismod eu risus. Aliquam consectetur tincidunt lacus."
               />
             </div>
           </section>

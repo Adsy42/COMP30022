@@ -42,6 +42,7 @@
 import Navbar from '@/components/Navbar'
 import ChatInput from '@/components/ChatInput'
 import ChoiceGroup from '@/components/ChoiceGroup'
+import ChatBubble from '@/components/ChatBubble'
 import { useState, useEffect } from 'react'
 
 export default function ChatPage() {
@@ -77,28 +78,54 @@ export default function ChatPage() {
     <>
       <Navbar />
 
-      <main className="mx-auto max-w-4xl px-6 pb-32">
-        <div className="fixed inset-x-0 bottom-8 mx-auto max-w-3xl px-6">
-          <div className="flex flex-col items-center gap-3">
-            {q_type !== 'freeform' && (
-              <ChoiceGroup
-                mode={q_type === 'single' ? 'single' : 'multi'}
-                options={[
-                  'Pre-Award',
-                  'Post-Award',
-                  OTHER,
-                ]}
-                onChange={selected => setTempChoices(selected)}
-              />
-            )}
+      {/* Full-height canvas below the navbar.
+         If your navbar height is ~64px (h-16), this keeps the page from over/underflowing. */}
+      <main className="mx-auto max-w-4xl px-6">
+        <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-4xl flex-col">
+          {/* Transcript grows/shrinks automatically. It scrolls if content is tall. */}
+          <section className="flex-1 overflow-y-auto pt-6 pb-1 px-1 sm:px-2">
+            <div className="mx-auto flex max-w-4xl flex-col gap-10 overflow-x-visible">
+              <ChatBubble role="bot"  text="what’s your name?" />
+              <ChatBubble role="user" text="Sarah Johnson" />
 
-            <ChatInput
-              onSend={handleSend}
-              allowEmptySubmit={allowEmptySubmit}
-              requireText={needsOtherText}
-              externalBusy={forceBusy}
-            />
-          </div>
+              <ChatBubble role="bot"  text="Thanks, Sarah. What’s your email address? (required)" />
+              <ChatBubble role="user" text="sarah.johnson@unimelb.edu.au" />
+
+              <ChatBubble role="bot"  text="Great — which Grants team are you from? (required)" />
+              <ChatBubble role="user" text="RDS" />
+
+              <ChatBubble role="bot"  text="Got it, What’s the stage of your query? (required)" />
+              <ChatBubble
+                role="bot"
+                text="An extremely long message. aj;lkajsdf;lkjadsf pqwoieurqweirsdfajs;dkfljsa sa;dfkj a;skdfjsakdjfa asd;fjas;kfdj;ksa ;asldkjf;askldjfasdf asdkfjweriqwpeiru aiurfqwpiourepwqei weiurpqwiureoqw pwqeiourpwqoieruqwerqw oqiweurpowqiuerpwqoiure pwqeorupwqier wqpeiourpqwoureiowq wpeioruqwpoi iwuqerpoiqweur pwq epoiurqpwoieu iqewrp iuwqpe iouwqepoi uwqpeoi urpqiowuerpwqieur pwqiuer"
+              />
+            </div>
+          </section>
+
+          {/* Footer stays in normal flow; no clipping. When it gets taller, the transcript above
+             just gets a bit shorter because of flex. 'sticky' keeps it hugging the bottom. */}
+          <footer className="sticky bottom-0 bg-transparent pt-3 pb-8">
+            <div className="mx-auto max-w-3xl">
+              {q_type !== 'freeform' && (
+                <div className="mb-3 flex justify-center">
+                  <ChoiceGroup
+                    mode={q_type === 'single' ? 'single' : 'multi'}
+                    options={['Pre-Award', 'Post-Award', OTHER]}
+                    onChange={selected => setTempChoices(selected)}
+                  />
+                </div>
+              )}
+
+              <div className="flex justify-center">
+                <ChatInput
+                  onSend={handleSend}
+                  allowEmptySubmit={allowEmptySubmit}
+                  requireText={needsOtherText}
+                  externalBusy={forceBusy}
+                />
+              </div>
+            </div>
+          </footer>
         </div>
       </main>
     </>

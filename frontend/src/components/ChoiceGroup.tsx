@@ -74,7 +74,7 @@ export default function ChoiceGroup({
                 aria-checked={on}
                 onClick={() => toggle(o)}
                 className={[
-                  'rounded-full px-4 py-1.5 text-sm font-medium',
+                  'rounded-full px-4 py-1.5 text-base font-medium',
                   'text-white transition border border-transparent',
                   'active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-blue-600',
                   on ? 'bg-blue-600' : 'bg-gray-400 hover:bg-gray-500',

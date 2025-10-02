@@ -97,7 +97,7 @@ export default function ChatInput({
             busy ? '' : requireText ? 'Please specify...' : 'Start typing...'
           }
           disabled={busy} // greys out & locks input
-          className="flex-1 max-h-24 bg-transparent text-[15px] leading-6 text-slate-800 outline-none
+          className="flex-1 max-h-24 bg-transparent text-base leading-6 text-slate-800 outline-none
                         placeholder:text-slate-400 resize-none overflow-hidden
                         disabled:opacity-60"
           onInput={e => {

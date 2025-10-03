@@ -43,6 +43,7 @@ import Navbar from '@/components/Navbar'
 import ChatInput from '@/components/ChatInput'
 import ChoiceGroup from '@/components/ChoiceGroup'
 import ChatBubble from '@/components/ChatBubble'
+import TypingBubble from '@/components/TypingBubble'
 import { useState, useEffect } from 'react'
 
 export default function ChatPage() {
@@ -50,6 +51,7 @@ export default function ChatPage() {
   const [q_type, setQType] = useState<'freeform' | 'single' | 'multi'>('single')
   const [input, setInput] = useState<string[]>([])
   const [tempChoices, setTempChoices] = useState<string[]>([])
+  const [botTyping, setBotTyping] = useState(false)
   const allowEmptySubmit = q_type !== 'freeform' && tempChoices.length > 0
   const needsOtherText = q_type !== 'freeform' && tempChoices.includes(OTHER)
   const forceBusy = q_type !== 'freeform' && !tempChoices.includes(OTHER)
@@ -72,7 +74,17 @@ export default function ChatPage() {
     const final = hasOther && msg.trim() ? [...base, msg.trim()] : tempChoices
     setInput(final)
     setTempChoices([])
+
+    // Show typing bubble when bot processes the response
+    setBotTyping(true)
+    // TODO: Replace with real API call later
+    setTimeout(() => {
+      setBotTyping(false)
+      // when i add real bot message, push it here
+    }, 2000)
   }
+
+
 
   return (
     <>
@@ -108,6 +120,7 @@ export default function ChatPage() {
                 role="bot"
                 text="An extremely long message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet enim velit, eu porttitor est ultricies molestie. Cras et arcu ultricies, rutrum sapien ac, sodales arcu. Vestibulum mattis felis dolor, sit amet tincidunt felis commodo in. Nullam ante nibh, lacinia non aliquam in, euismod eu risus. Aliquam consectetur tincidunt lacus."
               />
+              {botTyping && <TypingBubble />}
             </div>
           </section>
 

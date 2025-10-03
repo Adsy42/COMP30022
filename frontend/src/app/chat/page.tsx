@@ -58,7 +58,7 @@ export default function ChatPage() {
     console.log(input)
   }, [input])
 
-  const handleSend = (msg: string) => {
+  const handleSend = (msg: string, _files: File[] = []) => {
     if (q_type === 'freeform') {
       if (!msg.trim()) return
       setInput([msg.trim()])
@@ -131,6 +131,8 @@ export default function ChatPage() {
                   allowEmptySubmit={allowEmptySubmit}
                   requireText={needsOtherText}
                   externalBusy={forceBusy}
+                  showAttachButton={true}
+                  onFilesSelected={(files) => console.log(files)}
                 />
               </div>
             </div>

@@ -36,8 +36,16 @@ body {
 }
 
 @keyframes typing-bounce {
-  0%, 80%, 100% { transform: translateY(0); opacity: .35; }
-  40%           { transform: translateY(-3px); opacity: 1; }
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
 }
 
 .typing-dot {
@@ -46,9 +54,13 @@ body {
   height: 6px;
   border-radius: 9999px;
   background: #334155; /* slate-700-ish */
-  opacity: .7;
+  opacity: 0.7;
   animation: typing-bounce 1.2s infinite ease-in-out;
 }
 
-.typing-dot.delay-150 { animation-delay: .15s; }
-.typing-dot.delay-300 { animation-delay: .30s; }
+.typing-dot.delay-150 {
+  animation-delay: 0.15s;
+}
+.typing-dot.delay-300 {
+  animation-delay: 0.3s;
+}

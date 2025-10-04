@@ -5,7 +5,7 @@ import ChatInput from '@/components/ChatInput'
 import ChoiceGroup from '@/components/ChoiceGroup'
 import ChatBubble from '@/components/ChatBubble'
 import TypingBubble from '@/components/TypingBubble'
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import {
   startChat,
   getTemplate,
@@ -34,10 +34,10 @@ type Phase =
   | 'finalizing'
   | 'done'
   | 'error'
-  | 'simple_ai' 
+  | 'simple_ai'
   | 'escalate_confirm'
-  | 'escalate_reason' 
-  | 'escalating' 
+  | 'escalate_reason'
+  | 'escalating'
 
 const OTHER = 'Other (please specify)'
 
@@ -70,27 +70,30 @@ export default function ChatPage() {
   function delay(ms: number) {
     return new Promise(res => setTimeout(res, ms))
   }
-  async function withTyping<T>(work: Promise<T>) {
-    setBotTyping(true)
-    const [result] = await Promise.all([work, delay(1000)]) // ≥1s typing
-    setBotTyping(false)
-    return result
-  }
+  const withTyping = useCallback(
+    async <T,>(work: Promise<T>) => {
+      setBotTyping(true)
+      const [result] = await Promise.all([work, delay(1000)]) // ≥1s typing
+      setBotTyping(false)
+      return result
+    },
+    [setBotTyping]
+  )
   async function botSay(text: string, minMs = 600) {
-    await withTyping(delay(minMs))   // guarantees typing bubble
+    await withTyping(delay(minMs)) // guarantees typing bubble
     appendBot(text)
-  }  
+  }
   function appendBot(text: string) {
     setMessages(prev => [...prev, { role: 'bot', text }])
   }
   function appendUser(text: string) {
     setMessages(prev => [...prev, { role: 'user', text }])
   }
-  function presentQuestion(q: Question) {
+  const presentQuestion = useCallback((q: Question) => {
     setTempChoices([])
     setShowChips(true)
     appendBot(q.question)
-  }
+  }, [])
   function logApi(label: string, payload: unknown, result: unknown) {
     // Dev-friendly structured logs
     // eslint-disable-next-line no-console
@@ -131,9 +134,7 @@ export default function ChatPage() {
   // ChatInput gating rules
   const otherSelected = mode !== 'freeform' && tempChoices.includes(OTHER)
   const allowEmptySubmit =
-    mode !== 'freeform' &&
-    tempChoices.length > 0 &&
-    !otherSelected
+    mode !== 'freeform' && tempChoices.length > 0 && !otherSelected
   const requireText = mode !== 'freeform' && otherSelected
 
   // Boot: start chat + load common
@@ -145,7 +146,7 @@ export default function ChatPage() {
         if (!mounted) return
         logApi('POST /chats', null, started)
         setChatId(started.chat_id)
-        appendBot("Hi — I’m here to help you fill the form.")
+        appendBot('Hi — I’m here to help you fill the form.')
 
         const qs = await withTyping(getTemplate('common'))
         if (!mounted) return
@@ -164,8 +165,10 @@ export default function ChatPage() {
         console.error('[API ERROR] boot', err)
       }
     })()
-    return () => { mounted = false }
-  }, [])
+    return () => {
+      mounted = false
+    }
+  }, [withTyping, presentQuestion])
 
   // Build answer (adds Other: prefix if needed)
   function buildAnswerForCurrentQuestion(
@@ -212,15 +215,15 @@ export default function ChatPage() {
   const handleSend = async (msg: string, files: File[] = []) => {
     const built = buildAnswerForCurrentQuestion(msg)
     if (built == null) return
-  
+
     // 1) Echo user message
     const userText = Array.isArray(built) ? built.join(', ') : (built as string)
     appendUser(userText)
-  
+
     // 2) Immediately hide chips and clear selection
     setShowChips(false)
     setTempChoices([])
-  
+
     // ============ BRANCH ============
     if (phase === 'branch') {
       if (built === 'Simple') {
@@ -230,14 +233,20 @@ export default function ChatPage() {
           setSimpleQs(qs as Question[])
           setPhase('simple')
           setQIdx(0)
-          await botSay('Okay — I can provide an answer after a few more questions.', 450)
+          await botSay(
+            'Okay — I can provide an answer after a few more questions.',
+            450
+          )
           if (Array.isArray(qs) && qs.length > 0) {
             await botSay(qs[0].question, 600)
-            setTempChoices([]); setShowChips(true)
+            setTempChoices([])
+            setShowChips(true)
           }
         } catch (err) {
           setPhase('error')
-          appendBot('Sorry, there was a problem loading the simple form. Please refresh the page and try again.')
+          appendBot(
+            'Sorry, there was a problem loading the simple form. Please refresh the page and try again.'
+          )
           // eslint-disable-next-line no-console
           console.error('[API ERROR] GET /templates?template=simple', err)
         }
@@ -250,10 +259,14 @@ export default function ChatPage() {
         setComplexQs(qs as Question[])
         setPhase('complex')
         setQIdx(0)
-        await botSay('Great — let’s capture a few details for complex queries.', 350)
+        await botSay(
+          'Great — let’s capture a few details for complex queries.',
+          350
+        )
         if (Array.isArray(qs) && qs.length > 0) {
           await botSay(qs[0].question, 350)
-          setTempChoices([]); setShowChips(true)
+          setTempChoices([])
+          setShowChips(true)
         }
       } catch (err) {
         setPhase('error')
@@ -263,11 +276,11 @@ export default function ChatPage() {
       }
       return
     }
-  
+
     // ============ COMMON ============
     if (phase === 'common' && currQ) {
       setCommonAnswers(prev => [...prev, { q_id: currQ.id, ans: built }])
-  
+
       const next = qIdx + 1
       if (commonQs && next < commonQs.length) {
         setQIdx(next)
@@ -275,7 +288,7 @@ export default function ChatPage() {
         presentQuestion(commonQs[next])
         return
       }
-  
+
       // Submit common, then branch
       try {
         const payload = {
@@ -297,11 +310,11 @@ export default function ChatPage() {
       }
       return
     }
-  
+
     // ============ SIMPLE ============
     if (phase === 'simple' && currQ) {
       setSimpleAnswers(prev => [...prev, { q_id: currQ.id, ans: built }])
-  
+
       const next = qIdx + 1
       if (simpleQs && next < simpleQs.length) {
         setQIdx(next)
@@ -309,7 +322,7 @@ export default function ChatPage() {
         presentQuestion(simpleQs[next])
         return
       }
-  
+
       // done with simple → POST, then finalize(simple) → show AI → escalate?
       try {
         const payload = {
@@ -325,18 +338,21 @@ export default function ChatPage() {
         console.error('[API ERROR] POST /answers (simple)', err)
         return
       }
-  
+
       try {
         setPhase('finalizing')
         const fin = await withTyping(finalize(chatId!, 'simple'))
         logApi(`POST /chats/${chatId}/finalize`, { expected: 'simple' }, fin)
         appendBot(fin.ai_response || 'Here’s our best guidance.')
-  
+
         // Move into escalate prompt
         setPhase('simple_ai')
         setTempChoices([])
         setShowChips(true)
-        await botSay('Was this helpful, or would you like to escalate to a human?', 500)
+        await botSay(
+          'Was this helpful, or would you like to escalate to a human?',
+          500
+        )
         setPhase('escalate_confirm')
       } catch (err) {
         setPhase('error')
@@ -346,7 +362,7 @@ export default function ChatPage() {
       }
       return
     }
-  
+
     // ============ ESCALATE CONFIRM (chips) ============
     if (phase === 'escalate_confirm') {
       if (built === 'Escalate') {
@@ -359,14 +375,20 @@ export default function ChatPage() {
       }
       return
     }
-  
+
     // ============ ESCALATE REASON (freeform) ============
     if (phase === 'escalate_reason') {
       try {
         setPhase('escalating')
         const res = await withTyping(escalate(chatId!, String(built)))
-        logApi('POST /escalations', { chat_id: chatId, reason: String(built) }, res)
-        appendBot('Your query has been escalated to our team. We’ll reach out via email shortly.')
+        logApi(
+          'POST /escalations',
+          { chat_id: chatId, reason: String(built) },
+          res
+        )
+        appendBot(
+          'Your query has been escalated to our team. We’ll reach out via email shortly.'
+        )
         await botSay('You may close this page now.', 450)
         setPhase('done')
       } catch (err) {
@@ -377,7 +399,7 @@ export default function ChatPage() {
       }
       return
     }
-  
+
     // ============ COMPLEX ============
     if (phase === 'complex' && currQ) {
       let newIds: string[] = []
@@ -387,9 +409,14 @@ export default function ChatPage() {
         try {
           // (debug) see what the user picked
           // eslint-disable-next-line no-console
-          console.log('[Upload] Selected files:', files.map(f => ({ name: f.name, size: f.size, type: f.type })))
+          console.log(
+            '[Upload] Selected files:',
+            files.map(f => ({ name: f.name, size: f.size, type: f.type }))
+          )
 
-          const uploaded = await withTyping(Promise.all(files.map(f => uploadFile(chatId, f))))
+          const uploaded = await withTyping(
+            Promise.all(files.map(f => uploadFile(chatId, f)))
+          )
           // eslint-disable-next-line no-console
           console.log('[Upload] Response:', uploaded)
 
@@ -417,7 +444,9 @@ export default function ChatPage() {
 
       // Use the latest attachments for THIS submit:
       // if we uploaded this turn, include those; otherwise use current state.
-      const attachmentsForSubmit = newIds.length ? [...attachmentIds, ...newIds] : attachmentIds
+      const attachmentsForSubmit = newIds.length
+        ? [...attachmentIds, ...newIds]
+        : attachmentIds
 
       // Submit complex, then finalize(complex)
       try {
@@ -440,7 +469,9 @@ export default function ChatPage() {
         setPhase('finalizing')
         const fin = await withTyping(finalize(chatId!, 'complex'))
         logApi(`POST /chats/${chatId}/finalize`, { expected: 'complex' }, fin)
-        appendBot('Thanks — your query has been routed to the Contracts team. They’ll follow up shortly.')
+        appendBot(
+          'Thanks — your query has been routed to the Contracts team. They’ll follow up shortly.'
+        )
         await botSay('You may close this page now.', 450)
         setPhase('done')
       } catch (err) {
@@ -471,9 +502,11 @@ export default function ChatPage() {
                   key={`m-${i}`}
                   role={m.role}
                   text={m.text}
-                  animate={m.role === 'bot'}           // animate bot messages only
-                  typewriterSpeed={16}                 // tweak to taste (smaller = faster)
-                  onChunk={() => endRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                  animate={m.role === 'bot'} // animate bot messages only
+                  typewriterSpeed={16} // tweak to taste (smaller = faster)
+                  onChunk={() =>
+                    endRef.current?.scrollIntoView({ behavior: 'smooth' })
+                  }
                 />
               ))}
               {botTyping && <TypingBubble />}
@@ -510,7 +543,10 @@ export default function ChatPage() {
                   }
                   showAttachButton={phase === 'complex'}
                   onFilesSelected={files => {
-                    if (files?.length && process.env.NODE_ENV === 'development') {
+                    if (
+                      files?.length &&
+                      process.env.NODE_ENV === 'development'
+                    ) {
                       // eslint-disable-next-line no-console
                       console.log('Selected files:', files)
                     }

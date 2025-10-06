@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Hero() {
   return (
     <section className="w-full h-full flex flex-col items-center text-center px-6 pt-[20vh]">
@@ -10,9 +12,12 @@ export default function Hero() {
         Our AI assistant helps researchers and grants officers handle routine processes instantly,
         and escalates complex queries seamlessly to the Contracts Team.
       </p>
-      <button className="mt-8 px-8 py-3 text-white bg-[#033F85] rounded-full shadow-md hover:bg-[#022c5f]">
-        Start Chat Now
-      </button>
+      
+      <Link href="/chat" className="mt-8">
+        <button className="px-8 py-3 text-white bg-[#033F85] rounded-full shadow-md hover:bg-[#022c5f]">
+          Start Chat Now
+        </button>
+      </Link>
     </section>
   );
 }

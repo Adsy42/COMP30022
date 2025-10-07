@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { BackgroundIllustration } from '@/components/BackgroundIllustration'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -32,7 +33,12 @@ export default function LoginPage() {
   }
 
   return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4">
+    <div className="relative min-h-screen overflow-hidden bg-white">
+      {/* Background Layer */}
+      <BackgroundIllustration />
+
+      {/* Foreground Content */}
+      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="flex flex-col items-center">
             <Link 
@@ -51,7 +57,7 @@ export default function LoginPage() {
                 Grants2Contract
               </span>
             </Link>
-            <h1 className="text-3xl font- text-blue-900 mb-5">
+            <h1 className="text-3xl font-semibold text-blue-900 mb-5">
               Administrator Sign In
             </h1>
             <p className="mt-2 text-base text-gray-500 text-center">
@@ -111,6 +117,7 @@ export default function LoginPage() {
             </button>
           </form>
         </div>
-      </div>
+      </main>
+    </div>
   )
 }

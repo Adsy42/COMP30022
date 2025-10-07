@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Link from "next/link"
 import Button from "@/components/Button"
-import { MessageSquare, BarChart2, Network } from 'lucide-react'
+import { MessageSquare, BarChart2, Network, Settings, Mail } from 'lucide-react'
 
 // Types for our analytics data
 interface AnalyticsData {
@@ -107,6 +107,107 @@ export default function AdminPage() {
               {analytics.complexReferrals}
             </p>
             <p className="text-xs text-green-600">{complexReferralsPercentage}% of total submissions</p>
+          </div>
+        </div>
+
+        {/* Breakdown Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+
+          {/* Simple Queries Breakdown */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div className="flex gap-2 mb-2">
+              <BarChart2 className="w-5 h-5 text-blue-600" />
+              <div className="flex flex-col gap-1">
+                <h2 className="font-semibold text-gray-900">Simple Queries Breakdown</h2>
+                <p className="text-sm text-gray-500">
+                  Detailed analysis of simple query submissions
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Complex Queries Breakdown */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div className="flex gap-2 mb-2">
+              <Network className="w-5 h-5 text-blue-600" />
+              <div className="flex flex-col gap-1">
+                <h2 className="font-semibold text-gray-900">Complex Queries Breakdown</h2>
+                <p className="text-sm text-gray-500">
+                  Detailed analysis of complex query submissions
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Configuration Section */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-blue-900 mb-6">Configuration</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Form Configuration */}
+            <Link href="/admin/admin-config">
+              <div className="group p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition-all cursor-pointer">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex gap-3">
+                    <Settings className="w-6 h-6 text-blue-600" />
+                    <div className="flex flex-col gap-1">
+                      <h3 className="font-semibold text-gray-900">Form Configuration</h3>
+                      <p className="text-sm text-gray-500">Manage question flows (add/update/delete)</p>
+                    </div>
+                  </div>
+                  <div className="w-6 h-6 flex items-center justify-center">
+                    <svg 
+                      width="24" 
+                      height="24" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      className="text-blue-600 group-hover:translate-x-1 transition-transform"
+                    >
+                      <path 
+                        d="M5 12H19M19 12L12 5M19 12L12 19" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              
+              </div>
+            </Link>
+
+            {/* Email Configuration */}
+            <Link href="/admin/admin-config">
+              <div className="group p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition-all cursor-pointer">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex gap-3">
+                    <Mail className="w-6 h-6 text-blue-600" />
+                    <div className="flex flex-col gap-1">
+                      <h3 className="font-semibold text-gray-900">Email Configuration</h3>
+                      <p className="text-sm text-gray-500">Update recipient email addresses</p>
+                    </div>
+                  </div>
+                  <div className="w-6 h-6 flex items-center justify-center">
+                    <svg 
+                      width="24" 
+                      height="24" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      className="text-blue-600 group-hover:translate-x-1 transition-transform"
+                    >
+                      <path 
+                        d="M5 12H19M19 12L12 5M19 12L12 19" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </main>

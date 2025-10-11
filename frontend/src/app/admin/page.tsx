@@ -66,7 +66,7 @@ export default function AdminPage() {
           <h1 className="text-3xl font-semibold text-blue-900 mb-2">
             Admin Dashboard
           </h1>
-          <p className="font-light text-gray-500">
+          <p className="text-gray-500">
             Grants2Contract Analytics & Configuration
           </p>
         </div>
@@ -76,7 +76,7 @@ export default function AdminPage() {
           {/* Total Submissions */}
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
-              <MessageSquare className="w-5 h-5 text-blue-600" />
+              <MessageSquare className="w-5 h-5 text-blue-900" />
               <h2 className="font-semibold text-gray-700 text-sm">Total Submissions</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
@@ -88,7 +88,7 @@ export default function AdminPage() {
           {/* Simple Queries */}
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
-              <BarChart2 className="w-5 h-5 text-blue-600" />
+              <BarChart2 className="w-5 h-5 text-blue-900" />
               <h2 className="font-semibold text-gray-700 text-sm">Simple Queries</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
@@ -100,7 +100,7 @@ export default function AdminPage() {
           {/* Complex Referrals */}
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
-              <Network className="w-5 h-5 text-blue-600" />
+              <Network className="w-5 h-5 text-blue-900" />
               <h2 className="font-semibold text-gray-700 text-sm">Complex Referrals</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
@@ -116,7 +116,7 @@ export default function AdminPage() {
           {/* Simple Queries Breakdown */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
             <div className="flex gap-2 mb-2">
-              <BarChart2 className="w-5 h-5 text-blue-600" />
+              <BarChart2 className="w-5 h-5 text-blue-900" />
               <div className="flex flex-col gap-1">
                 <h2 className="font-semibold text-gray-900">Simple Queries Breakdown</h2>
                 <p className="text-sm text-gray-500">
@@ -129,7 +129,7 @@ export default function AdminPage() {
           {/* Complex Queries Breakdown */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
             <div className="flex gap-2 mb-2">
-              <Network className="w-5 h-5 text-blue-600" />
+              <Network className="w-5 h-5 text-blue-900" />
               <div className="flex flex-col gap-1">
                 <h2 className="font-semibold text-gray-900">Complex Queries Breakdown</h2>
                 <p className="text-sm text-gray-500">
@@ -149,7 +149,7 @@ export default function AdminPage() {
               <div className="group p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition-all cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex gap-3">
-                    <Settings className="w-6 h-6 text-blue-600" />
+                    <Settings className="w-6 h-6 text-blue-900" />
                     <div className="flex flex-col gap-1">
                       <h3 className="font-semibold text-gray-900">Form Configuration</h3>
                       <p className="text-sm text-gray-500">Manage question flows (add/update/delete)</p>
@@ -161,7 +161,7 @@ export default function AdminPage() {
                       height="24" 
                       viewBox="0 0 24 24" 
                       fill="none" 
-                      className="text-blue-600 group-hover:translate-x-1 transition-transform"
+                      className="text-blue-900 group-hover:translate-x-1 transition-transform"
                     >
                       <path 
                         d="M5 12H19M19 12L12 5M19 12L12 19" 
@@ -182,7 +182,7 @@ export default function AdminPage() {
               <div className="group p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition-all cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex gap-3">
-                    <Mail className="w-6 h-6 text-blue-600" />
+                    <Mail className="w-6 h-6 text-blue-900" />
                     <div className="flex flex-col gap-1">
                       <h3 className="font-semibold text-gray-900">Email Configuration</h3>
                       <p className="text-sm text-gray-500">Update recipient email addresses</p>
@@ -194,7 +194,7 @@ export default function AdminPage() {
                       height="24" 
                       viewBox="0 0 24 24" 
                       fill="none" 
-                      className="text-blue-600 group-hover:translate-x-1 transition-transform"
+                      className="text-blue-900 group-hover:translate-x-1 transition-transform"
                     >
                       <path 
                         d="M5 12H19M19 12L12 5M19 12L12 19" 

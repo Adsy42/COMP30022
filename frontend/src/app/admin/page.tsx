@@ -145,7 +145,7 @@ export default function AdminPage() {
           <h2 className="text-2xl font-semibold text-blue-900 mb-6">Configuration</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Form Configuration */}
-            <Link href="/admin/admin-config">
+            <Link href="/admin/form-config">
               <div className="group p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition-all cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex gap-3">
@@ -178,7 +178,7 @@ export default function AdminPage() {
             </Link>
 
             {/* Email Configuration */}
-            <Link href="/admin/admin-config">
+            <Link href="/admin/email-config">
               <div className="group p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition-all cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex gap-3">

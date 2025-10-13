@@ -71,7 +71,12 @@ export async function getTemplate(template: 'common' | 'simple' | 'complex') {
           options: [
             { label: 'Templates' },
             { label: 'Signatures' },
-            { label: 'Turnaround time' },
+            { label: 'Turnaround' },
+            { label: 'Budget' },
+            { label: 'Compliance' },
+            { label: 'Eligibility' },
+            { label: 'Extensions' },
+            { label: 'Contacts' },
           ],
         },
         {

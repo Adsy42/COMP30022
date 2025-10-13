@@ -517,8 +517,17 @@ export default function ChatPage() {
           </section>
 
           {/* Footer */}
-          <footer className="sticky bottom-0 bg-transparent pt-3 pb-8">
-            <div className="mx-auto max-w-3xl">
+          <footer
+            className="
+              sticky bottom-0 bg-white pt-3 pb-8
+              relative z-20
+              before:content-[''] before:absolute before:inset-x-0
+              before:-top-4 before:h-4
+              before:bg-gradient-to-t before:from-white before:to-transparent
+              before:pointer-events-none
+            "
+          >
+            <div className="mx-auto max-w-4xl px-1.5">
               {/* Chips: only for current question, and disappear immediately on submit */}
               {showChips && mode !== 'freeform' && options.length > 0 && (
                 <div className="mb-3 flex justify-center">

@@ -34,6 +34,7 @@ export default function FormConfigPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<FormQuestion | null>(null);
 
   // Fetch questions on component mount
   useEffect(() => {
@@ -145,6 +146,40 @@ export default function FormConfigPage() {
     }
   };
 
+  const handleEdit = (question: FormQuestion) => {
+    setEditingQuestion(question);
+    setIsModalOpen(true);
+  };
+
+  const handleUpdate = async (updatedQuestion: Omit<FormQuestion, 'id' | 'order'>) => {
+    if (!editingQuestion) return;
+
+    try {
+      // Optimistically update UI
+      setQuestions(questions.map(q => 
+        q.id === editingQuestion.id 
+          ? { ...q, ...updatedQuestion }
+          : q
+      ));
+
+      // TODO: Implement actual API call when backend is ready
+      // await fetch(`${API_ENDPOINTS.QUESTIONS}/${editingQuestion.id}`, {
+      //   method: 'PUT',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(updatedQuestion)
+      // });
+
+      console.log('Question updated:', { id: editingQuestion.id, ...updatedQuestion });
+    } catch (err) {
+      // Revert on failure
+      setQuestions(questions);
+      setError('Failed to update question');
+    } finally {
+      setEditingQuestion(null);
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar actions={navActions} />
@@ -207,7 +242,7 @@ export default function FormConfigPage() {
                 <QuestionList 
                   questions={questions}
                   onDragEnd={handleDragEnd}
-                  onEdit={() => {}} // TODO: Implement edit handler
+                  onEdit={handleEdit}
                   onDelete={handleDelete}
                 />
                 
@@ -242,8 +277,12 @@ export default function FormConfigPage() {
 
       <AddQuestionModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAdd={handleAddQuestion}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingQuestion(null);
+        }}
+        onAdd={editingQuestion ? handleUpdate : handleAddQuestion}
+        initialQuestion={editingQuestion ?? undefined}
       />
     </div>
   );

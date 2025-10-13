@@ -20,9 +20,10 @@ interface AddQuestionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAdd: (question: Omit<FormQuestion, 'id' | 'order'>) => void;
+  initialQuestion?: FormQuestion | null;  // This determines if we're editing
 }
 
-export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalProps) {
+export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: AddQuestionModalProps) {
   const [formData, setFormData] = useState<Omit<FormQuestion, 'id' | 'order'>>({
     text: '',
     type: 'text',
@@ -46,6 +47,22 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalPro
       window.removeEventListener('keydown', handleEsc);
     };
   }, [isOpen, onClose]);
+
+  // Reset form when modal opens/closes or initialQuestion changes
+  useEffect(() => {
+    if (isOpen && initialQuestion) {
+      // Pre-fill form with question data when editing
+      setFormData({
+        text: initialQuestion.text,
+        type: initialQuestion.type,
+        required: initialQuestion.required,
+        options: initialQuestion.options || []
+      });
+    } else if (!isOpen) {
+      // Reset form when closing
+      setFormData({ text: '', type: 'text', required: false, options: [] });
+    }
+  }, [isOpen, initialQuestion]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +94,9 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalPro
       {/* Modal Content */}
       <div className="bg-white rounded-lg w-full max-w-[500px] relative z-10 shadow-lg" onClick={e => e.stopPropagation()}>
         <div className="p-6">
-          <h2 className="text-xl font-semibold text-blue-900 mb-6">Add New Question</h2>
+          <h2 className="text-xl font-semibold text-blue-900 mb-6">
+            {initialQuestion ? 'Edit Question' : 'Add New Question'}
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="space-y-5">
               <div>
@@ -194,7 +213,7 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalPro
                 type="submit"
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-900 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900"
               >
-                Add Question
+                {initialQuestion ? 'Update Question' : 'Add Question'}
               </button>
             </div>
           </form>

@@ -1,14 +1,15 @@
+interface Option {
+  label: string;
+  followUp?: FormQuestion;
+}
+
 interface FormQuestion {
   id: string;
   text: string;
   type: 'text' | 'single select' | 'multi select';
   required: boolean;
-  options?: string[];
+  options?: Option[];
   order: number;
-  dependsOn?: {
-    questionId: string;
-    value: string;
-  };
 }
 
 interface QuestionCardProps {
@@ -40,9 +41,14 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
             )}
           </div>
           {question.options && (
-            <p className="text-sm text-gray-500 mt-1">
-              Options: {question.options.join(', ')}
-            </p>
+            <div className="text-sm text-gray-500 mt-1">
+              <p>Options: {question.options.map(opt => opt.label).join(', ')}</p>
+              {question.options.some(opt => opt.followUp) && (
+                <p className="mt-1 text-grey-600">
+                  Contains follow-up questions
+                </p>
+              )}
+            </div>
           )}
         </div>
         <div className="flex items-center gap-2">

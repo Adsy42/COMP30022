@@ -167,7 +167,7 @@ export default function FormConfigPage() {
                 <p className="text-center text-red-600">{error}</p>
               </div>
             ) : (
-              <>
+                <>
                 <QuestionList 
                   questions={questions}
                   onDragEnd={handleDragEnd}
@@ -178,27 +178,27 @@ export default function FormConfigPage() {
                 {/* Keep Add New Question button outside scroll area */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <button
-                    type="button"
-                    onClick={() => {/* TODO: Implement add question */}}
-                    className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                  type="button"
+                  onClick={() => {/* TODO: Implement add question */}}
+                  className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors"
                   >
-                    <svg 
-                      className="w-5 h-5 mr-2" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={2} 
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
-                      />
-                    </svg>
-                    Add New Question
+                  <svg 
+                    className="w-5 h-5 mr-2" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+                    />
+                  </svg>
+                  Add New Question
                   </button>
                 </div>
-              </>
+                </>
             )}
           </div>
         </div>

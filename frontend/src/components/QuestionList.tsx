@@ -1,12 +1,17 @@
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { QuestionCard } from './QuestionCard';
 
+interface Option {
+  label: string;
+  followUp?: FormQuestion;
+}
+
 interface FormQuestion {
   id: string;
   text: string;
   type: 'text' | 'single select' | 'multi select';
   required: boolean;
-  options?: string[];
+  options?: Option[];
   order: number;
 }
 

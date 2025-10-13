@@ -1,9 +1,14 @@
+export interface Option {
+  label: string;
+  followUp?: FormQuestion;
+}
+
 export interface FormQuestion {
   id: string;
   text: string;
   type: 'text' | 'single select' | 'multi select';
   required: boolean;
-  options?: string[];
+  options?: Option[];
   order: number;
 }
 
@@ -13,7 +18,12 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     text: 'Grant Scheme',
     type: 'single select',
     required: true,
-    options: ['NHMRC', 'MRFF', 'ARC', 'Other'],
+    options: [
+      { label: 'NHMRC' },
+      { label: 'MRFF' },
+      { label: 'ARC' },
+      { label: 'Other' }
+    ],
     order: 0
   },
   {
@@ -21,7 +31,24 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     text: 'Involves MRI',
     type: 'single select',
     required: true,
-    options: ['Yes', 'No', 'Other'],
+    options: [
+      { 
+        label: 'Yes',
+        followUp: {
+          id: '2.1',
+          text: 'MRI Access Type',
+          type: 'single select',
+          required: true,
+          options: [
+            { label: 'Full access' },
+            { label: 'Viewing only' }
+          ],
+          order: 0
+        }
+      },
+      { label: 'No' },
+      { label: 'Other' }
+    ],
     order: 1
   },
   {
@@ -29,7 +56,13 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     text: 'Type of Query',
     type: 'single select',
     required: true,
-    options: ['Contractual clause review', 'Support with negotiations', 'Advice on agreement type', 'Compliance advice', 'Other'],
+    options: [
+      { label: 'Contractual clause review' },
+      { label: 'Support with negotiations' },
+      { label: 'Advice on agreement type' },
+      { label: 'Compliance advice' },
+      { label: 'Other' }
+    ],
     order: 2
   },
   {
@@ -37,7 +70,10 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     text: 'Mark as Urgent',
     type: 'single select',
     required: false,
-    options: ['Yes', 'No'],
+    options: [
+      { label: 'Yes' },
+      { label: 'No' }
+    ],
     order: 3
   }
 ];

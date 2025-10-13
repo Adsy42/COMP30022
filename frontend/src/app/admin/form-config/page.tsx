@@ -88,16 +88,23 @@ export default function FormConfigPage() {
     }
   };
 
-  // Add navigation component with back button
-  const navActions = (
-    <Link 
-      href="/admin" 
-      className="inline-flex items-center text-sm text-blue-900 hover:text-gray-900"
-    >
-      <ArrowLeft className="w-4 h-4 mr-2" />
-      Back to Dashboard
-    </Link>
-  );
+  const handleDelete = async (id: string) => {
+    try {
+      // Optimistically update UI
+      setQuestions(questions.filter(q => q.id !== id));
+      
+      // TODO: Implement actual API call when backend is ready
+      // await fetch(`${API_ENDPOINTS.QUESTIONS}/${id}`, {
+      //   method: 'DELETE'
+      // });
+      
+      console.log('Question deleted:', id);
+    } catch (err) {
+      // Revert on failure
+      setQuestions(questions);
+      setError('Failed to delete question');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -161,9 +168,8 @@ export default function FormConfigPage() {
                 <QuestionList 
                   questions={questions}
                   onDragEnd={handleDragEnd}
-                  // TODO: Implement edit and delete handlers
-                  // onEdit={handleEdit}
-                  // onDelete={handleDelete}
+                  onEdit={() => {}} // TODO: Implement edit handler
+                  onDelete={handleDelete}
                 />
                 
                 {/* Keep Add New Question button outside scroll area */}

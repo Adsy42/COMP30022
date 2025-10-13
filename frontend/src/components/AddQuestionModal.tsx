@@ -1,0 +1,191 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Option {
+  label: string;
+  followUp?: FormQuestion;
+}
+
+interface FormQuestion {
+  id: string;
+  text: string;
+  type: 'text' | 'single select' | 'multi select';
+  required: boolean;
+  options?: Option[];
+  order: number;
+}
+
+interface AddQuestionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAdd: (question: Omit<FormQuestion, 'id' | 'order'>) => void;
+}
+
+export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalProps) {
+  const [formData, setFormData] = useState<Omit<FormQuestion, 'id' | 'order'>>({
+    text: '',
+    type: 'text',
+    required: false,
+    options: []
+  });
+
+  const [newOption, setNewOption] = useState('');
+
+  // Add ESC key listener
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [isOpen, onClose]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onAdd(formData);
+    setFormData({ text: '', type: 'text', required: false, options: [] });
+    onClose();
+  };
+
+  const addOption = () => {
+    if (newOption.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        options: [...(prev.options || []), { label: newOption.trim() }]
+      }));
+      setNewOption('');
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/50" 
+        onClick={onClose}
+      />
+      
+      {/* Modal Content */}
+      <div className="bg-white rounded-lg w-full max-w-[500px] relative z-10 shadow-lg" onClick={e => e.stopPropagation()}>
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-blue-900 mb-6">Add New Question</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Question Text
+                </label>
+                <input
+                  type="text"
+                  value={formData.text}
+                  onChange={e => setFormData(prev => ({ ...prev, text: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Question Type
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={e => setFormData(prev => ({ 
+                    ...prev, 
+                    type: e.target.value as FormQuestion['type'],
+                    options: e.target.value === 'text' ? undefined : prev.options
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="text">Text</option>
+                  <option value="single select">Single Select</option>
+                  <option value="multi select">Multi Select</option>
+                </select>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="required"
+                  checked={formData.required}
+                  onChange={e => setFormData(prev => ({ ...prev, required: e.target.checked }))}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="required" className="ml-2 text-sm text-gray-700">Required</label>
+              </div>
+
+              {(formData.type === 'single select' || formData.type === 'multi select') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Options
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newOption}
+                      onChange={e => setNewOption(e.target.value)}
+                      placeholder="Enter option text"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={addOption}
+                      className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <div className="mt-2 space-y-2">
+                    {formData.options?.map((option, index) => (
+                      <div 
+                        key={index} 
+                        className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-md"
+                      >
+                        <span className="text-sm text-gray-700">{option.label}</span>
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            options: prev.options?.filter((_, i) => i !== index)
+                          }))}
+                          className="text-sm text-gray-500 hover:text-gray-700"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-900 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900"
+              >
+                Add Question
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

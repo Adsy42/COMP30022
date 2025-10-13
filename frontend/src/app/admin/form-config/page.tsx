@@ -10,6 +10,7 @@ import {
   fetchMockQuestions,
   reorderMockQuestions 
 } from './__mocks__/questions';
+import { AddQuestionModal } from '@/components/AddQuestionModal';
 
 // API endpoints - Update when backend is implemented
 const API_ENDPOINTS = {
@@ -32,6 +33,7 @@ export default function FormConfigPage() {
   const [questions, setQuestions] = useState<FormQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch questions on component mount
   useEffect(() => {
@@ -109,6 +111,40 @@ export default function FormConfigPage() {
     }
   };
 
+  // Add handler for new questions
+  const handleAddQuestion = (newQuestion: Omit<FormQuestion, 'id' | 'order'>) => {
+    try {
+      // Ensure 'required' is present in newQuestion
+      if (typeof newQuestion.required !== 'boolean') {
+        throw new Error("Missing 'required' property in new question");
+      }
+
+      // Create new question with generated ID and order
+      const question: FormQuestion = {
+        ...newQuestion,
+        id: crypto.randomUUID(), // This will be replaced by server-generated ID
+        order: questions.length
+      };
+
+      // Optimistically update UI
+      setQuestions([...questions, question]);
+      
+      // TODO: Implement actual API call when backend is ready
+      // const response = await fetch(API_ENDPOINTS.QUESTIONS, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(question)
+      // });
+      // const data = await response.json();
+      
+      console.log('Question added:', question);
+    } catch (err) {
+      // Revert on failure
+      setQuestions(questions);
+      setError('Failed to add question');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar actions={navActions} />
@@ -178,24 +214,24 @@ export default function FormConfigPage() {
                 {/* Keep Add New Question button outside scroll area */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <button
-                  type="button"
-                  onClick={() => {/* TODO: Implement add question */}}
-                  className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                    type="button"
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors"
                   >
-                  <svg 
-                    className="w-5 h-5 mr-2" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
-                    />
-                  </svg>
-                  Add New Question
+                    <svg 
+                      className="w-5 h-5 mr-2" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+                      />
+                    </svg>
+                    Add New Question
                   </button>
                 </div>
                 </>
@@ -203,6 +239,12 @@ export default function FormConfigPage() {
           </div>
         </div>
       </main>
+
+      <AddQuestionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAdd={handleAddQuestion}
+      />
     </div>
   );
 }

@@ -79,21 +79,46 @@ export default function ChatPage() {
     },
     [setBotTyping]
   )
-  async function botSay(text: string, minMs = 600) {
-    await withTyping(delay(minMs)) // guarantees typing bubble
-    appendBot(text)
-  }
+
+  const botSay = useCallback(
+    async (text: string, minMs = 500) => {
+      await withTyping(delay(minMs)) // guarantees typing bubble
+      appendBot(text)
+    },
+    [withTyping]
+  )
+
+  // Keep a promise chain for queued bot messages
+  const botQueueRef = useRef<Promise<void>>(Promise.resolve())
+
+  const queueMessage = useCallback(
+    (text: string, minMs = 500) => {
+      botQueueRef.current = botQueueRef.current.then(async () => {
+        // run existing botSay for this message
+        await botSay(text, minMs)
+        // wait long enough for the typewriter animation to complete
+        await delay(text.length * 16 + 100) // * the typewriter speed
+      })
+      return botQueueRef.current
+    },
+    [botSay]
+  )
+
   function appendBot(text: string) {
     setMessages(prev => [...prev, { role: 'bot', text }])
   }
   function appendUser(text: string) {
     setMessages(prev => [...prev, { role: 'user', text }])
   }
-  const presentQuestion = useCallback((q: Question) => {
-    setTempChoices([])
-    setShowChips(true)
-    appendBot(q.question)
-  }, [])
+  const presentQuestion = useCallback(
+    (q: Question) => {
+      setTempChoices([])
+      queueMessage(q.question).then(() => {
+        setShowChips(true)
+      })
+    },
+    [queueMessage]
+  )
   function logApi(label: string, payload: unknown, result: unknown) {
     // Dev-friendly structured logs
     // eslint-disable-next-line no-console
@@ -146,7 +171,7 @@ export default function ChatPage() {
         if (!mounted) return
         logApi('POST /chats', null, started)
         setChatId(started.chat_id)
-        appendBot('Hi — I’m here to help you fill the form.')
+        queueMessage('Hi — I’m here to help you fill the form.')
 
         const qs = await withTyping(getTemplate('common'))
         if (!mounted) return
@@ -160,7 +185,7 @@ export default function ChatPage() {
       } catch (err) {
         if (!mounted) return
         setPhase('error')
-        appendBot('Sorry, something went wrong while starting your session.')
+        queueMessage('Sorry, something went wrong while starting your session.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] boot', err)
       }
@@ -168,7 +193,7 @@ export default function ChatPage() {
     return () => {
       mounted = false
     }
-  }, [withTyping, presentQuestion])
+  }, [withTyping, presentQuestion, queueMessage])
 
   // Build answer (adds Other: prefix if needed)
   function buildAnswerForCurrentQuestion(
@@ -233,18 +258,18 @@ export default function ChatPage() {
           setSimpleQs(qs as Question[])
           setPhase('simple')
           setQIdx(0)
-          await botSay(
-            'Okay — I can provide an answer after a few more questions.',
-            450
+          queueMessage(
+            'Okay — I can provide an answer after a few more questions.'
           )
           if (Array.isArray(qs) && qs.length > 0) {
-            await botSay(qs[0].question, 600)
-            setTempChoices([])
-            setShowChips(true)
+            queueMessage(qs[0].question).then(() => {
+              setTempChoices([])
+              setShowChips(true)
+            })
           }
         } catch (err) {
           setPhase('error')
-          appendBot(
+          queueMessage(
             'Sorry, there was a problem loading the simple form. Please refresh the page and try again.'
           )
           // eslint-disable-next-line no-console
@@ -259,18 +284,16 @@ export default function ChatPage() {
         setComplexQs(qs as Question[])
         setPhase('complex')
         setQIdx(0)
-        await botSay(
-          'Great — let’s capture a few details for complex queries.',
-          350
-        )
+        queueMessage('Great — let’s capture a few details for complex queries.')
         if (Array.isArray(qs) && qs.length > 0) {
-          await botSay(qs[0].question, 350)
-          setTempChoices([])
-          setShowChips(true)
+          queueMessage(qs[0].question).then(() => {
+            setTempChoices([])
+            setShowChips(true)
+          })
         }
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem loading the complex form.')
+        queueMessage('Sorry, there was a problem loading the complex form.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] GET /templates?template=complex', err)
       }
@@ -284,7 +307,6 @@ export default function ChatPage() {
       const next = qIdx + 1
       if (commonQs && next < commonQs.length) {
         setQIdx(next)
-        await withTyping(delay(350))
         presentQuestion(commonQs[next])
         return
       }
@@ -300,11 +322,12 @@ export default function ChatPage() {
         setPhase('branch')
         setQIdx(0)
         setTempChoices([])
-        setShowChips(true)
-        appendBot('Would you describe your query as Simple or Complex?')
+        queueMessage(
+          'Would you describe your query as Simple or Complex?'
+        ).then(() => setShowChips(true))
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem saving your common answers.')
+        queueMessage('Sorry, there was a problem saving your common answers.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] POST /answers (common)', err)
       }
@@ -318,7 +341,6 @@ export default function ChatPage() {
       const next = qIdx + 1
       if (simpleQs && next < simpleQs.length) {
         setQIdx(next)
-        await withTyping(delay(350))
         presentQuestion(simpleQs[next])
         return
       }
@@ -333,7 +355,7 @@ export default function ChatPage() {
         logApi(`POST /chats/${chatId}/answers`, payload, res)
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem saving your simple answers.')
+        queueMessage('Sorry, there was a problem saving your simple answers.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] POST /answers (simple)', err)
         return
@@ -343,20 +365,20 @@ export default function ChatPage() {
         setPhase('finalizing')
         const fin = await withTyping(finalize(chatId!, 'simple'))
         logApi(`POST /chats/${chatId}/finalize`, { expected: 'simple' }, fin)
-        appendBot(fin.ai_response || 'Here’s our best guidance.')
+        queueMessage(fin.ai_response || 'Here’s our best guidance.')
 
         // Move into escalate prompt
         setPhase('simple_ai')
-        setTempChoices([])
-        setShowChips(true)
-        await botSay(
-          'Was this helpful, or would you like to escalate to a human?',
-          500
-        )
-        setPhase('escalate_confirm')
+        queueMessage(
+          'Was this helpful, or would you like to escalate to a human?'
+        ).then(() => {
+          setTempChoices([])
+          setShowChips(true)
+          setPhase('escalate_confirm')
+        })
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem finalizing your query.')
+        queueMessage('Sorry, there was a problem finalizing your query.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] POST /finalize (simple)', err)
       }
@@ -366,12 +388,13 @@ export default function ChatPage() {
     // ============ ESCALATE CONFIRM (chips) ============
     if (phase === 'escalate_confirm') {
       if (built === 'Escalate') {
-        setPhase('escalate_reason')
-        await botSay('Please tell us briefly why you’d like to escalate.', 500)
+        queueMessage('Please tell us briefly why you’d like to escalate.').then(
+          () => setPhase('escalate_reason')
+        )
       } else {
-        await botSay('Glad that helped! You can close this page now.', 500)
-        await botSay('You may close this page now.', 450) // final line
-        setPhase('done')
+        queueMessage('Glad that helped! You can close this page now.').then(
+          () => setPhase('done')
+        )
       }
       return
     }
@@ -386,14 +409,15 @@ export default function ChatPage() {
           { chat_id: chatId, reason: String(built) },
           res
         )
-        appendBot(
+        queueMessage(
           'Your query has been escalated to our team. We’ll reach out via email shortly.'
         )
-        await botSay('You may close this page now.', 450)
-        setPhase('done')
+        queueMessage('You may close this page now.').then(() =>
+          setPhase('done')
+        )
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem escalating your query.')
+        queueMessage('Sorry, there was a problem escalating your query.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] POST /escalations', err)
       }
@@ -426,7 +450,7 @@ export default function ChatPage() {
           const merged = [...attachmentIds, ...newIds]
           setAttachmentIds(merged) // keep state in sync for future questions
         } catch (err) {
-          appendBot('Some files failed to upload — you can try again later.')
+          queueMessage('Some files failed to upload — you can try again later.')
           // eslint-disable-next-line no-console
           console.error('[API ERROR] POST /uploads', err)
         }
@@ -437,7 +461,6 @@ export default function ChatPage() {
       const next = qIdx + 1
       if (complexQs && next < complexQs.length) {
         setQIdx(next)
-        await withTyping(delay(350))
         presentQuestion(complexQs[next])
         return
       }
@@ -459,7 +482,7 @@ export default function ChatPage() {
         logApi(`POST /chats/${chatId}/answers`, payload, res)
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem saving your complex answers.')
+        queueMessage('Sorry, there was a problem saving your complex answers.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] POST /answers (complex)', err)
         return
@@ -469,14 +492,14 @@ export default function ChatPage() {
         setPhase('finalizing')
         const fin = await withTyping(finalize(chatId!, 'complex'))
         logApi(`POST /chats/${chatId}/finalize`, { expected: 'complex' }, fin)
-        appendBot(
+        queueMessage(
           'Thanks — your query has been routed to the Contracts team. They’ll follow up shortly.'
         )
-        await botSay('You may close this page now.', 450)
-        setPhase('done')
+          .then(() => queueMessage('You may close this page now.'))
+          .then(() => setPhase('done'))
       } catch (err) {
         setPhase('error')
-        appendBot('Sorry, there was a problem finalizing your query.')
+        queueMessage('Sorry, there was a problem finalizing your query.')
         // eslint-disable-next-line no-console
         console.error('[API ERROR] POST /finalize (complex)', err)
       }
@@ -487,6 +510,12 @@ export default function ChatPage() {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, botTyping])
+
+  useEffect(() => {
+    if (showChips) {
+      endRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [showChips])
 
   return (
     <>

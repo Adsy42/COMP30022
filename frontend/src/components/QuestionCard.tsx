@@ -1,0 +1,71 @@
+interface FormQuestion {
+  id: string;
+  text: string;
+  type: 'text' | 'single select' | 'multi select';
+  required: boolean;
+  options?: string[];
+  order: number;
+  dependsOn?: {
+    questionId: string;
+    value: string;
+  };
+}
+
+interface QuestionCardProps {
+  question: FormQuestion;
+  provided: any;
+  onEdit: (question: FormQuestion) => void;
+  onDelete: (id: string) => void;
+}
+
+export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionCardProps) {
+  return (
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      className="bg-white border border-gray-200 rounded-lg p-4 mb-4"
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="font-medium text-gray-900">{question.text}</h3>
+          <div className="flex flex-wrap items-center gap-2 mt-1">
+            <span className="px-2 py-0.5 bg-gray-100 text-sm text-gray-600 rounded">
+              {question.type}
+            </span>
+            {question.required && (
+              <span className="px-2 py-0.5 bg-gray-100 text-sm text-gray-600 rounded">
+                Required
+              </span>
+            )}
+          </div>
+          {question.options && (
+            <p className="text-sm text-gray-500 mt-1">
+              Options: {question.options.join(', ')}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onEdit(question)}
+            className="p-2 hover:bg-gray-50 rounded-lg"
+            title="Edit question"
+          >
+            <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => onDelete(question.id)}
+            className="p-2 hover:bg-gray-50 rounded-lg"
+            title="Delete question"
+          >
+            <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

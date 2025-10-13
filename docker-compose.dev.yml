@@ -10,7 +10,7 @@ services:
       FLASK_DEBUG: 1
     volumes:
       - ./backend:/app
-    command: flask run --host=0.0.0.0 --reload
+    command: sh -c "python seed_db.py && flask run --host=0.0.0.0 --reload"
 
   ai-service:
     environment:

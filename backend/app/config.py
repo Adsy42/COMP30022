@@ -67,7 +67,11 @@ class TestingConfig(Config):
 
     DEBUG = True
     TESTING = True
-    MONGODB_URI = os.getenv("MONGODB_TEST_URI", "mongodb://localhost:27017/legal_ai_test")
+    # Use mongo service when in Docker, localhost otherwise
+    MONGODB_URI = os.getenv(
+        "MONGODB_TEST_URI",
+        "mongodb://admin:password123@mongo:27017/legal_ai_test?authSource=admin"
+    )
 
 
 class ProductionConfig(Config):

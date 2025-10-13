@@ -24,7 +24,8 @@ class TestUserModel:
         password = "mypassword123"
         hashed = User.hash_password(password)
         assert hashed != password
-        assert hashed.startswith("pbkdf2:sha256:")
+        # Modern Werkzeug uses scrypt instead of pbkdf2
+        assert hashed.startswith("scrypt:")
     
     def test_check_password(self):
         """Test password verification."""

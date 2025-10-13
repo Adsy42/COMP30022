@@ -75,7 +75,7 @@ class TestTokenRequired:
             "/kpis",
             headers={"Authorization": "Bearer invalid_token"}
         )
-        assert response.status_code == 422  # JWT decode error
+        assert response.status_code == 401  # JWT decode error returns 401
     
     def test_protected_endpoint_with_valid_token(self, client, auth_headers):
         """Test accessing protected endpoint with valid token."""

@@ -57,17 +57,17 @@ export default function FormConfigPage() {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     
-    // Update order numbers
+    // Update all questions' order to match their new index
     const updatedQuestions = items.map((question, index) => ({
       ...question,
       order: index
     }));
     
-    // Optimistically update UI
+    // Optimistically update UI with all updated orders
     setQuestions(updatedQuestions);
     
-    // TODO: Implement API call to update order
     try {
+      // TODO: Implement API call to update order
       // await fetch(API_ENDPOINTS.REORDER, {
       //   method: 'PUT',
       //   headers: { 'Content-Type': 'application/json' },
@@ -76,10 +76,13 @@ export default function FormConfigPage() {
       //   })
       // });
       
-      console.log('Order updated:', {
-        question: reorderedItem.text,
-        from: result.source.index,
-        to: result.destination.index
+      console.log('Orders updated:', {
+        moved: {
+          question: reorderedItem.text,
+          from: result.source.index,
+          to: result.destination.index
+        },
+        newOrders: updatedQuestions.map(q => ({ id: q.id, order: q.order }))
       });
     } catch (err) {
       // Revert on failure

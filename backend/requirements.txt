@@ -16,5 +16,6 @@ Werkzeug==3.0.1
 # Development and testing dependencies
 pytest
 pytest-flask
+pytest-cov
 black==23.11.0
 ruff==0.1.6

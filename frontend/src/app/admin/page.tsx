@@ -77,7 +77,7 @@ export default function AdminPage() {
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
               <MessageSquare className="w-5 h-5 text-blue-900" />
-              <h2 className="font-semibold text-gray-700 text-sm">Total Submissions</h2>
+              <h2 className="font-medium text-gray-700 text-sm">Total Submissions</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
               {analytics.totalSubmissions}
@@ -89,7 +89,7 @@ export default function AdminPage() {
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
               <BarChart2 className="w-5 h-5 text-blue-900" />
-              <h2 className="font-semibold text-gray-700 text-sm">Simple Queries</h2>
+              <h2 className="font-medium text-gray-700 text-sm">Simple Queries</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
               {analytics.simpleQueries}
@@ -101,7 +101,7 @@ export default function AdminPage() {
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
               <Network className="w-5 h-5 text-blue-900" />
-              <h2 className="font-semibold text-gray-700 text-sm">Complex Referrals</h2>
+              <h2 className="font-medium text-gray-700 text-sm">Complex Referrals</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
               {analytics.complexReferrals}
@@ -118,7 +118,7 @@ export default function AdminPage() {
             <div className="flex gap-2 mb-2">
               <BarChart2 className="w-5 h-5 text-blue-900" />
               <div className="flex flex-col gap-1">
-                <h2 className="font-semibold text-gray-900">Simple Queries Breakdown</h2>
+                <h2 className="font-medium text-gray-900">Simple Queries Breakdown</h2>
                 <p className="text-sm text-gray-500">
                   Detailed analysis of simple query submissions
                 </p>
@@ -131,7 +131,7 @@ export default function AdminPage() {
             <div className="flex gap-2 mb-2">
               <Network className="w-5 h-5 text-blue-900" />
               <div className="flex flex-col gap-1">
-                <h2 className="font-semibold text-gray-900">Complex Queries Breakdown</h2>
+                <h2 className="font-medium text-gray-900">Complex Queries Breakdown</h2>
                 <p className="text-sm text-gray-500">
                   Detailed analysis of complex query submissions
                 </p>
@@ -142,7 +142,7 @@ export default function AdminPage() {
 
         {/* Configuration Section */}
         <div className="mt-10">
-          <h2 className="text-2xl font-semibold text-blue-900 mb-6">Configuration</h2>
+          <h2 className="text-2xl font-medium text-blue-900 mb-6">Configuration</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Form Configuration */}
             <Link href="/admin/form-config">
@@ -151,7 +151,7 @@ export default function AdminPage() {
                   <div className="flex gap-3">
                     <Settings className="w-6 h-6 text-blue-900" />
                     <div className="flex flex-col gap-1">
-                      <h3 className="font-semibold text-gray-900">Form Configuration</h3>
+                      <h3 className="font-medium text-gray-900">Form Configuration</h3>
                       <p className="text-sm text-gray-500">Manage question flows (add/update/delete)</p>
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export default function AdminPage() {
                   <div className="flex gap-3">
                     <Mail className="w-6 h-6 text-blue-900" />
                     <div className="flex flex-col gap-1">
-                      <h3 className="font-semibold text-gray-900">Email Configuration</h3>
+                      <h3 className="font-medium text-gray-900">Email Configuration</h3>
                       <p className="text-sm text-gray-500">Update recipient email addresses</p>
                     </div>
                   </div>

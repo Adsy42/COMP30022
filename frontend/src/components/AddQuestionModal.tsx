@@ -134,21 +134,32 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalPro
                       value={newOption}
                       onChange={e => setNewOption(e.target.value)}
                       placeholder="Enter option text"
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
                     />
                     <button
                       type="button"
                       onClick={addOption}
-                      className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="flex items-center justify-center w-10 h-10 text-gray-600 bg-gray-100 rounded-md 
+                        hover:bg-gray-200 
+                        focus-visible:bg-gray-200 
+                        focus-visible:outline-none 
+                        focus-visible:ring-2 
+                        focus-visible:ring-gray-400 
+                        focus-visible:ring-offset-2 
+                        active:bg-gray-300
+                        transition-all"
+                      title="Add option"
                     >
-                      Add
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
                     </button>
                   </div>
                   <div className="mt-2 space-y-2">
                     {formData.options?.map((option, index) => (
                       <div 
                         key={index} 
-                        className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-md"
+                        className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-md group"
                       >
                         <span className="text-sm text-gray-700">{option.label}</span>
                         <button
@@ -157,9 +168,12 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }: AddQuestionModalPro
                             ...prev,
                             options: prev.options?.filter((_, i) => i !== index)
                           }))}
-                          className="text-sm text-gray-500 hover:text-gray-700"
+                          className="invisible group-hover:visible p-1.5 text-gray-400 hover:text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+                          title="Remove option"
                         >
-                          Remove
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
                         </button>
                       </div>
                     ))}

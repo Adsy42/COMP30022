@@ -74,7 +74,7 @@ export default function EmailConfigPage() {
       // setEmail(data.recipientEmail)
 
       // Temporary simulation of API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 500))
       alert('Email configuration saved successfully!')
       setIsSaving(false)
     } catch (err) {
@@ -131,9 +131,16 @@ export default function EmailConfigPage() {
           
           {/* Conditional rendering based on loading and error states */}
           {isLoading ? (
-            <div className="text-gray-500">Loading configuration...</div>
+            <div className="py-8">
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900" />
+              </div>
+              <p className="text-center text-gray-500 mt-4">Loading email configuration...</p>
+            </div>
           ) : error ? (
-            <div className="text-red-600">{error}</div>
+            <div className="py-8">
+              <p className="text-center text-red-600">{error}</p>
+            </div>
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="mb-6">

@@ -48,7 +48,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     options: [
       { label: 'Pre-Award' },
       { label: 'Post-Award' },
-      { label: 'Other' }  // Removed hasTextInput
+      { label: 'Other' }
     ],
     order: 3,
     displayable: true
@@ -77,7 +77,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'ARC' },
                   { label: 'ECR' },
                   { label: 'NIH' },
-                  { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                  { label: 'Other' }
                 ],
                 order: 0,
                 displayable: true
@@ -92,7 +92,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 options: [
                   { label: 'Yes' },
                   { label: 'No' },
-                  { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                  { label: 'Other' }
                 ],
                 order: 1,
                 displayable: true
@@ -120,7 +120,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                         { label: 'Insurance' },
                         { label: 'Publication' },
                         { label: 'Moral Rights' },
-                        { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                        { label: 'Other' }
                       ],
                       order: 0,
                       displayable: true
@@ -129,7 +129,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'Support with negotiations' },
                   { label: 'Advice on appropriate agreement' },
                   { label: 'Advice on compliance with grant obligations' },
-                  { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                  { label: 'Other' }
                 ],
                 order: 2,
                 displayable: true
@@ -159,7 +159,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'ARC' },
                   { label: 'ECR' },
                   { label: 'NIH' },
-                  { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                  { label: 'Other' }
                 ],
                 order: 0,
                 displayable: true
@@ -174,7 +174,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 options: [
                   { label: 'Yes' },
                   { label: 'No' },
-                  { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                  { label: 'Other' }
                 ],
                 order: 1,
                 displayable: true
@@ -260,7 +260,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                               { label: 'Collaborator' },
                               { label: 'Incoming party' },
                               { label: 'Outgoing party' },
-                              { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                              { label: 'Other' } 
                             ],
                             order: 1,
                             displayable: true
@@ -294,7 +294,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'Subcontract agreement' },
                   { label: 'Variation agreement' },
                   { label: 'Funding agreement' },
-                  { label: 'Other' }  // Instead of { label: 'Other', hasTextInput: true }
+                  { label: 'Other' }
                 ],
                 order: 7,
                 displayable: true
@@ -345,7 +345,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
               followUp: {
                 id: '5.2.13',
                 question: 'Attach all relevant documents',
-                type: 'text', // Note: Will need to be updated when file upload is implemented
+                type: 'text',
                 order: 12,
                 displayable: true
               }
@@ -362,7 +362,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                     followUp: {
                       id: '5.2.14.1',
                       question: 'Provide urgency date',
-                      type: 'text', // Note: Consider using a date type when implemented
+                      type: 'text',
                       order: 0,
                       displayable: true
                     }

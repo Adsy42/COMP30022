@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Link from "next/link"
 import Button from "@/components/Button"
-import { MessageSquare, BarChart2, Network, Settings, Mail } from 'lucide-react'
+import { MessageSquare, BarChart2, Network, Settings, Mail, PieChart } from 'lucide-react'
 
 // Types for our analytics data
 interface AnalyticsData {
@@ -107,6 +107,19 @@ export default function AdminPage() {
               {analytics.complexReferrals}
             </p>
             <p className="text-xs text-green-600">{complexReferralsPercentage}% of total submissions</p>
+          </div>
+        </div>
+
+        {/* General Breakdown Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mt-8">
+          <div className="flex gap-2 mb-2">
+            <PieChart className="w-5 h-5 text-blue-900" />
+            <div className="flex flex-col gap-1">
+              <h2 className="font-medium text-gray-900">General Breakdown</h2>
+              <p className="text-sm text-gray-500">
+                Overview of all query submissions and team distributions
+              </p>
+            </div>
           </div>
         </div>
 

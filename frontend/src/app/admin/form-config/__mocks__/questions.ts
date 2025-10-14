@@ -9,6 +9,7 @@ export interface FormQuestion {
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
+  displayable: boolean;  // Add displayable field
 }
 
 export const MOCK_QUESTIONS: FormQuestion[] = [
@@ -22,7 +23,8 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
       { label: 'ARC' },
       { label: 'Other' }
     ],
-    order: 0
+    order: 0,
+    displayable: true  // Show in breakdowns
   },
   {
     id: '2',
@@ -39,13 +41,15 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
             { label: 'Full access' },
             { label: 'Viewing only' }
           ],
-          order: 0
+          order: 0,
+          displayable: false
         }
       },
       { label: 'No' },
       { label: 'Other' }
     ],
-    order: 1
+    order: 1,
+    displayable: true
   },
   {
     id: '3',
@@ -58,7 +62,8 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
       { label: 'Compliance advice' },
       { label: 'Other' }
     ],
-    order: 2
+    order: 2,
+    displayable: true
   },
   {
     id: '4',
@@ -68,7 +73,8 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
       { label: 'Yes' },
       { label: 'No' }
     ],
-    order: 3
+    order: 3,
+    displayable: false  // Don't show in breakdowns
   }
 ];
 

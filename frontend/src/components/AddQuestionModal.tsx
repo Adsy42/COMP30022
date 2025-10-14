@@ -13,6 +13,7 @@ interface FormQuestion {
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
+  displayable: boolean;  // Add displayable field
 }
 
 interface AddQuestionModalProps {
@@ -26,7 +27,8 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
   const [formData, setFormData] = useState<Omit<FormQuestion, 'id' | 'order'>>({
     question: '',
     type: 'text',
-    options: []
+    options: [],
+    displayable: false
   });
 
   const [newOption, setNewOption] = useState('');
@@ -58,13 +60,15 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
       setFormData({
         question: initialQuestion.question,
         type: initialQuestion.type,
-        options: initialQuestion.options || []
+        options: initialQuestion.options || [],
+        displayable: initialQuestion.displayable || false
       });
     } else if (!isOpen) {
       setFormData({
         question: '',
         type: 'text',
-        options: []
+        options: [],
+        displayable: false
       });
     }
   }, [isOpen, initialQuestion]);
@@ -72,7 +76,7 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onAdd(formData);
-    setFormData({ question: '', type: 'text', options: [] });
+    setFormData({ question: '', type: 'text', options: [], displayable: false });
     onClose();
   };
 
@@ -134,6 +138,19 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
                     <option key={value} value={value}>{label}</option>
                   ))}
                 </select>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="displayable"
+                  checked={formData.displayable}
+                  onChange={e => setFormData(prev => ({ ...prev, displayable: e.target.checked }))}
+                  className="w-4 h-4 text-blue-900 border-gray-300 rounded focus:ring-blue-900"
+                />
+                <label htmlFor="displayable" className="ml-2 text-sm text-gray-700">
+                  Show in analytics breakdown
+                </label>
               </div>
 
               {(formData.type === 'single' || formData.type === 'multi') && (

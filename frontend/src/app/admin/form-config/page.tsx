@@ -185,9 +185,8 @@ export default function FormConfigPage() {
           <h1 className="text-3xl font-semibold text-blue-900 mb-2">
             Form Configuration
           </h1>
-
           <p className="text-gray-500 mt-1">
-            Modify form question text, order, nesting, and analytics display
+            Configure form questions, add follow-up logic, and manage analytics settings. Drag questions to reorder
           </p>
         </div>
 

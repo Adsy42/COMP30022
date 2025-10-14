@@ -95,7 +95,7 @@ export default function EmailConfigPage() {
             Email Configuration
           </h1>
           <p className="text-gray-500 mt-1">
-            Update recipient email address
+            Manage recipient email address
           </p>
         </div>
 

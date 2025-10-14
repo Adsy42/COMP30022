@@ -6,7 +6,7 @@ interface Option {
 interface FormQuestion {
   id: string;
   text: string;
-  type: 'text' | 'single select' | 'multi select';
+  type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
 }
@@ -19,6 +19,15 @@ interface QuestionCardProps {
 }
 
 export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionCardProps) {
+  const getDisplayType = (type: 'text' | 'single' | 'multi') => {
+    switch (type) {
+      case 'text': return 'Text';
+      case 'single': return 'Single Select';
+      case 'multi': return 'Multi Select';
+      default: return type;
+    }
+  };
+
   return (
     <div
       ref={provided.innerRef}
@@ -31,7 +40,7 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
           <h3 className="font-medium text-gray-900">{question.text}</h3>
           <div className="flex flex-wrap items-center gap-2 mt-1">
             <span className="px-2 py-0.5 bg-gray-100 text-sm text-gray-600 rounded">
-              {question.type}
+              {getDisplayType(question.type)}
             </span>
           </div>
           {question.options && (

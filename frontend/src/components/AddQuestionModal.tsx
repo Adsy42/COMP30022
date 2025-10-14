@@ -10,7 +10,7 @@ interface Option {
 interface FormQuestion {
   id: string;
   text: string;
-  type: 'text' | 'single select' | 'multi select';
+  type: 'text' | 'single' | 'multi';  // Updated type values
   options?: Option[];
   order: number;
 }
@@ -30,6 +30,12 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
   });
 
   const [newOption, setNewOption] = useState('');
+
+  const questionTypes = {
+    text: 'Text',
+    single: 'Single Select',
+    multi: 'Multi Select'
+  } as const;
 
   // Add ESC key listener
   useEffect(() => {
@@ -126,13 +132,13 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
                   }))}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
-                  <option value="text">Text</option>
-                  <option value="single select">Single Select</option>
-                  <option value="multi select">Multi Select</option>
+                  {Object.entries(questionTypes).map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
                 </select>
               </div>
 
-              {(formData.type === 'single select' || formData.type === 'multi select') && (
+              {(formData.type === 'single' || formData.type === 'multi') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Options

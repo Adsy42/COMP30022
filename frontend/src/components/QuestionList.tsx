@@ -9,8 +9,7 @@ interface Option {
 interface FormQuestion {
   id: string;
   text: string;
-  type: 'text' | 'single select' | 'multi select';
-  required: boolean;
+  type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
 }

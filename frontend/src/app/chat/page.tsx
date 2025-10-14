@@ -1,10 +1,12 @@
 'use client'
 
+import Button from '@/components/Button'
 import Navbar from '@/components/Navbar'
 import ChatInput from '@/components/ChatInput'
 import ChoiceGroup from '@/components/ChoiceGroup'
 import ChatBubble from '@/components/ChatBubble'
 import TypingBubble from '@/components/TypingBubble'
+import Link from 'next/link'
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import {
   startChat,
@@ -519,7 +521,16 @@ export default function ChatPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        actions={
+          <Button
+            variant="outline"
+            onClick={() => (window.location.href = '/chat')}
+          >
+            New chat
+          </Button>
+        }
+      />
 
       <main className="mx-auto max-w-4xl px-6">
         <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-4xl flex-col">

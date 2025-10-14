@@ -5,7 +5,7 @@ interface Option {
 
 interface FormQuestion {
   id: string;
-  text: string;
+  question: string;
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
@@ -37,7 +37,7 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="font-medium text-gray-900">{question.text}</h3>
+          <h3 className="font-medium text-gray-900">{question.question}</h3>
           <div className="flex flex-wrap items-center gap-2 mt-1">
             <span className="px-2 py-0.5 bg-gray-100 text-sm text-gray-600 rounded">
               {getDisplayType(question.type)}

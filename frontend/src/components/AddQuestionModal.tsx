@@ -9,8 +9,8 @@ interface Option {
 
 interface FormQuestion {
   id: string;
-  text: string;
-  type: 'text' | 'single' | 'multi';  // Updated type values
+  question: string;
+  type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
 }
@@ -24,7 +24,7 @@ interface AddQuestionModalProps {
 
 export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: AddQuestionModalProps) {
   const [formData, setFormData] = useState<Omit<FormQuestion, 'id' | 'order'>>({
-    text: '',
+    question: '',
     type: 'text',
     options: []
   });
@@ -55,16 +55,14 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
   // Reset form when modal opens/closes or initialQuestion changes
   useEffect(() => {
     if (isOpen && initialQuestion) {
-      // Pre-fill form with question data when editing
       setFormData({
-        text: initialQuestion.text,
+        question: initialQuestion.question,
         type: initialQuestion.type,
         options: initialQuestion.options || []
       });
     } else if (!isOpen) {
-      // Reset form when closing
       setFormData({
-        text: '',
+        question: '',
         type: 'text',
         options: []
       });
@@ -74,7 +72,7 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onAdd(formData);
-    setFormData({ text: '', type: 'text', options: [] });
+    setFormData({ question: '', type: 'text', options: [] });
     onClose();
   };
 
@@ -112,8 +110,8 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
                 </label>
                 <input
                   type="text"
-                  value={formData.text}
-                  onChange={e => setFormData(prev => ({ ...prev, text: e.target.value }))}
+                  value={formData.question} 
+                  onChange={e => setFormData(prev => ({ ...prev, question: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                   required
                 />

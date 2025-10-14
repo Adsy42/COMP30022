@@ -8,7 +8,7 @@ interface Option {
 
 interface FormQuestion {
   id: string;
-  text: string;
+  question: string;
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;

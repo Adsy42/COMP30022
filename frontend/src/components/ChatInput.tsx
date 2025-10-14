@@ -39,16 +39,30 @@ export default function ChatInput({
   allowEmptySubmit = false,
   requireText = false,
   externalBusy = false,
+  // NEW: attachment controls
+  showAttachButton = false,
+  onFilesSelected,
+  accept = 'image/*,application/pdf',
+  multiple = true,
 }: {
-  onSend?: (message: string) => void
+  onSend?: (message: string, files: File[]) => void
   allowEmptySubmit?: boolean
   requireText?: boolean
   externalBusy?: boolean
+  // NEW: attachment controls
+  showAttachButton?: boolean
+  onFilesSelected?: (files: File[]) => void
+  accept?: string
+  multiple?: boolean
 }) {
   const [text, setText] = useState('') // contents state with empty default
   const [isWaiting, setIsWaiting] = useState(false) // waiting state with false default
   const busy = isWaiting || externalBusy
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // NEW: hold selected files locally (MVP)
+  const [files, setFiles] = useState<File[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Helpers to use later
   const toggleOn = () => setIsWaiting(true)
@@ -61,15 +75,21 @@ export default function ChatInput({
     }
   }, [busy])
 
+  // NEW: expose files upwards if requested
+  useEffect(() => {
+    onFilesSelected?.(files)
+  }, [files, onFilesSelected])
+
   function submit() {
     const input = text.trim() // copy contents into input variable
     if (!input && !allowEmptySubmit) return
 
     // Send to parent
-    if (onSend) onSend(input)
+    if (onSend) onSend(input, files)
 
     // clear the input box
     setText('')
+    setFiles([])
     if (textareaRef.current) textareaRef.current.style.height = 'auto'
     toggleOn() // disable input
 
@@ -77,6 +97,22 @@ export default function ChatInput({
     setTimeout(() => {
       toggleOff()
     }, 1000)
+  }
+
+  // NEW: open native file picker
+  function openFilePicker() {
+    if (busy) return
+    fileInputRef.current?.click()
+  }
+
+  // NEW: handle chosen files
+  function handleFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const chosen = Array.from(e.target.files || [])
+    if (chosen.length) {
+      setFiles(prev => [...prev, ...chosen])
+    }
+    // allow re-selecting the same file again
+    e.target.value = ''
   }
 
   return (
@@ -88,6 +124,44 @@ export default function ChatInput({
       className="w-full"
     >
       <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-lg ring-1 ring-black/5">
+        {/* NEW: left attach button inside the box (icon to be swapped later) */}
+        {showAttachButton && (
+          <>
+            <button
+              type="button"
+              onClick={openFilePicker}
+              disabled={busy}
+              aria-label="Attach files"
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-black
+                        enabled:hover:bg-gray-100 active:scale-[.98] transition disabled:opacity-50"
+            >
+              {/* paperclip or svg goes here */}
+              <Image
+                src="/attach.svg"
+                alt="Attach"
+                width={20}
+                height={20}
+                className="h-5 w-5 pointer-events-none"
+              />
+
+              {/* NEW: little badge */}
+              {files.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 min-w-[18px] items-center justify-center rounded-full bg-blue-600 px-1.5 text-[11px] font-medium text-white">
+                  {files.length}
+                </span>
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept={accept}
+              multiple={multiple}
+              onChange={handleFilesSelected}
+            />
+          </>
+        )}
+
         <textarea
           ref={textareaRef}
           rows={1}

@@ -81,7 +81,7 @@ export default function FormConfigPage() {
       
       console.log('Orders updated:', {
         moved: {
-          question: reorderedItem.text,
+          question: reorderedItem.question,
           from: result.source.index,
           to: result.destination.index
         },
@@ -115,11 +115,6 @@ export default function FormConfigPage() {
   // Add handler for new questions
   const handleAddQuestion = (newQuestion: Omit<FormQuestion, 'id' | 'order'>) => {
     try {
-      // Ensure 'required' is present in newQuestion
-      if (typeof newQuestion.required !== 'boolean') {
-        throw new Error("Missing 'required' property in new question");
-      }
-
       // Create new question with generated ID and order
       const question: FormQuestion = {
         ...newQuestion,

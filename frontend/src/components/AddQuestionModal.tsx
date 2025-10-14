@@ -73,20 +73,31 @@ export function AddQuestionModal({
     multi: 'Multi Select'
   } as const;
 
-  // Add ESC key listener
+  // Update ESC key listener to handle nested modals
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
+      if (e.key === 'Escape') {
+        if (isFollowUpModalOpen) {
+          setIsFollowUpModalOpen(false);
+          setSelectedOption(null);
+        } else if (isOpen) {
+          onClose();
+          // Reset all state when closing the main modal
+          setFormData({
+            question: '',
+            type: 'text',
+            options: [],
+            displayable: false
+          });
+          setNewOption('');
+          setSelectedOption(null);
+        }
       }
     };
 
     window.addEventListener('keydown', handleEsc);
-
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [isOpen, onClose]);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onClose, isFollowUpModalOpen]);
 
   // Reset form when modal opens/closes or initialQuestion changes
   useEffect(() => {
@@ -137,14 +148,27 @@ export function AddQuestionModal({
 
   if (!isOpen) return null;
 
+  // Update onClose handler to also reset state
+  const handleClose = () => {
+    onClose();
+    setFormData({
+      question: '',
+      type: 'text',
+      options: [],
+      displayable: false
+    });
+    setNewOption('');
+    setSelectedOption(null);
+  };
+
+  // Update the backdrop click handler
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        {/* Backdrop */}
         {!isFollowUpModalOpen && (
           <div 
             className="fixed inset-0 bg-black/50 pointer-events-auto" 
-            onClick={onClose}
+            onClick={handleClose}  // Use handleClose instead of onClose
           />
         )}
         
@@ -307,7 +331,7 @@ export function AddQuestionModal({
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}  // Use handleClose instead of onClose
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 {isFollowUp ? 'Back' : 'Cancel'} 

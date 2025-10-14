@@ -7,7 +7,6 @@ interface FormQuestion {
   id: string;
   text: string;
   type: 'text' | 'single select' | 'multi select';
-  required: boolean;
   options?: Option[];
   order: number;
 }
@@ -34,11 +33,6 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
             <span className="px-2 py-0.5 bg-gray-100 text-sm text-gray-600 rounded">
               {question.type}
             </span>
-            {question.required && (
-              <span className="px-2 py-0.5 bg-gray-100 text-sm text-gray-600 rounded">
-                Required
-              </span>
-            )}
           </div>
           {question.options && (
             <div className="text-sm text-gray-500 mt-1">

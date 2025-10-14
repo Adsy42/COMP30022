@@ -11,7 +11,6 @@ interface FormQuestion {
   id: string;
   text: string;
   type: 'text' | 'single select' | 'multi select';
-  required: boolean;
   options?: Option[];
   order: number;
 }
@@ -27,7 +26,6 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
   const [formData, setFormData] = useState<Omit<FormQuestion, 'id' | 'order'>>({
     text: '',
     type: 'text',
-    required: false,
     options: []
   });
 
@@ -55,19 +53,22 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
       setFormData({
         text: initialQuestion.text,
         type: initialQuestion.type,
-        required: initialQuestion.required,
         options: initialQuestion.options || []
       });
     } else if (!isOpen) {
       // Reset form when closing
-      setFormData({ text: '', type: 'text', required: false, options: [] });
+      setFormData({
+        text: '',
+        type: 'text',
+        options: []
+      });
     }
   }, [isOpen, initialQuestion]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onAdd(formData);
-    setFormData({ text: '', type: 'text', required: false, options: [] });
+    setFormData({ text: '', type: 'text', options: [] });
     onClose();
   };
 
@@ -129,17 +130,6 @@ export function AddQuestionModal({ isOpen, onClose, onAdd, initialQuestion }: Ad
                   <option value="single select">Single Select</option>
                   <option value="multi select">Multi Select</option>
                 </select>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="required"
-                  checked={formData.required}
-                  onChange={e => setFormData(prev => ({ ...prev, required: e.target.checked }))}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label htmlFor="required" className="ml-2 text-sm text-gray-700">Required</label>
               </div>
 
               {(formData.type === 'single select' || formData.type === 'multi select') && (

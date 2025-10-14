@@ -7,7 +7,6 @@ export interface FormQuestion {
   id: string;
   text: string;
   type: 'text' | 'single select' | 'multi select';
-  required: boolean;
   options?: Option[];
   order: number;
 }
@@ -17,7 +16,6 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     id: '1',
     text: 'Grant Scheme',
     type: 'single select',
-    required: true,
     options: [
       { label: 'NHMRC' },
       { label: 'MRFF' },
@@ -30,7 +28,6 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     id: '2',
     text: 'Involves MRI',
     type: 'single select',
-    required: true,
     options: [
       { 
         label: 'Yes',
@@ -38,7 +35,6 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
           id: '2.1',
           text: 'MRI Access Type',
           type: 'single select',
-          required: true,
           options: [
             { label: 'Full access' },
             { label: 'Viewing only' }
@@ -55,7 +51,6 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     id: '3',
     text: 'Type of Query',
     type: 'single select',
-    required: true,
     options: [
       { label: 'Contractual clause review' },
       { label: 'Support with negotiations' },
@@ -69,7 +64,6 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     id: '4',
     text: 'Mark as Urgent',
     type: 'single select',
-    required: false,
     options: [
       { label: 'Yes' },
       { label: 'No' }

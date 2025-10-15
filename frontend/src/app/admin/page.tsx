@@ -4,39 +4,18 @@ import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Link from "next/link"
 import Button from "@/components/Button"
-import { MessageSquare, BarChart2, Network, Settings, Mail, PieChart } from 'lucide-react'
-
-// Types for our analytics data
-interface AnalyticsData {
-  totalSubmissions: number
-  simpleQueries: number
-  complexReferrals: number
-}
+import { MessageSquare, Settings, Mail, PieChart, BarChart2, Network, Zap } from 'lucide-react'
+import { AnalyticsChart } from '@/components/AnalyticsChart'
+import { AnalyticsData, fetchMockAnalytics } from './__mocks__/analytics'
 
 export default function AdminPage() {
-  // Initialize state with placeholder data
-  const [analytics, setAnalytics] = useState<AnalyticsData>({
-    totalSubmissions: 0,
-    simpleQueries: 0,
-    complexReferrals: 0,
-  })
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
 
-  // Simulated data fetch - replace with actual API call later
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        // TODO: Replace with actual API call
-        // const response = await fetch('/api/analytics')
-        // const data = await response.json()
-        
-        // Placeholder data for now
-        const mockData = {
-          totalSubmissions: 234,
-          simpleQueries: 187,
-          complexReferrals: 47
-        }
-        
-        setAnalytics(mockData)
+        const data = await fetchMockAnalytics()
+        setAnalytics(data)
       } catch (error) {
         console.error('Failed to fetch analytics:', error)
       }
@@ -45,9 +24,13 @@ export default function AdminPage() {
     fetchAnalytics()
   }, [])
 
+  if (!analytics) {
+    return <div>Loading...</div>
+  }
+
   // Calculate percentages
-  const simpleQueriesPercentage = Math.round((analytics.simpleQueries / analytics.totalSubmissions) * 100)
-  const complexReferralsPercentage = Math.round((analytics.complexReferrals / analytics.totalSubmissions) * 100)
+  const simpleQueriesPercentage = Math.round((analytics.kpi.simple_queries / analytics.kpi.total_queries) * 100)
+  const aiResolvedPercentage = Math.round((analytics.kpi.ai_resolved_queries / analytics.kpi.total_queries) * 100)
 
   return (
     <div className="min-h-screen">
@@ -73,88 +56,74 @@ export default function AdminPage() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Total Submissions */}
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
               <MessageSquare className="w-5 h-5 text-blue-900" />
-              <h2 className="font-medium text-gray-700 text-sm">Total Submissions</h2>
+              <h2 className="font-medium text-gray-700 text-sm">Total Queries</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
-              {analytics.totalSubmissions}
+              {analytics.kpi.total_queries}
             </p>
             <p className="text-xs text-green-600">All queries submitted</p>
           </div>
 
-          {/* Simple Queries */}
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
               <BarChart2 className="w-5 h-5 text-blue-900" />
               <h2 className="font-medium text-gray-700 text-sm">Simple Queries</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
-              {analytics.simpleQueries}
+              {analytics.kpi.simple_queries}
             </p>
-            <p className="text-xs text-green-600">{simpleQueriesPercentage}% of total submissions</p>
+            <p className="text-xs text-green-600">{simpleQueriesPercentage}% of total queries</p>
           </div>
 
-          {/* Complex Referrals */}
           <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
-              <Network className="w-5 h-5 text-blue-900" />
-              <h2 className="font-medium text-gray-700 text-sm">Complex Referrals</h2>
+              <Zap className="w-5 h-5 text-blue-900" />
+              <h2 className="font-medium text-gray-700 text-sm">AI Resolved</h2>
             </div>
             <p className="text-3xl font-bold text-gray-900 mb-1">
-              {analytics.complexReferrals}
+              {analytics.kpi.ai_resolved_queries}
             </p>
-            <p className="text-xs text-green-600">{complexReferralsPercentage}% of total submissions</p>
+            <p className="text-xs text-green-600">{aiResolvedPercentage}% of total queries</p>
           </div>
         </div>
 
-        {/* General Breakdown Section */}
+        {/* Questions Analytics */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mt-8">
-          <div className="flex gap-2 mb-2">
-            <PieChart className="w-5 h-5 text-blue-900" />
-            <div className="flex flex-col gap-1">
-              <h2 className="font-medium text-gray-900">General Breakdown</h2>
-              <p className="text-sm text-gray-500">
-                Overview of all query submissions and team distributions
-              </p>
-            </div>
+          <div className="flex items-center gap-2 mb-6">
+            <PieChart className="w-5 h-5 text-gray-700" />
+            <span className="font-medium text-gray-900">Questions Analytics</span>
           </div>
-        </div>
-
-        {/* Breakdown Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-
-          {/* Simple Queries Breakdown */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-            <div className="flex gap-2 mb-2">
-              <BarChart2 className="w-5 h-5 text-blue-900" />
-              <div className="flex flex-col gap-1">
-                <h2 className="font-medium text-gray-900">Simple Queries Breakdown</h2>
-                <p className="text-sm text-gray-500">
-                  Detailed analysis of simple query submissions
-                </p>
+          
+          <div className="h-[800px] overflow-y-auto pr-2 space-y-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            {analytics.questions.map((item, index) => (
+              <div 
+                key={index} 
+                className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+              >
+                <div className="px-6 py-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900">{item.question}</h3>
+                    <span className="inline-flex items-center px-2.5 py-0.5 mt-2 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                      {item.type.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <AnalyticsChart 
+                    data={item.options}
+                    type={item.type}
+                  />
+                </div>
               </div>
-            </div>
-          </div>
-
-          {/* Complex Queries Breakdown */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-            <div className="flex gap-2 mb-2">
-              <Network className="w-5 h-5 text-blue-900" />
-              <div className="flex flex-col gap-1">
-                <h2 className="font-medium text-gray-900">Complex Queries Breakdown</h2>
-                <p className="text-sm text-gray-500">
-                  Detailed analysis of complex query submissions
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Configuration Section */}
-        <div className="mt-10">
+        <div className="mt-10 mb-20">
           <h2 className="text-2xl font-medium text-blue-900 mb-6">Configuration</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Form Configuration */}

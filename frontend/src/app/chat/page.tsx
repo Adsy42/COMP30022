@@ -19,12 +19,19 @@ import {
 
 type Role = 'user' | 'bot'
 type QType = 'freeform' | 'single' | 'multi'
+
+type Option = {
+  label: string
+  followUp?: Question // <- matches api.ts exactly
+}
+
 type Question = {
   id: string
   question: string
   type: QType
-  options?: Array<{ label: string; followUp?: any }> | null
+  options: Option[] | null
 }
+
 type AnswerPayload = { q_id: string; ans: string | string[] }
 
 type Phase =
@@ -68,6 +75,37 @@ export default function ChatPage() {
 
   // UI selection buffer
   const [tempChoices, setTempChoices] = useState<string[]>([])
+
+  function collectFollowups(
+    curr: Question | null,
+    selected: string[],
+    mode: QType
+  ): Question[] {
+    if (!curr || !curr.options || (mode !== 'single' && mode !== 'multi'))
+      return []
+    const map = new Map(curr.options.map(o => [o.label, o]))
+    const labels =
+      mode === 'single' ? (selected[0] ? [selected[0]] : []) : selected
+    const out: Question[] = []
+    for (const label of labels) {
+      const opt = map.get(label)
+      if (opt?.followUp) out.push(opt.followUp)
+    }
+    return out
+  }
+
+  function injectAfterCurrent(
+    list: Question[] | null,
+    setter: (l: Question[]) => void,
+    atIndex: number,
+    followups: Question[]
+  ): Question[] | null {
+    if (!list || followups.length === 0) return list
+    const updated = [...list]
+    updated.splice(atIndex + 1, 0, ...followups)
+    setter(updated)
+    return updated
+  }
 
   function delay(ms: number) {
     return new Promise(res => setTimeout(res, ms))
@@ -306,10 +344,15 @@ export default function ChatPage() {
     if (phase === 'common' && currQ) {
       setCommonAnswers(prev => [...prev, { q_id: currQ.id, ans: built }])
 
+      // NEW: collect + inject follow-ups
+      const fups = collectFollowups(currQ, tempChoices, mode)
+      const listForNext =
+        injectAfterCurrent(commonQs, setCommonQs, qIdx, fups) ?? commonQs
+
       const next = qIdx + 1
-      if (commonQs && next < commonQs.length) {
+      if (listForNext && next < listForNext.length) {
         setQIdx(next)
-        presentQuestion(commonQs[next])
+        presentQuestion(listForNext[next])
         return
       }
 
@@ -340,10 +383,14 @@ export default function ChatPage() {
     if (phase === 'simple' && currQ) {
       setSimpleAnswers(prev => [...prev, { q_id: currQ.id, ans: built }])
 
+      const fups = collectFollowups(currQ, tempChoices, mode)
+      const listForNext =
+        injectAfterCurrent(simpleQs, setSimpleQs, qIdx, fups) ?? simpleQs
+
       const next = qIdx + 1
-      if (simpleQs && next < simpleQs.length) {
+      if (listForNext && next < listForNext.length) {
         setQIdx(next)
-        presentQuestion(simpleQs[next])
+        presentQuestion(listForNext[next])
         return
       }
 
@@ -460,10 +507,14 @@ export default function ChatPage() {
 
       setComplexAnswers(prev => [...prev, { q_id: currQ.id, ans: built }])
 
+      const fups = collectFollowups(currQ, tempChoices, mode)
+      const listForNext =
+        injectAfterCurrent(complexQs, setComplexQs, qIdx, fups) ?? complexQs
+
       const next = qIdx + 1
-      if (complexQs && next < complexQs.length) {
+      if (listForNext && next < listForNext.length) {
         setQIdx(next)
-        presentQuestion(complexQs[next])
+        presentQuestion(listForNext[next])
         return
       }
 

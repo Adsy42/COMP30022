@@ -146,7 +146,7 @@ export default function ChatInput({
 
               {/* NEW: little badge */}
               {files.length > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 min-w-[18px] items-center justify-center rounded-full bg-blue-600 px-1.5 text-[11px] font-medium text-white">
+                <span className="absolute -top-1 -right-1 flex h-5 min-w-[18px] items-center justify-center rounded-full bg-blue-900 px-1.5 text-[11px] font-medium text-white">
                   {files.length}
                 </span>
               )}

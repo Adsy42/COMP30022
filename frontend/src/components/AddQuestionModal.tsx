@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 interface Option {
   label: string;
-  followUp?: FormQuestion;
+  followUps?: FormQuestion[]; // Changed from followUp to followUps array
 }
 
 interface FormQuestion {
@@ -39,6 +39,12 @@ export function AddQuestionModal({
   const [newOption, setNewOption] = useState('');
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [isFollowUpModalOpen, setIsFollowUpModalOpen] = useState(false);
+
+  // Add state to track which follow-up is being edited
+  const [editingFollowUp, setEditingFollowUp] = useState<{
+    optionIndex: number;
+    followUp: FormQuestion;
+  } | null>(null);
 
   const questionTypes = {
     text: 'Text',
@@ -105,12 +111,53 @@ export function AddQuestionModal({
     }
   };
 
+  // Update handleFollowUpAdd to handle multiple follow-ups
   const handleFollowUpAdd = (optionIndex: number, followUpQuestion: Omit<FormQuestion, 'id' | 'order'>) => {
     setFormData(prev => ({
       ...prev,
+      options: prev.options?.map((opt, idx) => {
+        if (idx !== optionIndex) return opt;
+
+        const existingFollowUps = opt.followUps || [];
+        
+        if (editingFollowUp?.followUp.id) {
+          // Edit existing follow-up
+          return {
+            ...opt,
+            followUps: existingFollowUps.map(f => 
+              f.id === editingFollowUp.followUp.id 
+                ? { ...followUpQuestion, id: f.id, order: f.order }
+                : f
+            )
+          };
+        }
+        
+        // Add new follow-up
+        return {
+          ...opt,
+          followUps: [
+            ...existingFollowUps,
+            {
+              ...followUpQuestion,
+              id: crypto.randomUUID(),
+              order: existingFollowUps.length
+            }
+          ]
+        };
+      })
+    }));
+  };
+
+  // Add handler to delete follow-up
+  const handleDeleteFollowUp = (optionIndex: number, followUpId: string) => {
+    setFormData(prev => ({
+      ...prev,
       options: prev.options?.map((opt, idx) => 
-        idx === optionIndex 
-          ? { ...opt, followUp: { ...followUpQuestion, id: crypto.randomUUID(), order: 0 } }
+        idx === optionIndex
+          ? {
+              ...opt,
+              followUps: opt.followUps?.filter(f => f.id !== followUpId)
+            }
           : opt
       )
     }));
@@ -233,10 +280,45 @@ export function AddQuestionModal({
                       >
                         <div className="flex-1">
                           <span className="text-sm text-gray-700">{option.label}</span>
-                          {option.followUp && (
-                            <div className="ml-4 mt-1 text-xs text-gray-500">
-                              <div>Follow-up: {option.followUp.question}</div>
-                              <div>Type: {questionTypes[option.followUp.type]}</div>
+                          {option.followUps && option.followUps.length > 0 && (
+                            <div className="ml-4 mt-1 space-y-1">
+                              {option.followUps.map((followUp) => (
+                                <div 
+                                  key={followUp.id} 
+                                  className="flex items-center justify-between text-xs text-gray-500 group/followup"
+                                >
+                                  <div>
+                                    <div>Question: {followUp.question}</div>
+                                    <div>Type: {questionTypes[followUp.type]}</div>
+                                  </div>
+                                  <div className="invisible group-hover/followup:visible flex gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingFollowUp({ optionIndex: index, followUp });
+                                        setSelectedOption(option);
+                                        setIsFollowUpModalOpen(true);
+                                      }}
+                                      className="p-1 text-gray-400 hover:text-gray-600"
+                                      title="Edit follow-up"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteFollowUp(index, followUp.id)}
+                                      className="p-1 text-gray-400 hover:text-red-600"
+                                      title="Remove follow-up"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>
@@ -245,20 +327,15 @@ export function AddQuestionModal({
                             type="button"
                             onClick={() => {
                               setSelectedOption(option);
+                              setEditingFollowUp(null);
                               setIsFollowUpModalOpen(true);
                             }}
-                            className="invisible group-hover:visible p-1.5 text-gray-400 hover:text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-                            title={option.followUp ? 'Edit follow-up question' : 'Add follow-up question'}
+                            className="invisible group-hover:visible p-1.5 text-gray-400 hover:text-gray-600"
+                            title="Add follow-up question"
                           >
-                            {option.followUp ? (
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            ) : (
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                              </svg>
-                            )}
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
                           </button>
                           <button
                             type="button"
@@ -311,6 +388,7 @@ export function AddQuestionModal({
           onClose={() => {
             setIsFollowUpModalOpen(false);
             setSelectedOption(null);
+            setEditingFollowUp(null);
           }}
           onAdd={(followUpQuestion) => {
             const optionIndex = formData.options?.findIndex(opt => opt === selectedOption) ?? -1;
@@ -319,9 +397,10 @@ export function AddQuestionModal({
             }
             setIsFollowUpModalOpen(false);
             setSelectedOption(null);
+            setEditingFollowUp(null);
           }}
-          initialQuestion={selectedOption?.followUp}
-          isFollowUp={true} 
+          initialQuestion={editingFollowUp?.followUp}
+          isFollowUp={true}
         />
       )}
     </>

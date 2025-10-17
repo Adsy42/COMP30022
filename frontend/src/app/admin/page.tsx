@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import Navbar from '@/components/Navbar'
-import { LoadingState } from '@/components/LoadingState'
 import { AnalyticsChart } from '@/components/AnalyticsChart'
 import { AnalyticsData, fetchMockAnalytics } from './__mocks__/analytics'
 import Link from "next/link"

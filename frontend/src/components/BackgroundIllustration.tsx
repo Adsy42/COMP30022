@@ -1,17 +1,38 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 export function BackgroundIllustration() {
+  const [viewBoxWidth, setViewBoxWidth] = useState(1440)
+
+  useEffect(() => {
+    const updateViewBox = () => {
+      const screenWidth = window.innerWidth
+      // Only adjust viewBox if screen is wider than base width
+      if (screenWidth > 1440) {
+        setViewBoxWidth(Math.min(1920, screenWidth)) // Cap at 1920px
+      } else {
+        setViewBoxWidth(1440)
+      }
+    }
+
+    updateViewBox()
+    window.addEventListener('resize', updateViewBox)
+    return () => window.removeEventListener('resize', updateViewBox)
+  }, [])
+
+  // Calculate offset for wider screens to keep elements centered
+  const offsetX = (viewBoxWidth - 1440) / 2
+
   return (
     <svg
       className="pointer-events-none absolute inset-0 h-full w-full"
-      viewBox="0 0 1440 900"
+      viewBox={`${-offsetX} 0 ${viewBoxWidth} 900`}
       preserveAspectRatio="xMidYMid slice"
       aria-hidden
     >
-      {/* confetti bits */}
-      <g opacity="0.95">
+      {/* confetti bits - translated for wider screens */}
+      <g opacity="0.95" transform={`translate(${offsetX * 0.2}, 0)`}>
         <circle cx="210" cy="90" r="30" fill="#A967E7" />
         <polygon points="1070,100 1058,130 1090,130" fill="#4FAEFF" />
         <polygon points="615,105 605,130 630,130" fill="#62D090" />
@@ -24,8 +45,8 @@ export function BackgroundIllustration() {
         <rect x="742" y="152" width="6" height="6" rx="1" fill="#2FC3FF" />
       </g>
 
-      {/* faint sprinkles */}
-      <g opacity="0.45">
+      {/* faint sprinkles - translated for wider screens */}
+      <g opacity="0.45" transform={`translate(${offsetX * 0.3}, 0)`}>
         <circle cx="170" cy="210" r="2" fill="#87D3FF" />
         <circle cx="310" cy="180" r="2" fill="#87D3FF" />
         <circle cx="680" cy="120" r="2" fill="#87D3FF" />
@@ -33,9 +54,9 @@ export function BackgroundIllustration() {
         <circle cx="1240" cy="260" r="2" fill="#87D3FF" />
       </g>
 
-      {/* bottom swoosh */}
+      {/* bottom swoosh - adjusted for wider screens */}
       <path
-        d="M0 690 C 320 760, 1080 760, 1440 690"
+        d={`M${-offsetX} 690 C ${320 + offsetX * 0.5} 760, ${1080 + offsetX * 0.5} 760, ${1440 + offsetX} 690`}
         fill="none"
         stroke="#C4A0F5"
         strokeWidth="2"
@@ -44,7 +65,7 @@ export function BackgroundIllustration() {
 
       {/* ===== LEFT CLUSTER (smaller, fully inside page) ===== */}
       {/* nudge in from the edge and sit just above swoosh */}
-      <g transform="translate(250,650)">
+      <g transform={`translate(${250 + offsetX * 0.2},650)`}>
         {/* back blob slightly below platform */}
         <ellipse
           cx="0"
@@ -86,7 +107,7 @@ export function BackgroundIllustration() {
       </g>
 
       {/* ===== RIGHT CLUSTER (mirrored size/height) ===== */}
-      <g transform="translate(1200,650)">
+      <g transform={`translate(${1200 + offsetX * 0.8},650)`}>
         <ellipse
           cx="0"
           cy="22"

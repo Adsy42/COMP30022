@@ -135,23 +135,27 @@ COMP30022/
 ## Key Design Decisions
 
 ### Frontend (Next.js)
+
 - Using App Router for modern Next.js patterns
 - TypeScript for type safety
 - Tailwind CSS for styling (recommended)
 - Component-based architecture
 
 ### Backend (Flask)
+
 - RESTful API design
 - Service layer pattern for business logic
 - MongoDB integration via PyMongo
 
 ### AI Service
+
 - FastAPI for high performance
 - Separate microservice for scalability
 - RAG implementation for knowledge retrieval
 - Vector database for embeddings
 
 ### Database (MongoDB)
+
 - Document-based storage for flexibility
 - Collections: queries, form_templates, analytics
 - Indexing for performance
@@ -159,12 +163,14 @@ COMP30022/
 ## Environment Variables
 
 ### Frontend (.env.local)
+
 ```
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 NEXT_PUBLIC_AI_SERVICE_URL=http://localhost:8000
 ```
 
 ### Backend (.env)
+
 ```
 FLASK_APP=run.py
 FLASK_ENV=development
@@ -177,6 +183,7 @@ EMAIL_PASSWORD=your-password
 ```
 
 ### AI Service (.env)
+
 ```
 OPENAI_API_KEY=your-api-key
 VECTOR_DB_PATH=./data/vector_db

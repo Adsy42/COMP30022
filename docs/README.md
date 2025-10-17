@@ -50,19 +50,23 @@ Root Files:
 ## 🎯 For Different Roles
 
 ### **New Developers**
+
 1. Project Overview → Setup → Git Workflow → Development Guide
 
 ### **Code Reviewers**
+
 - Git Workflow (PR requirements)
 - Development Guide (quality standards)
 - Project Structure (architecture understanding)
 
 ### **Project Management**
+
 - Project Overview (goals and team)
 - Git Workflow (process understanding)
 - Project Structure (technical overview)
 
 ### **DevOps/Infrastructure**
+
 - Setup Guide (environment configuration)
 - Development Guide (CI/CD pipeline)
 - Project Context (technical details)
@@ -76,6 +80,7 @@ Root Files:
 ## 📞 Getting Help
 
 **Technical Questions:**
+
 - **Frontend:** Farah (Frontend Lead)
 - **Backend:** Himank (Backend Lead)
 - **AI Service:** Yusuf (AI Lead)
@@ -83,6 +88,7 @@ Root Files:
 - **Requirements:** Adam (Product Owner)
 
 **Documentation Issues:**
+
 - Create an issue in the GitHub repository
 - Tag the appropriate team lead
 - Update documentation after resolution

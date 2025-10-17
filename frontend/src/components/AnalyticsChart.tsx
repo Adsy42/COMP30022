@@ -42,7 +42,7 @@ export function AnalyticsChart({ data, type }: ChartProps) {
         borderWidth={1}
         borderColor={{
           from: 'color',
-          modifiers: [['darker', 0.2]]
+          modifiers: [['darker', 0.2]],
         }}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#4b5563"

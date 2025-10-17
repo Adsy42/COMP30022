@@ -1,60 +1,73 @@
 interface Option {
-  label: string;
-  followUps?: FormQuestion[];
+  label: string
+  followUps?: FormQuestion[]
 }
 
 interface FormQuestion {
-  id: string;
-  question: string;
-  type: 'text' | 'single' | 'multi';
-  options?: Option[];
-  order: number;
+  id: string
+  question: string
+  type: 'text' | 'single' | 'multi'
+  options?: Option[]
+  order: number
 }
 
 interface QuestionCardProps {
-  question: FormQuestion;
-  provided: any;
-  onEdit: (question: FormQuestion) => void;
-  onDelete: (id: string) => void;
+  question: FormQuestion
+  provided: any
+  onEdit: (question: FormQuestion) => void
+  onDelete: (id: string) => void
 }
 
-export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionCardProps) {
+export function QuestionCard({
+  question,
+  provided,
+  onEdit,
+  onDelete,
+}: QuestionCardProps) {
   const getDisplayType = (type: 'text' | 'single' | 'multi') => {
     switch (type) {
-      case 'text': return 'Text';
-      case 'single': return 'Single Select';
-      case 'multi': return 'Multi Select';
-      default: return type;
+      case 'text':
+        return 'Text'
+      case 'single':
+        return 'Single Select'
+      case 'multi':
+        return 'Multi Select'
+      default:
+        return type
     }
-  };
+  }
 
   const getTotalFollowUps = (options?: Option[]): number => {
-    if (!options) return 0;
+    if (!options) return 0
     return options.reduce((total, opt) => {
-      const directFollowUps = opt.followUps?.length || 0;
-      const nestedFollowUps = opt.followUps?.reduce((sum, followUp) => 
-        sum + getTotalFollowUps(followUp.options), 0) || 0;
-      return total + directFollowUps + nestedFollowUps;
-    }, 0);
-  };
+      const directFollowUps = opt.followUps?.length || 0
+      const nestedFollowUps =
+        opt.followUps?.reduce(
+          (sum, followUp) => sum + getTotalFollowUps(followUp.options),
+          0
+        ) || 0
+      return total + directFollowUps + nestedFollowUps
+    }, 0)
+  }
 
   const renderFollowUps = (followUps: FormQuestion[], level: number = 0) => {
-    return followUps.map((followUp) => (
+    return followUps.map(followUp => (
       <div key={followUp.id}>
-        <div 
+        <div
           className="text-xs text-gray-500 flex items-center gap-1"
           style={{ marginLeft: `${level * 1}rem` }}
         >
-          <span>{"↳".repeat(level + 1)}</span>
+          <span>{'↳'.repeat(level + 1)}</span>
           <span>{followUp.question}</span>
           <span className="text-gray-400">
             ({getDisplayType(followUp.type)})
           </span>
-          {followUp.options && followUp.options.some(opt => opt.followUps?.length) && (
-            <span className="text-xs text-green-600 font-medium">
-              ({getTotalFollowUps(followUp.options)} nested follow-ups)
-            </span>
-          )}
+          {followUp.options &&
+            followUp.options.some(opt => opt.followUps?.length) && (
+              <span className="text-xs text-green-600 font-medium">
+                ({getTotalFollowUps(followUp.options)} nested follow-ups)
+              </span>
+            )}
         </div>
         {followUp.options?.map((opt, optIndex) => (
           <div key={optIndex} style={{ marginLeft: `${(level + 1) * 1}rem` }}>
@@ -66,8 +79,8 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
           </div>
         ))}
       </div>
-    ));
-  };
+    ))
+  }
 
   return (
     <div
@@ -124,8 +137,18 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
             className="p-2 hover:bg-gray-50 rounded-lg"
             title="Edit question"
           >
-            <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            <svg
+              className="w-4 h-4 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              />
             </svg>
           </button>
           <button
@@ -133,12 +156,22 @@ export function QuestionCard({ question, provided, onEdit, onDelete }: QuestionC
             className="p-2 hover:bg-gray-50 rounded-lg"
             title="Delete question"
           >
-            <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <svg
+              className="w-4 h-4 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
             </svg>
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -20,7 +20,10 @@ export default function LoginPage() {
 
     try {
       // Temporary solution until backend is implemented
-      if (email === 'admin@grants2contracts.example' && password === 'password') {
+      if (
+        email === 'admin@grants2contracts.example' &&
+        password === 'password'
+      ) {
         router.push('/admin')
       } else {
         throw new Error('Invalid credentials')
@@ -41,8 +44,8 @@ export default function LoginPage() {
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="flex flex-col items-center">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="flex items-center gap-4 mb-10 hover:opacity-80 transition-opacity cursor-pointer"
             >
               <Image
@@ -81,7 +84,7 @@ export default function LoginPage() {
                 className="w-full p-3 border border-gray-200 rounded-lg bg-white/50 backdrop-blur-sm"
                 placeholder="admin@grants2contracts.example"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
 
               <input
@@ -92,7 +95,7 @@ export default function LoginPage() {
                 className="w-full p-3 border border-gray-200 rounded-lg bg-white/50 backdrop-blur-sm"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
 

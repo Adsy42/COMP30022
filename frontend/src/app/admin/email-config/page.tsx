@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
+import { ErrorAlert } from '@/components/ErrorAlert'
 
 // Interface defining the shape of email configuration data from the API
 interface EmailConfig {
@@ -17,12 +18,14 @@ export default function EmailConfigPage() {
   const [isSaving, setIsSaving] = useState(false)                  // Controls edit mode
   const [isLoading, setIsLoading] = useState(true)                 // Loading state for initial fetch
   const [error, setError] = useState<string | null>(null)          // Error handling state
+  const [actionError, setActionError] = useState<string | null>(null)
 
   // Fetch initial email configuration from backend
   useEffect(() => {
     const fetchEmailConfig = async () => {
       try {
         setIsLoading(true)
+        setError(null)
         // TODO: Integration - Replace with actual API endpoint
         // Expected response: { recipientEmail: string, updatedAt: string }
         // const response = await fetch('/api/email-config')
@@ -33,7 +36,7 @@ export default function EmailConfigPage() {
         await new Promise(resolve => setTimeout(resolve, 1000))
         setIsLoading(false)
       } catch (err) {
-        setError('Failed to load email configuration')
+        setError('Failed to load email configuration. Please try again later.')
         setIsLoading(false)
       }
     }
@@ -56,7 +59,13 @@ export default function EmailConfigPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-        setIsSaving(true)
+      setActionError(null)
+      setIsSaving(true)
+
+      // Email validation
+      if (!email.includes('@')) {
+        throw new Error('Please enter a valid email address')
+      }
 
       // TODO: Integration - Replace with actual API endpoint
       // Expected request body: { recipientEmail: string }
@@ -75,10 +84,10 @@ export default function EmailConfigPage() {
 
       // Temporary simulation of API delay
       await new Promise(resolve => setTimeout(resolve, 500))
-      alert('Email configuration saved successfully!')
+      setActionError(null)
       setIsSaving(false)
     } catch (err) {
-      alert('Failed to save email configuration')
+      setActionError(err instanceof Error ? err.message : 'Failed to save email configuration')
       setIsSaving(false)
     }
   }
@@ -98,6 +107,25 @@ export default function EmailConfigPage() {
             Manage recipient email address
           </p>
         </div>
+
+        {/* Error Alerts */}
+        {error && (
+          <ErrorAlert
+            message={error}
+            variant="error"
+            title="Loading Error"
+            onDismiss={() => setError(null)}
+          />
+        )}
+        
+        {actionError && (
+          <ErrorAlert
+            message={actionError}
+            variant="warning"
+            title="Save Error"
+            onDismiss={() => setActionError(null)}
+          />
+        )}
 
         {/* Navigation tabs */}
         <div className="bg-gray-100 rounded-full p-1 flex mb-8 w-full">
@@ -137,10 +165,6 @@ export default function EmailConfigPage() {
               </div>
               <p className="text-center text-gray-500 mt-4">Loading email configuration...</p>
             </div>
-          ) : error ? (
-            <div className="py-8">
-              <p className="text-center text-red-600">{error}</p>
-            </div>
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
@@ -156,10 +180,13 @@ export default function EmailConfigPage() {
                     type="email"
                     id="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-200 rounded-lg ${
-                      !isSaving ? 'bg-gray-50' : 'bg-white'
-                    }`}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setActionError(null) // Clear error when user types
+                    }}
+                    className={`w-full px-3 py-2 border ${
+                      actionError ? 'border-red-300' : 'border-gray-200'
+                    } rounded-lg ${!isSaving ? 'bg-gray-50' : 'bg-white'}`}
                     required
                     disabled={!isSaving}
                   />
@@ -185,7 +212,8 @@ export default function EmailConfigPage() {
                   <div className="mt-4 flex justify-end">
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2"
+                      className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 disabled:opacity-50"
+                      disabled={!email.includes('@')}
                     >
                       Save Changes
                     </button>

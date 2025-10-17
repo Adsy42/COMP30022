@@ -35,16 +35,18 @@ export default function FormConfigPage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<FormQuestion | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  // Fetch questions on component mount
+  // Update useEffect with better error handling
   useEffect(() => {
     const loadQuestions = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         const response = await fetchMockQuestions();
         setQuestions(response.data);
       } catch (err) {
-        setError('Failed to load questions');
+        setError('Unable to load questions. Please refresh the page or try again later.');
       } finally {
         setIsLoading(false);
       }
@@ -53,6 +55,7 @@ export default function FormConfigPage() {
     loadQuestions();
   }, []);
 
+  // Update handlers with error states
   const handleDragEnd = async (result: any) => {
     if (!result.destination) return;
     
@@ -60,16 +63,10 @@ export default function FormConfigPage() {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     
-    // Update all questions' order to match their new index
-    const updatedQuestions = items.map((question, index) => ({
-      ...question,
-      order: index
-    }));
-    
-    // Optimistically update UI with all updated orders
-    setQuestions(updatedQuestions);
-    
+    const originalQuestions = [...questions];
     try {
+      setActionError(null);
+      setQuestions(items.map((q, index) => ({ ...q, order: index })));
       // TODO: Implement API call to update order
       // await fetch(API_ENDPOINTS.REORDER, {
       //   method: 'PUT',
@@ -85,20 +82,19 @@ export default function FormConfigPage() {
           from: result.source.index,
           to: result.destination.index
         },
-        newOrders: updatedQuestions.map(q => ({ id: q.id, order: q.order }))
+        newOrders: items.map(q => ({ id: q.id, order: q.order }))
       });
     } catch (err) {
-      // Revert on failure
-      setQuestions(questions);
-      setError('Failed to update question order');
+      setQuestions(originalQuestions);
+      setActionError('Failed to reorder questions. Please try again.');
     }
   };
 
   const handleDelete = async (id: string) => {
+    const originalQuestions = [...questions];
     try {
-      // Optimistically update UI
+      setActionError(null);
       setQuestions(questions.filter(q => q.id !== id));
-      
       // TODO: Implement actual API call when backend is ready
       // await fetch(`${API_ENDPOINTS.QUESTIONS}/${id}`, {
       //   method: 'DELETE'
@@ -106,9 +102,8 @@ export default function FormConfigPage() {
       
       console.log('Question deleted:', id);
     } catch (err) {
-      // Revert on failure
-      setQuestions(questions);
-      setError('Failed to delete question');
+      setQuestions(originalQuestions);
+      setActionError('Failed to delete question. Please try again.');
     }
   };
 
@@ -214,6 +209,24 @@ export default function FormConfigPage() {
           </Link>
         </div>
 
+        {/* Error Alert */}
+        {(error || actionError) && (
+          <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-red-800">
+                  {error || actionError}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="bg-white rounded-xl border border-gray-200">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-blue-900 mb-6">
@@ -227,9 +240,15 @@ export default function FormConfigPage() {
                 </div>
                 <p className="text-center text-gray-500 mt-4">Loading questions...</p>
               </div>
-            ) : error ? (
-              <div className="py-8">
-                <p className="text-center text-red-600">{error}</p>
+            ) : questions.length === 0 && !error ? (
+              <div className="py-8 text-center">
+                <p className="text-gray-500 mb-4">No questions found</p>
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="text-blue-900 hover:text-blue-700 font-medium"
+                >
+                  Add your first question
+                </button>
               </div>
             ) : (
                 <>
@@ -274,6 +293,7 @@ export default function FormConfigPage() {
         onClose={() => {
           setIsModalOpen(false);
           setEditingQuestion(null);
+          setActionError(null);
         }}
         onAdd={editingQuestion ? handleUpdate : handleAddQuestion}
         initialQuestion={editingQuestion ?? undefined}

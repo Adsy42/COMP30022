@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
+import { LoadingState } from '@/components/LoadingState'
+import { ErrorState } from '@/components/ErrorState'
 import Link from "next/link"
 import Button from "@/components/Button"
 import { MessageSquare, Settings, Mail, PieChart, BarChart2, Network, Zap } from 'lucide-react'
@@ -10,22 +12,32 @@ import { AnalyticsData, fetchMockAnalytics } from './__mocks__/analytics'
 
 export default function AdminPage() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
+        setIsLoading(true)
         const data = await fetchMockAnalytics()
         setAnalytics(data)
       } catch (error) {
         console.error('Failed to fetch analytics:', error)
+        setError('Unable to load dashboard data')
+      } finally {
+        setIsLoading(false)
       }
     }
 
     fetchAnalytics()
   }, [])
 
-  if (!analytics) {
-    return <div>Loading...</div>
+  if (isLoading) {
+    return <LoadingState />
+  }
+
+  if (error || !analytics) {
+    return <ErrorState message={error || 'Data not found'} />
   }
 
   // Calculate percentages

@@ -23,31 +23,6 @@ interface AddQuestionModalProps {
   isFollowUp?: boolean; 
 }
 
-interface FollowUpDisplayProps {
-  option: Option;
-  level?: number;
-}
-
-function FollowUpDisplay({ option, level = 0 }: FollowUpDisplayProps) {
-  if (!option.followUp) return null;
-  
-  return (
-    <div className={`ml-${level * 4} mt-2`}>
-      <div className="text-sm text-gray-600">
-        Follow-up: {option.followUp.question}
-        <div className="text-xs text-gray-500">Type: {option.followUp.type}</div>
-      </div>
-      
-      {option.followUp.options?.map((nestedOption, index) => (
-        <div key={index} className="ml-4 mt-1">
-          <div className="text-sm text-gray-600">• {nestedOption.label}</div>
-          <FollowUpDisplay option={nestedOption} level={level + 1} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function AddQuestionModal({ 
   isOpen, 
   onClose, 

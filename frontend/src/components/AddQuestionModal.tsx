@@ -13,7 +13,6 @@ interface FormQuestion {
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
-  displayable: boolean;
 }
 
 interface AddQuestionModalProps {
@@ -59,8 +58,7 @@ export function AddQuestionModal({
   const [formData, setFormData] = useState<Omit<FormQuestion, 'id' | 'order'>>({
     question: '',
     type: 'text',
-    options: [],
-    displayable: false
+    options: []
   });
 
   const [newOption, setNewOption] = useState('');
@@ -86,8 +84,7 @@ export function AddQuestionModal({
           setFormData({
             question: '',
             type: 'text',
-            options: [],
-            displayable: false
+            options: []
           });
           setNewOption('');
           setSelectedOption(null);
@@ -105,15 +102,13 @@ export function AddQuestionModal({
       setFormData({
         question: initialQuestion.question,
         type: initialQuestion.type,
-        options: initialQuestion.options || [],
-        displayable: initialQuestion.displayable || false
+        options: initialQuestion.options || []
       });
     } else if (!isOpen) {
       setFormData({
         question: '',
         type: 'text',
-        options: [],
-        displayable: false
+        options: []
       });
     }
   }, [isOpen, initialQuestion]);
@@ -121,7 +116,7 @@ export function AddQuestionModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onAdd(formData);
-    setFormData({ question: '', type: 'text', options: [], displayable: false });
+    setFormData({ question: '', type: 'text', options: [] });
     onClose();
   };
 
@@ -154,8 +149,7 @@ export function AddQuestionModal({
     setFormData({
       question: '',
       type: 'text',
-      options: [],
-      displayable: false
+      options: []
     });
     setNewOption('');
     setSelectedOption(null);
@@ -222,19 +216,6 @@ export function AddQuestionModal({
                     <option key={value} value={value}>{label}</option>
                   ))}
                 </select>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="displayable"
-                  checked={formData.displayable}
-                  onChange={e => setFormData(prev => ({ ...prev, displayable: e.target.checked }))}
-                  className="w-4 h-4 text-blue-900 border-gray-300 rounded focus:ring-blue-900"
-                />
-                <label htmlFor="displayable" className="ml-2 text-sm text-gray-700">
-                  Show in analytics breakdown
-                </label>
               </div>
 
               {(formData.type === 'single' || formData.type === 'multi') && (

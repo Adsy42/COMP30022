@@ -9,7 +9,6 @@ interface FormQuestion {
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
-  displayable: boolean;
 }
 
 interface QuestionCardProps {

@@ -9,7 +9,6 @@ export interface FormQuestion {
   type: 'text' | 'single' | 'multi';
   options?: Option[];
   order: number;
-  displayable: boolean;
 }
 
 export const MOCK_QUESTIONS: FormQuestion[] = [
@@ -17,15 +16,13 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
     id: '1',
     question: 'Your name',
     type: 'text',
-    order: 0,
-    displayable: true
+    order: 0
   },
   {
     id: '2',
     question: 'Your email',
     type: 'text',
-    order: 1,
-    displayable: true
+    order: 1
   },
   {
     id: '3',
@@ -38,8 +35,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
       { label: 'RDS' },
       { label: 'Research Infrastructure' }
     ],
-    order: 2,
-    displayable: true
+    order: 2
   },
   {
     id: '4',
@@ -50,8 +46,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
       { label: 'Post-Award' },
       { label: 'Other' }
     ],
-    order: 3,
-    displayable: true
+    order: 3
   },
   {
     id: '5',
@@ -79,8 +74,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'NIH' },
                   { label: 'Other' }
                 ],
-                order: 0,
-                displayable: true
+                order: 0
               }
             },
             {
@@ -94,8 +88,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'No' },
                   { label: 'Other' }
                 ],
-                order: 1,
-                displayable: true
+                order: 1
               }
             },
             {
@@ -122,8 +115,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                         { label: 'Moral Rights' },
                         { label: 'Other' }
                       ],
-                      order: 0,
-                      displayable: true
+                      order: 0
                     }
                   },
                   { label: 'Support with negotiations' },
@@ -131,13 +123,11 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'Advice on compliance with grant obligations' },
                   { label: 'Other' }
                 ],
-                order: 2,
-                displayable: true
+                order: 2
               }
             }
           ],
-          order: 0,
-          displayable: true
+          order: 0
         }
       },
       {
@@ -161,8 +151,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'NIH' },
                   { label: 'Other' }
                 ],
-                order: 0,
-                displayable: true
+                order: 0
               }
             },
             {
@@ -176,8 +165,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'No' },
                   { label: 'Other' }
                 ],
-                order: 1,
-                displayable: true
+                order: 1
               }
             },
             {
@@ -186,8 +174,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.3',
                 question: 'Chief Investigator Name',
                 type: 'text',
-                order: 2,
-                displayable: true
+                order: 2
               }
             },
             {
@@ -196,8 +183,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.4',
                 question: 'Faculty and Department',
                 type: 'text',
-                order: 3,
-                displayable: true
+                order: 3
               }
             },
             {
@@ -206,8 +192,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.5',
                 question: 'Project Title',
                 type: 'text',
-                order: 4,
-                displayable: true
+                order: 4
               }
             },
             {
@@ -220,8 +205,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'Lead' },
                   { label: 'Non-Lead' }
                 ],
-                order: 5,
-                displayable: true
+                order: 5
               }
             },
             {
@@ -244,8 +228,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                             id: '5.2.7.1.1',
                             question: 'Other Party 1 - Name',
                             type: 'text',
-                            order: 0,
-                            displayable: true
+                            order: 0
                           }
                         },
                         {
@@ -262,19 +245,16 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                               { label: 'Outgoing party' },
                               { label: 'Other' } 
                             ],
-                            order: 1,
-                            displayable: true
+                            order: 1
                           }
                         }
                       ],
-                      order: 0,
-                      displayable: true
+                      order: 0
                     }
                   },
                   { label: 'No' }
                 ],
-                order: 6,
-                displayable: true
+                order: 6
               }
             },
             {
@@ -296,8 +276,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                   { label: 'Funding agreement' },
                   { label: 'Other' }
                 ],
-                order: 7,
-                displayable: true
+                order: 7
               }
             },
             {
@@ -306,8 +285,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.9',
                 question: 'HPECM reference',
                 type: 'text',
-                order: 8,
-                displayable: true
+                order: 8
               }
             },
             {
@@ -316,8 +294,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.10',
                 question: 'Are there other agreements that relate to this project?',
                 type: 'text',
-                order: 9,
-                displayable: true
+                order: 9
               }
             },
             {
@@ -326,8 +303,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.11',
                 question: 'How can we help?',
                 type: 'text',
-                order: 10,
-                displayable: true
+                order: 10
               }
             },
             {
@@ -337,7 +313,6 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 question: 'Other notes',
                 type: 'text',
                 order: 11,
-                displayable: false
               }
             },
             {
@@ -346,8 +321,7 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                 id: '5.2.13',
                 question: 'Attach all relevant documents',
                 type: 'text',
-                order: 12,
-                displayable: true
+                order: 12
               }
             },
             {
@@ -363,24 +337,20 @@ export const MOCK_QUESTIONS: FormQuestion[] = [
                       id: '5.2.14.1',
                       question: 'Provide urgency date',
                       type: 'text',
-                      order: 0,
-                      displayable: true
+                      order: 0
                     }
                   },
                   { label: 'No' }
                 ],
-                order: 13,
-                displayable: true
+                order: 13
               }
             }
           ],
-          order: 1,
-          displayable: true
+          order: 1
         }
       }
     ],
-    order: 4,
-    displayable: true
+    order: 4
   }
 ];
 

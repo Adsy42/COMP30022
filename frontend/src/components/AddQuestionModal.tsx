@@ -215,9 +215,9 @@ export function AddQuestionModal({
                 <input
                   type="text"
                   value={formData.question} 
+                  placeholder="Enter your question here"
                   onChange={e => setFormData(prev => ({ ...prev, question: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  required
                 />
               </div>
 
@@ -372,7 +372,8 @@ export function AddQuestionModal({
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-900 rounded-md hover:bg-blue-800"
+                disabled={!formData.question.trim()}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-900 rounded-md hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {initialQuestion ? 'Update Question' : 'Add Question'}
               </button>

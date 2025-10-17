@@ -3,7 +3,7 @@ import { QuestionCard } from './QuestionCard';
 
 interface Option {
   label: string;
-  followUp?: FormQuestion;
+  followUp?: FormQuestion[];
 }
 
 interface FormQuestion {

@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import Link from "next/link";
+import Link from 'next/link'
 
 export default function Hero() {
   return (
@@ -9,15 +9,16 @@ export default function Hero() {
         AI support for grants and contracts
       </h1>
       <p className="mt-4 text-lg text-gray-500 max-w-2xl">
-        Our AI assistant helps researchers and grants officers handle routine processes instantly,
-        and escalates complex queries seamlessly to the Contracts Team.
+        Our AI assistant helps researchers and grants officers handle routine
+        processes instantly, and escalates complex queries seamlessly to the
+        Contracts Team.
       </p>
-      
+
       <Link href="/chat" className="mt-8">
         <button className="px-8 py-3 text-white bg-[#033F85] rounded-full shadow-md hover:bg-[#022c5f]">
           Start Chat Now
         </button>
       </Link>
     </section>
-  );
+  )
 }

@@ -45,7 +45,7 @@ export default function Button({
     'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-offset-2'
   const styles =
     variant === 'primary'
-      ? 'bg-[#173761] text-white hover:bg-[#123154] focus:ring-[#173761]'
-      : 'border border-[#173761] text-[#173761] hover:bg-[#edf2fb] focus:ring-[#173761]'
+      ? 'bg-[#033F85] text-white hover:bg-[#022c5f] focus:ring-[#033F85]'
+      : 'border border-[#033F85] text-[#033F85] hover:bg-[#edf2fb] focus:ring-[#033F85]'
   return <button className={`${base} ${styles} ${className}`} {...props} />
 }

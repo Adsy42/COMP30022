@@ -8,8 +8,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Frontend App',
-  description: 'A minimal Next.js application',
+  title: 'Legal Query AI',
+  description: 'AI chatbot to help with your research-related legal query.',
 }
 
 export default function RootLayout({

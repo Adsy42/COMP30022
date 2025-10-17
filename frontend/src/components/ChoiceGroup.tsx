@@ -76,8 +76,8 @@ export default function ChoiceGroup({
                 className={[
                   'rounded-full px-4 py-1.5 text-base font-medium',
                   'text-white transition border border-transparent',
-                  'active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-blue-600',
-                  on ? 'bg-blue-600' : 'bg-gray-400 hover:bg-gray-500',
+                  'active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-blue-900',
+                  on ? 'bg-blue-900' : 'bg-gray-400 hover:bg-gray-500',
                 ].join(' ')}
               >
                 {o}

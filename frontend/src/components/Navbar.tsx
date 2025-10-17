@@ -38,9 +38,9 @@ type Props = {
 export default function Navbar({ actions }: { actions?: React.ReactNode }) {
   return (
     <header className="sticky top-0 z-50">
-      <nav className="mx-auto flex w-full max-w-screen-3xl items-center justify-between px-6 py-3">
+      <nav className="mx-auto flex w-full max-w-screen-3xl items-center justify-between px-6 py-3 bg-white shadow-sm">
         {/* left side */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 hover:opacity-90">
           <Image
             src="/logoipsum-401.svg"
             alt="Grants2Contract logo"
@@ -49,7 +49,7 @@ export default function Navbar({ actions }: { actions?: React.ReactNode }) {
             priority
           />
 
-          <span className="text-lg font-semibold tracking-tight text-[#033F85]">
+          <span className="text-lg font-semibold tracking-tight text-blue-900">
             Grants2Contract
           </span>
         </Link>

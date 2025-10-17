@@ -19,6 +19,11 @@ export default function AdminPage() {
       try {
         setIsLoading(true)
         setError(null)
+        // === API CALL: Replace fetchMockAnalytics with real API call when backend is connected ===
+        // Example:
+        // const response = await fetch('/api/analytics')
+        // const data = await response.json()
+        // setAnalytics(data)
         const data = await fetchMockAnalytics()
         
         if (!data) {

@@ -5,11 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import { QuestionList } from '@/components/QuestionList'
-import {
-  FormQuestion,
-  fetchMockQuestions,
-  reorderMockQuestions,
-} from './__mocks__/questions'
+import { FormQuestion, fetchMockQuestions } from '../__mocks__/questions'
 import { AddQuestionModal } from '@/components/AddQuestionModal'
 
 // API endpoints - Update when backend is implemented
@@ -45,6 +41,11 @@ export default function FormConfigPage() {
       try {
         setIsLoading(true)
         setError(null)
+        // === API CALL: Replace fetchMockQuestions with real API call when backend is connected ===
+        // Example:
+        // const response = await fetch('/api/form-questions')
+        // const data = await response.json()
+        // setQuestions(data)
         const response = await fetchMockQuestions()
         setQuestions(response.data)
       } catch (err) {

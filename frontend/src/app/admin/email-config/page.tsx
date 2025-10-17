@@ -5,11 +5,11 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { ErrorAlert } from '@/components/ErrorAlert'
+import { fetchMockEmailConfig, updateMockEmailConfig } from '../__mocks__/email-config'
 
 // Interface defining the shape of email configuration data from the API
 interface EmailConfig {
   recipientEmail: string // Email address where notifications will be sent
-  updatedAt: string // Timestamp of last update
 }
 
 export default function EmailConfigPage() {
@@ -20,20 +20,19 @@ export default function EmailConfigPage() {
   const [error, setError] = useState<string | null>(null) // Error handling state
   const [actionError, setActionError] = useState<string | null>(null)
 
-  // Fetch initial email configuration from backend
+  // Fetch initial email configuration from backend (mocked)
   useEffect(() => {
     const fetchEmailConfig = async () => {
       try {
         setIsLoading(true)
         setError(null)
-        // TODO: Integration - Replace with actual API endpoint
-        // Expected response: { recipientEmail: string, updatedAt: string }
+        // === API CALL: Replace fetchMockEmailConfig with real API call when backend is connected ===
+        // Example:
         // const response = await fetch('/api/email-config')
         // const data: EmailConfig = await response.json()
         // setEmail(data.recipientEmail)
-
-        // Temporary simulation of API delay
-        // await new Promise(resolve => setTimeout(resolve, 1000))
+        const data: EmailConfig = await fetchMockEmailConfig()
+        setEmail(data.recipientEmail)
         setIsLoading(false)
       } catch (err) {
         setError('Failed to load email configuration. Please try again later.')
@@ -67,23 +66,18 @@ export default function EmailConfigPage() {
         throw new Error('Please enter a valid email address')
       }
 
-      // TODO: Integration - Replace with actual API endpoint
-      // Expected request body: { recipientEmail: string }
-      // Expected response: { recipientEmail: string, updatedAt: string }
+      // === API CALL: Replace updateMockEmailConfig with real API call when backend is connected ===
+      // Example:
       // const response = await fetch('/api/email-config', {
       //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
+      //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify({ recipientEmail: email }),
       // })
-
       // if (!response.ok) throw new Error('Failed to save')
       // const data: EmailConfig = await response.json()
       // setEmail(data.recipientEmail)
+      await updateMockEmailConfig(email)
 
-      // Temporary simulation of API delay
-      await new Promise(resolve => setTimeout(resolve, 500))
       setActionError(null)
       setIsSaving(false)
     } catch (err) {
@@ -256,6 +250,11 @@ export default function EmailConfigPage() {
                   </button>
                 </div>
                 {/* Save button - only shown when editing */}
+                {actionError && (
+                  <p className="text-red-600 text-sm mt-2" data-testid="email-error">
+                    {actionError}
+                  </p>
+                )}
                 {isSaving && (
                   <div className="mt-4 flex justify-end">
                     <button

@@ -4,22 +4,42 @@ import EmailConfigPage from '../page'
 describe('EmailConfigPage', () => {
   it('renders the email input after loading', async () => {
     render(<EmailConfigPage />)
-    await waitFor(() => expect(screen.getByLabelText(/Notification Recipient Email/i)).toBeInTheDocument())
-    expect(screen.getByDisplayValue('admin@university.edu.au')).toBeInTheDocument()
-    expect(screen.getByLabelText(/Notification Recipient Email/i)).toBeDisabled()
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText(/Notification Recipient Email/i)
+      ).toBeInTheDocument()
+    )
+    expect(
+      screen.getByDisplayValue('admin@university.edu.au')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(/Notification Recipient Email/i)
+    ).toBeDisabled()
   })
 
   it('enables editing when edit button is clicked', async () => {
     render(<EmailConfigPage />)
-    await waitFor(() => expect(screen.getByLabelText(/Notification Recipient Email/i)).toBeInTheDocument())
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText(/Notification Recipient Email/i)
+      ).toBeInTheDocument()
+    )
     fireEvent.click(screen.getByRole('button', { name: /edit email/i }))
-    expect(screen.getByLabelText(/Notification Recipient Email/i)).not.toBeDisabled()
-    expect(screen.getByRole('button', { name: /save changes/i })).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(/Notification Recipient Email/i)
+    ).not.toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: /save changes/i })
+    ).toBeInTheDocument()
   })
 
   it('disables save button for invalid email', async () => {
     render(<EmailConfigPage />)
-    await waitFor(() => expect(screen.getByLabelText(/Notification Recipient Email/i)).toBeInTheDocument())
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText(/Notification Recipient Email/i)
+      ).toBeInTheDocument()
+    )
     fireEvent.click(screen.getByRole('button', { name: /edit email/i }))
     const input = screen.getByLabelText(/Notification Recipient Email/i)
     fireEvent.change(input, { target: { value: 'invalidemail' } })
@@ -28,10 +48,16 @@ describe('EmailConfigPage', () => {
 
   it('enables save button for valid email', async () => {
     render(<EmailConfigPage />)
-    await waitFor(() => expect(screen.getByLabelText(/Notification Recipient Email/i)).toBeInTheDocument())
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText(/Notification Recipient Email/i)
+      ).toBeInTheDocument()
+    )
     fireEvent.click(screen.getByRole('button', { name: /edit email/i }))
     const input = screen.getByLabelText(/Notification Recipient Email/i)
     fireEvent.change(input, { target: { value: 'user@example.com' } })
-    expect(screen.getByRole('button', { name: /save changes/i })).not.toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: /save changes/i })
+    ).not.toBeDisabled()
   })
 })

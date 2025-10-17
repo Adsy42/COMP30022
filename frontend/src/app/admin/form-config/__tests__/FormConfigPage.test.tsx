@@ -6,4 +6,4 @@ describe('FormConfigPage', () => {
     render(<FormConfigPage />)
     expect(screen.getByText(/Loading questions/i)).toBeInTheDocument()
   })
-}) 
+})

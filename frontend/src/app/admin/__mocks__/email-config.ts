@@ -11,7 +11,9 @@ export async function fetchMockEmailConfig(): Promise<EmailConfig> {
 }
 
 // Simulate updating email config
-export async function updateMockEmailConfig(email: string): Promise<EmailConfig> {
+export async function updateMockEmailConfig(
+  email: string
+): Promise<EmailConfig> {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 100))
   return { recipientEmail: email }

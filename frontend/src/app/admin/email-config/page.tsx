@@ -5,7 +5,10 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { ErrorAlert } from '@/components/ErrorAlert'
-import { fetchMockEmailConfig, updateMockEmailConfig } from '../__mocks__/email-config'
+import {
+  fetchMockEmailConfig,
+  updateMockEmailConfig,
+} from '../__mocks__/email-config'
 
 // Interface defining the shape of email configuration data from the API
 interface EmailConfig {
@@ -251,7 +254,10 @@ export default function EmailConfigPage() {
                 </div>
                 {/* Save button - only shown when editing */}
                 {actionError && (
-                  <p className="text-red-600 text-sm mt-2" data-testid="email-error">
+                  <p
+                    className="text-red-600 text-sm mt-2"
+                    data-testid="email-error"
+                  >
                     {actionError}
                   </p>
                 )}

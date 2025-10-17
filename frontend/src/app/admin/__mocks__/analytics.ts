@@ -1,4 +1,3 @@
-
 export interface KPIData {
   total_queries: number
   simple_queries: number
@@ -25,9 +24,9 @@ export const MOCK_ANALYTICS: AnalyticsData = {
   kpi: {
     total_queries: 234,
     simple_queries: 187,
-    ai_resolved_queries: 156
+    ai_resolved_queries: 156,
   },
-  
+
   questions: [
     {
       question: 'Grant Team',
@@ -37,8 +36,8 @@ export const MOCK_ANALYTICS: AnalyticsData = {
         { label: 'International', count: 45 },
         { label: 'ARC-D', count: 56 },
         { label: 'RDS', count: 20 },
-        { label: 'Research Infrastructure', count: 15 }
-      ]
+        { label: 'Research Infrastructure', count: 15 },
+      ],
     },
     {
       question: 'Stage of Query',
@@ -46,16 +45,16 @@ export const MOCK_ANALYTICS: AnalyticsData = {
       options: [
         { label: 'Pre-Award', count: 155 },
         { label: 'Post-Award', count: 79 },
-        { label: 'Other', count: 0 }
-      ]
+        { label: 'Other', count: 0 },
+      ],
     },
     {
       question: 'Is this a simple query or complex referral?',
       type: 'single',
       options: [
         { label: 'Simple', count: 187 },
-        { label: 'Complex', count: 47 }
-      ]
+        { label: 'Complex', count: 47 },
+      ],
     },
     {
       question: 'Select Grant Scheme',
@@ -66,8 +65,8 @@ export const MOCK_ANALYTICS: AnalyticsData = {
         { label: 'ARC', count: 43 },
         { label: 'ECR', count: 25 },
         { label: 'NIH', count: 10 },
-        { label: 'Other', count: 6 }
-      ]
+        { label: 'Other', count: 6 },
+      ],
     },
     {
       question: 'Does this involve an MRI?',
@@ -75,8 +74,8 @@ export const MOCK_ANALYTICS: AnalyticsData = {
       options: [
         { label: 'Yes', count: 89 },
         { label: 'No', count: 95 },
-        { label: 'Other', count: 3 }
-      ]
+        { label: 'Other', count: 3 },
+      ],
     },
     {
       question: 'Type of Query',
@@ -86,8 +85,8 @@ export const MOCK_ANALYTICS: AnalyticsData = {
         { label: 'Support with negotiations', count: 45 },
         { label: 'Advice on appropriate agreement', count: 32 },
         { label: 'Advice on compliance with grant obligations', count: 18 },
-        { label: 'Other', count: 3 }
-      ]
+        { label: 'Other', count: 3 },
+      ],
     },
     {
       question: 'Select clauses to review',
@@ -101,16 +100,16 @@ export const MOCK_ANALYTICS: AnalyticsData = {
         { label: 'Insurance', count: 20 },
         { label: 'Publication', count: 15 },
         { label: 'Moral Rights', count: 12 },
-        { label: 'Other', count: 5 }
-      ]
+        { label: 'Other', count: 5 },
+      ],
     },
     {
       question: 'Is UoM the lead?',
       type: 'single',
       options: [
         { label: 'Lead', count: 28 },
-        { label: 'Non-Lead', count: 19 }
-      ]
+        { label: 'Non-Lead', count: 19 },
+      ],
     },
     {
       question: 'Other Party Role in the project',
@@ -121,8 +120,8 @@ export const MOCK_ANALYTICS: AnalyticsData = {
         { label: 'Collaborator', count: 15 },
         { label: 'Incoming party', count: 5 },
         { label: 'Outgoing party', count: 3 },
-        { label: 'Other', count: 2 }
-      ]
+        { label: 'Other', count: 2 },
+      ],
     },
     {
       question: 'Type of Agreement for review',
@@ -133,10 +132,10 @@ export const MOCK_ANALYTICS: AnalyticsData = {
         { label: 'Partner organisation letter', count: 8 },
         { label: 'Acquisition of services agreement', count: 5 },
         { label: 'Novation agreement', count: 2 },
-        { label: 'Other', count: 5 }
-      ]
-    }
-  ]
+        { label: 'Other', count: 5 },
+      ],
+    },
+  ],
 }
 
 export async function fetchMockAnalytics(): Promise<AnalyticsData> {

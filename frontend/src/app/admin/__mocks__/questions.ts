@@ -280,6 +280,6 @@ export const API_ENDPOINTS = {
 
 // Mock API functions
 export async function fetchMockQuestions(): Promise<{ data: FormQuestion[] }> {
-  await new Promise(resolve => setTimeout(resolve, 100)) // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API delay
   return { data: MOCK_QUESTIONS }
 }

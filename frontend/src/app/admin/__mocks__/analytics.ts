@@ -139,6 +139,6 @@ export const MOCK_ANALYTICS: AnalyticsData = {
 }
 
 export async function fetchMockAnalytics(): Promise<AnalyticsData> {
-  await new Promise(resolve => setTimeout(resolve, 1500)) // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API delay
   return MOCK_ANALYTICS
 }

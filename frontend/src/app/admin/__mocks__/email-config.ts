@@ -6,7 +6,7 @@ export interface EmailConfig {
 // Simulate fetching email config
 export async function fetchMockEmailConfig(): Promise<EmailConfig> {
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 100))
+  await new Promise(resolve => setTimeout(resolve, 500))
   return { recipientEmail: 'admin@university.edu.au' }
 }
 

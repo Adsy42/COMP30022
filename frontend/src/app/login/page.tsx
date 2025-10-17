@@ -6,6 +6,35 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BackgroundIllustration } from '@/components/BackgroundIllustration'
 
+/**
+ * Expected API Response types
+ * POST /api/auth/login
+ * 
+ * Request Body:
+ * {
+ *   username: string;
+ *   password: string;
+ * }
+ * 
+ * Responses:
+ * 200 OK:
+ * {
+ *   success: true;
+ *   token: string;    // JWT token for authentication
+ * }
+ * 
+ * 401 Unauthorized:
+ * {
+ *   success: false;
+ *   error: string;
+ * }
+ */
+interface LoginResponse {
+  success: boolean;
+  token?: string;
+  error?: string;
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -20,10 +49,36 @@ export default function LoginPage() {
     setError('')
 
     try {
-      // Temporary solution until backend is implemented
+      // TODO: Integration - Replace mock authentication with actual API call
+      // Expected API endpoint: POST /api/auth/login
+      // 
+      // const response = await fetch('/api/auth/login', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     username: email,
+      //     password: password,
+      //   }),
+      // });
+      // 
+      // const data: LoginResponse = await response.json();
+      // 
+      // if (response.ok && data.success) {
+      //   // Store JWT token for authenticated requests
+      //   localStorage.setItem('auth_token', data.token);
+      //   setIsTransitioning(true);
+      //   router.push('/admin');
+      // } else {
+      //   throw new Error(data.error || 'Authentication failed');
+      // }
+
+      // Temporary mock implementation
       if (email === 'admin@grants2contracts.example' && password === 'password') {
         setIsTransitioning(true)
-        // Add delay for smooth transition
+        // Mock JWT token storage
+        localStorage.setItem('auth_token', 'mock_jwt_token')
         await new Promise(resolve => setTimeout(resolve, 500))
         router.push('/admin')
       } else {

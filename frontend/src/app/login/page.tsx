@@ -113,7 +113,7 @@ export default function LoginPage() {
                 alt="Grants2Contract"
                 width={60}
                 height={60}
-                priority
+                priority={true} // Explicitly set as boolean
                 className="h-auto"
               />
               <span className="text-5xl font-bold text-blue-900">

@@ -68,14 +68,14 @@ export function BackgroundIllustration() {
       <g transform={`translate(${250 + offsetX * 0.2},650)`}>
         {/* back blob slightly below platform */}
         <ellipse
-        cx="0"
-        cy="22"
-        rx="165"         // width radius
-        ry="115"         // height radius (taller to match sketch)
-        fill="#CFE5FF"
-        opacity="0.62"
-        transform="rotate(-24 0 22)"   // <— tilt around its own center
-      />
+          cx="0"
+          cy="22"
+          rx="165" // width radius
+          ry="115" // height radius (taller to match sketch)
+          fill="#CFE5FF"
+          opacity="0.62"
+          transform="rotate(-24 0 22)" // <— tilt around its own center
+        />
         {/* platform */}
         <ellipse cx="0" cy="0" rx="175" ry="32" fill="#2196F3" opacity="0.98" />
 
@@ -136,7 +136,7 @@ export function BackgroundIllustration() {
           <rect x="-9" y="16" width="6" height="14" rx="3" fill="#6B2CCB" />
           <rect x="3" y="16" width="6" height="14" rx="3" fill="#6B2CCB" />
         </g>
-    </g>
+      </g>
     </svg>
   )
 }

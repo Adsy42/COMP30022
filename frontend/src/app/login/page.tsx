@@ -49,40 +49,11 @@ export default function LoginPage() {
     setError('')
 
     try {
-      // TODO: Integration - Replace mock authentication with actual API call
-      // Expected API endpoint: POST /api/auth/login
-      // 
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     username: email,
-      //     password: password,
-      //   }),
-      // });
-      //
-      // const data: LoginResponse = await response.json();
-      //
-      // if (response.ok && data.success) {
-      //   // Store JWT token for authenticated requests
-      //   localStorage.setItem('auth_token', data.token);
-      //   setIsTransitioning(true);
-      //   router.push('/admin');
-      // } else {
-      //   throw new Error(data.error || 'Authentication failed');
-      // }
-
-      // Temporary mock implementation
+      // Temporary solution until backend is implemented
       if (
         email === 'admin@grants2contracts.example' &&
         password === 'password'
       ) {
-        setIsTransitioning(true)
-        // Mock JWT token storage
-        localStorage.setItem('auth_token', 'mock_jwt_token')
-        await new Promise(resolve => setTimeout(resolve, 500))
         router.push('/admin')
       } else {
         throw new Error('Invalid credentials')
@@ -152,7 +123,6 @@ export default function LoginPage() {
                 placeholder="admin@grants2contracts.example"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                disabled={loading}
               />
 
               <input
@@ -164,7 +134,6 @@ export default function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                disabled={loading}
               />
             </div>
 

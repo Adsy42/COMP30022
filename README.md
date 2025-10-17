@@ -9,6 +9,7 @@ A unified platform for University of Melbourne researchers to submit grants-rela
 👉 **[📚 Start Here - Documentation Guide](./docs/README.md)**
 
 Or jump directly to:
+
 1. **[⚙️ Setup Guide](./docs/01-setup.md)** - Get your environment running
 2. **[🌿 Git Workflow](./docs/02-git-workflow.md)** - Learn our development process
 3. **[💻 Development Guide](./docs/03-development-guide.md)** - Daily development practices
@@ -62,6 +63,7 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 ## Development Workflow
 
 ### GitFlow Strategy
+
 We use GitFlow with `main` and `develop` branches:
 
 ```bash
@@ -79,6 +81,7 @@ make lint    # Lint code
 ```
 
 ### Commit Format
+
 ```
 feat(SPRNT2-XX): add chat interface
 
@@ -105,6 +108,7 @@ Closes SPRNT2-XX
 ## 📚 Documentation
 
 **📋 Quick Access:**
+
 - **[📚 Documentation Index](./docs/README.md)** - **Start here for complete guide**
 - **[⚙️ Setup Guide](./docs/01-setup.md)** - Environment setup
 - **[🌿 Git Workflow](./docs/02-git-workflow.md)** - Branching and commits
@@ -113,6 +117,7 @@ Closes SPRNT2-XX
 - **[🤖 Technical Context](./CLAUDE.md)** - Detailed technical info
 
 **🎯 For Your Role:**
+
 - **New Developer?** → [Documentation Index](./docs/README.md)
 - **Code Review?** → [Git Workflow](./docs/02-git-workflow.md)
 - **Need Architecture?** → [Project Structure](./docs/04-project-structure.md)

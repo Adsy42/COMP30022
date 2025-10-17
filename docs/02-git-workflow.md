@@ -13,12 +13,14 @@ This document defines our Git workflow, branching strategy, and development life
 ### **Main Branches**
 
 #### `main` Branch - Phase Releases Only
+
 - **Purpose:** Production-ready code at completion of each phase
 - **Content:** Fully tested, stakeholder-approved features
 - **Merge Frequency:** End of each phase (every 2-4 sprints)
 - **Protection:** Highest level (admin-only, 2 reviewers required)
 
 #### `develop` Branch - Ongoing Feature Integration
+
 - **Purpose:** Integration point for daily development work
 - **Content:** Work-in-progress and completed features awaiting phase release
 - **Merge Frequency:** Daily/multiple times per day
@@ -27,16 +29,19 @@ This document defines our Git workflow, branching strategy, and development life
 ### **Supporting Branches**
 
 #### **Feature Branches**
+
 ```
 feature/SPRNT2-XX-short-description
 ```
 
 **Examples:**
+
 - `feature/SPRNT2-14-chat-interface`
 - `feature/SPRNT2-20-database-setup`
 - `feature/SPRNT2-21-ai-service-integration`
 
 #### **Other Branch Types**
+
 ```
 bugfix/SPRNT2-XX-issue-description     # Bug fixes
 hotfix/critical-issue-description      # Emergency production fixes
@@ -106,6 +111,7 @@ git push origin feature/SPRNT2-14-chat-interface --force-with-lease
 ```
 
 ### **Commit Types**
+
 - **feat:** New feature implementation (SPRNT2-XX)
 - **fix:** Bug fix
 - **docs:** Documentation changes
@@ -141,6 +147,7 @@ processing and AI query handling.
 ```
 
 ### **Commit Message Rules**
+
 - ✅ **Include Jira ticket reference** in commit body
 - ✅ **Use imperative mood** ("add" not "added")
 - ✅ **Keep subject line under 50 characters**
@@ -152,6 +159,7 @@ processing and AI query handling.
 ### **Pull Request Requirements**
 
 **Before Creating PR:**
+
 - [ ] **Jira ticket reference** in title and description
 - [ ] **Rebased on latest develop** branch
 - [ ] **All tests passing** locally
@@ -162,30 +170,37 @@ processing and AI query handling.
 
 ```markdown
 ## 🎯 Jira Ticket
+
 Closes [SPRNT2-14](https://itproject24.atlassian.net/browse/SPRNT2-14)
 
 ## 📝 Description
+
 Brief description of the changes made and why they were necessary.
 
 ## ✅ Acceptance Criteria Met
+
 - [ ] Chat interface displays messages correctly
 - [ ] Message validation prevents empty submissions
 - [ ] Real-time updates work properly
 - [ ] Error handling is implemented
 
 ## 🧪 Testing
+
 - [ ] Unit tests added/updated and passing
 - [ ] Manual testing completed successfully
 - [ ] Cross-browser testing completed (if frontend)
 - [ ] Integration testing with dependent components
 
 ## 📷 Screenshots/Demo
+
 (Include screenshots for UI changes or GIFs for interactions)
 
 ## 🔗 Related PRs
+
 (Link any related or dependent pull requests)
 
 ## 📋 Checklist
+
 - [ ] Code follows project coding standards
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -195,6 +210,7 @@ Brief description of the changes made and why they were necessary.
 ## 🔒 Branch Protection Rules
 
 ### `main` Branch Protection
+
 - ✅ **Require pull request reviews** (minimum 2 reviewers)
 - ✅ **Require status checks to pass** (CI/CD pipeline)
 - ✅ **Require branches to be up to date** before merging
@@ -203,6 +219,7 @@ Brief description of the changes made and why they were necessary.
 - ✅ **Dismiss stale reviews** when new commits pushed
 
 ### `develop` Branch Protection
+
 - ✅ **Require pull request reviews** (minimum 1 reviewer)
 - ✅ **Require status checks to pass** (CI/CD pipeline)
 - ✅ **Require branches to be up to date** before merging
@@ -210,6 +227,7 @@ Brief description of the changes made and why they were necessary.
 - ✅ **Require conversation resolution** before merging
 
 ### **Feature Branch Guidelines**
+
 - 🔄 **Regular rebasing** on develop required
 - 📝 **Descriptive naming** with Jira ticket reference
 - 🔍 **Single responsibility** - one feature per branch
@@ -220,12 +238,14 @@ Brief description of the changes made and why they were necessary.
 ### **Communication Protocols**
 
 **🔴 Immediate Notification Required:**
+
 - **Merge conflicts** that cannot be resolved quickly
 - **Breaking changes** to shared APIs or data models
 - **CI/CD pipeline failures** affecting other developers
 - **Critical bugs** discovered in develop or main
 
 **🟡 Daily Communication:**
+
 - **Feature completion** and PR creation
 - **Blockers or dependencies** on other team members
 - **Significant architecture decisions** or changes
@@ -319,6 +339,7 @@ release/phase-1                             # Release preparation
 9. **Squash merge** after approval
 
 **Team Structure:**
+
 - Product Owner: Adam
 - Frontend Lead: Farah
 - Backend Lead: Himank

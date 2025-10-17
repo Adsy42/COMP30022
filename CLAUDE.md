@@ -9,6 +9,7 @@
 **Legal AI Query & Referral System** - A unified platform for University of Melbourne researchers to submit grants-related queries and receive AI-powered assistance or escalation to the legal team.
 
 **Team Structure:**
+
 - Product Owner: Adam
 - Frontend Lead: Farah
 - Backend Lead: Himank
@@ -18,6 +19,7 @@
 ## Tech Stack & Architecture
 
 ### Core Technologies
+
 - **Frontend**: Next.js 14.0.0 with React 18, TypeScript, App Router
 - **Backend**: Flask 3.0.0 with Python 3.11+
 - **AI Service**: FastAPI with Python 3.11+ (microservice architecture)
@@ -25,6 +27,7 @@
 - **Containerization**: Docker & Docker Compose
 
 ### Service Architecture
+
 The project follows a microservices architecture with 4 main services:
 
 1. **Frontend** (Port 3000): Next.js React application
@@ -33,6 +36,7 @@ The project follows a microservices architecture with 4 main services:
 4. **Database** (Port 27017): MongoDB instance
 
 ### Service Communication
+
 - Frontend → Backend API (REST)
 - Backend → AI Service (HTTP requests)
 - Backend → MongoDB (PyMongo)
@@ -41,12 +45,14 @@ The project follows a microservices architecture with 4 main services:
 ## Development Environment
 
 ### Prerequisites
+
 - Docker & Docker Compose
 - Make (optional, for convenience)
 
 **No local Python/Node.js installations required** - everything runs in containers!
 
 ### Quick Start Commands
+
 ```bash
 # Start all services in development mode
 make dev-up
@@ -73,6 +79,7 @@ make clean
 ```
 
 ### Service URLs (Development)
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5000
 - AI Service: http://localhost:8000
@@ -81,31 +88,37 @@ make clean
 ## Code Quality & Development Workflow
 
 ### Pre-commit Hooks
+
 The project uses comprehensive pre-commit hooks configured in `.pre-commit-config.yaml`:
 
 **Python Services (Backend & AI Service):**
+
 - Black formatting
 - Ruff linting with auto-fix
 - Automated pytest execution
 
 **Frontend:**
+
 - Prettier formatting
 - ESLint with auto-fix
 - Jest tests (with --passWithNoTests flag)
 
 **General:**
+
 - Trailing whitespace removal
 - End-of-file fixing
 - YAML/JSON validation
 - Merge conflict detection
 
 ### Testing Strategy
+
 - **Backend**: pytest with Flask integration
 - **AI Service**: pytest with async support (pytest-asyncio)
 - **Frontend**: Jest with React Testing Library
 - All tests run automatically in CI and pre-commit hooks
 
 ### Code Formatting
+
 - **Python**: Black (line length: default 88 chars)
 - **JavaScript/TypeScript**: Prettier
 - **Linting**: Ruff for Python, ESLint for frontend
@@ -113,15 +126,18 @@ The project uses comprehensive pre-commit hooks configured in `.pre-commit-confi
 ## CI/CD Pipeline
 
 ### GitHub Actions Workflow (`.github/workflows/ci.yml`)
+
 Triggers on: push/PR to `main` or `develop` branches
 
 **Pipeline Jobs:**
+
 1. **Frontend Tests**: Node.js 20, npm ci, format check, lint, type check, test, build
 2. **Backend Tests**: Python 3.11, pip install, format check, ruff check, pytest
 3. **AI Service Tests**: Python 3.11, pip install, format check, ruff check, pytest
 4. **Docker Build Tests**: Validates docker-compose configuration
 
 **Features:**
+
 - Dependency caching for faster builds
 - Parallel job execution
 - Docker Compose validation
@@ -129,6 +145,7 @@ Triggers on: push/PR to `main` or `develop` branches
 ## Project Structure Patterns
 
 ### Frontend (Next.js App Router)
+
 ```
 frontend/src/app/
 ├── layout.tsx          # Root layout
@@ -142,6 +159,7 @@ frontend/src/app/
 ```
 
 **Planned Structure:**
+
 ```
 frontend/src/
 ├── components/
@@ -159,6 +177,7 @@ frontend/src/
 ```
 
 ### Backend (Flask)
+
 ```
 backend/app/
 ├── __init__.py        # Flask app initialization
@@ -173,6 +192,7 @@ backend/app/
 ```
 
 ### AI Service (FastAPI)
+
 ```
 ai-service/app/
 ├── main.py            # FastAPI app entry point
@@ -189,6 +209,7 @@ ai-service/app/
 ### Required Environment Variables
 
 **Backend (.env):**
+
 ```bash
 FLASK_ENV=development
 MONGODB_URI=mongodb://admin:password123@mongo:27017/legal_ai?authSource=admin
@@ -201,18 +222,21 @@ EMAIL_PASSWORD=your-app-password
 ```
 
 **AI Service (.env):**
+
 ```bash
 OPENAI_API_KEY=your-openai-api-key
 LOCAL_MODEL_PATH=./models/llama-2-7b  # For local models
 ```
 
 **Frontend (.env.local):**
+
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 NEXT_PUBLIC_AI_SERVICE_URL=http://localhost:8000
 ```
 
 **Database:**
+
 ```bash
 MONGO_ROOT_USERNAME=admin
 MONGO_ROOT_PASSWORD=password123
@@ -222,6 +246,7 @@ MONGO_DATABASE=legal_ai
 ## Key Development Notes
 
 ### Current Implementation Status
+
 - **Infrastructure**: Fully set up with Docker, CI/CD, pre-commit hooks
 - **Frontend**: Basic Next.js app with TypeScript, minimal pages
 - **Backend**: Basic Flask app with simple routing
@@ -229,6 +254,7 @@ MONGO_DATABASE=legal_ai
 - **Database**: MongoDB configured with initialization
 
 ### Planned Integrations
+
 - **ServiceNow**: For case escalation (environment variables prepared)
 - **AI/ML Libraries**: Requirements.txt includes commented dependencies for:
   - OpenAI, LangChain, ChromaDB
@@ -236,12 +262,15 @@ MONGO_DATABASE=legal_ai
   - PyPDF for document processing
 
 ### Database Schema
+
 MongoDB collections planned:
+
 - `queries` - User queries and responses
 - `form_templates` - Dynamic form configurations
 - `analytics` - Usage and performance metrics
 
 ### Development Best Practices
+
 1. **Follow GitFlow**: Create feature branches from develop with Jira ticket references
 2. **Conventional commits**: Use `type(SPRNT2-XX): description` format
 3. **Start containers first**: `make dev-up`
@@ -254,6 +283,7 @@ MongoDB collections planned:
 10. **100% containerized development** - no local installations needed
 
 ### Debugging Tips
+
 - **Frontend**: Check browser console and Next.js dev server logs
 - **Backend**: Flask debug mode enabled in development
 - **AI Service**: FastAPI automatic OpenAPI docs at http://localhost:8000/docs
@@ -261,6 +291,7 @@ MongoDB collections planned:
 - **Docker**: Use `docker-compose logs [service-name]` for service-specific logs
 
 ### Common Commands
+
 ```bash
 # View logs for specific service
 docker-compose logs -f backend

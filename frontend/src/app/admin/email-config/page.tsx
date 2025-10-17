@@ -33,7 +33,7 @@ export default function EmailConfigPage() {
         // setEmail(data.recipientEmail)
         
         // Temporary simulation of API delay
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        // await new Promise(resolve => setTimeout(resolve, 1000))
         setIsLoading(false)
       } catch (err) {
         setError('Failed to load email configuration. Please try again later.')
@@ -161,12 +161,12 @@ export default function EmailConfigPage() {
           {isLoading ? (
             <div className="py-8">
               <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900" />
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900" role="progressbar" />
               </div>
               <p className="text-center text-gray-500 mt-4">Loading email configuration...</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}> 
               <div className="mb-6">
                 {/* Email input field */}
                 <label 
@@ -179,10 +179,11 @@ export default function EmailConfigPage() {
                   <input
                     type="email"
                     id="email"
+                    aria-label="Notification Recipient Email"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value)
-                      setActionError(null) // Clear error when user types
+                      setActionError(null)
                     }}
                     className={`w-full px-3 py-2 border ${
                       actionError ? 'border-red-300' : 'border-gray-200'
@@ -190,9 +191,9 @@ export default function EmailConfigPage() {
                     required
                     disabled={!isSaving}
                   />
-                  {/* Edit/Cancel button */}
                   <button 
                     type="button"
+                    aria-label="edit email" 
                     onClick={() => setIsSaving(!isSaving)}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-gray-100"
                   >

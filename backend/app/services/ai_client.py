@@ -22,7 +22,7 @@ class AIClient:
             response = requests.post(
                 f"{ai_url}/api/analyze",
                 json=chat_data,
-                timeout=30,
+                timeout=120,  # Increased to 2 minutes for Hugging Face API
             )
             response.raise_for_status()
             return response.json()

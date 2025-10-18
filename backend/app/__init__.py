@@ -3,6 +3,42 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from pymongo import MongoClient
 import os
+import sys
+
+
+def _auto_seed_database(app):
+    """
+    Automatically seed the database with essential data if it's empty.
+    Only seeds: users, templates, and config (required for app to function).
+    """
+    try:
+        # Check if templates collection is empty
+        template_count = app.db["templates"].count_documents({})
+        
+        if template_count == 0:
+            app.logger.info("Database appears empty. Auto-seeding essential data...")
+            
+            # Import seed functions
+            # Add database directory to path
+            db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "database")
+            sys.path.insert(0, db_path)
+            
+            from seeds import seed_users, seed_templates, seed_config
+            
+            # Seed essential data
+            users_count = seed_users(app.db)
+            templates_count = seed_templates(app.db)
+            config_count = seed_config(app.db)
+            
+            app.logger.info(f"✓ Auto-seeded: {users_count} users, {templates_count} templates, {config_count} config entries")
+            app.logger.info("✓ Default admin credentials - username: admin, password: admin123")
+        else:
+            app.logger.info(f"Database already initialized ({template_count} templates found)")
+            
+    except Exception as e:
+        app.logger.error(f"Error during auto-seeding: {str(e)}")
+        # Don't crash the app if seeding fails
+        app.logger.warning("App will continue without seeded data. Run 'python seed_db.py --essential' manually.")
 
 
 def create_app(config_name=None):
@@ -24,6 +60,9 @@ def create_app(config_name=None):
     # Initialize MongoDB
     mongo_client = MongoClient(app.config["MONGODB_URI"])
     app.db = mongo_client[app.config["MONGODB_DB_NAME"]]
+
+    # Auto-seed database if empty (essential data only)
+    _auto_seed_database(app)
 
     # Create upload folder if it doesn't exist
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)

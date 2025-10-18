@@ -120,7 +120,9 @@ describe('LoginPage', () => {
 
     // Check for error message
     await waitFor(() => {
-      expect(screen.getByText('Invalid username or password')).toBeInTheDocument()
+      expect(
+        screen.getByText('Invalid username or password')
+      ).toBeInTheDocument()
     })
 
     // Verify no redirect or token storage

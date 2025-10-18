@@ -13,19 +13,19 @@ Usage:
     python seed_db.py --essential  # Seed only essential data (users, templates, config)
     python seed_db.py --mock       # Seed only mock data (questions, analytics)
 """
-import sys
 import argparse
+import sys
 
 # Add database directory to Python path to import seeds
-sys.path.insert(0, '/database')
+sys.path.insert(0, "/database")
 
-from app import create_app
-from seeds import (
-    seed_users,
-    seed_templates,
+from app import create_app  # noqa: E402
+from seeds import (  # noqa: E402
+    seed_analytics,
     seed_config,
     seed_form_questions,
-    seed_analytics,
+    seed_templates,
+    seed_users,
 )
 
 

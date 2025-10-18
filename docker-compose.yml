@@ -27,10 +27,8 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
-    environment:
-      FLASK_ENV: development
-      MONGODB_URI: mongodb://admin:password123@mongo:27017/legal_ai?authSource=admin
-      AI_SERVICE_URL: http://ai-service:8000
+    env_file:
+      - ./backend/.env
     depends_on:
       - mongo
       - ai-service
@@ -49,8 +47,8 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
-    environment:
-      PYTHONUNBUFFERED: 1
+    env_file:
+      - ./ai-service/.env
     volumes:
       - ./ai-service:/app
       - ./ai-service/data:/app/data

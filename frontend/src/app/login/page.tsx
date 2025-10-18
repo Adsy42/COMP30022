@@ -55,7 +55,7 @@ export default function LoginPage() {
       
       if (response.success && response.token) {
         // Store the JWT token in localStorage
-        localStorage.setItem('authToken', response.token)
+        localStorage.setItem('token', response.token)
         
         // Redirect to admin page
         setIsTransitioning(true)

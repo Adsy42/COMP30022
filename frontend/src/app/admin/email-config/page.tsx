@@ -5,15 +5,11 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { ErrorAlert } from '@/components/ErrorAlert'
-import { updateEmailConfig } from '@/lib/api'
-import {
-  fetchMockEmailConfig,
-  EmailConfig,
-} from '../__mocks__/email-config'
+import { fetchEmailConfig, updateEmailConfig } from '@/lib/api'
 
 // Interface defining the shape of email configuration data from the API
 interface EmailConfig {
-  recipientEmail: string // Email address where notifications will be sent
+  email_address: string // Email address where notifications will be sent
 }
 
 export default function EmailConfigPage() {
@@ -24,19 +20,19 @@ export default function EmailConfigPage() {
   const [error, setError] = useState<string | null>(null) // Error handling state
   const [actionError, setActionError] = useState<string | null>(null)
 
-  // Fetch initial email configuration from backend (mocked)
+  // Fetch initial email configuration from backend
   useEffect(() => {
-    const fetchEmailConfig = async () => {
+    const fetchConfig = async () => {
       try {
         setIsLoading(true)
         setError(null)
-        // === API CALL: Replace fetchMockEmailConfig with real API call when backend is connected ===
-        // Example:
-        // const response = await fetch('/api/email-config')
-        // const data: EmailConfig = await response.json()
-        // setEmail(data.recipientEmail)
-        const data: EmailConfig = await fetchMockEmailConfig()
-        setEmail(data.recipientEmail)
+        
+        // Get token from localStorage
+        const token = localStorage.getItem('token') || ''
+        
+        // Fetch from real backend API
+        const data = await fetchEmailConfig(token)
+        setEmail(data.email_address)
         setIsLoading(false)
       } catch (err) {
         setError('Failed to load email configuration. Please try again later.')
@@ -44,7 +40,7 @@ export default function EmailConfigPage() {
       }
     }
 
-    fetchEmailConfig()
+    fetchConfig()
   }, [])
 
   // Navigation component with back button

@@ -9,7 +9,28 @@
 import { API_BASE } from './client'
 
 export interface EmailConfig {
-  recipientEmail: string
+  email_address: string
+}
+
+/**
+ * Fetch current email recipient configuration
+ * @param token - Admin authentication token
+ * @returns Email configuration object
+ */
+export async function fetchEmailConfig(token: string): Promise<EmailConfig> {
+  const response = await fetch(`${API_BASE}/config/email-recipient`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch email config: ${response.statusText}`)
+  }
+
+  return response.json()
 }
 
 /**

@@ -41,4 +41,5 @@ export { API_ENDPOINTS, fetchQuestions, reorderQuestions, updateQuestions } from
 
 // Re-export config API (admin)
 export type { EmailConfig } from './config'
-export { updateEmailConfig } from './config'
+export { fetchEmailConfig, updateEmailConfig } from './config'
+

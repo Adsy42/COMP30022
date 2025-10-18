@@ -7,6 +7,31 @@ from ..utils.validators import validate_email
 bp = Blueprint("config", __name__, url_prefix="/config")
 
 
+@bp.route("/email-recipient", methods=["GET"])
+@token_required
+def get_email_recipient():
+    """
+    GET /config/email-recipient
+    Get current escalation recipient email.
+    Returns: {
+        "email_address": "email@example.com"
+    }
+    """
+    try:
+        # Get email from config with default fallback
+        email_address = AppConfig.get(
+            current_app.db,
+            "escalation_email",
+            default="ric-contracts@unimelb.edu.au"
+        )
+
+        return jsonify({"email_address": email_address}), 200
+
+    except Exception as e:
+        current_app.logger.error(f"Error fetching email recipient: {str(e)}")
+        return jsonify({"error": "Failed to fetch email recipient", "message": str(e)}), 500
+
+
 @bp.route("/email-recipient", methods=["PUT"])
 @token_required
 def update_email_recipient():

@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { ErrorAlert } from '@/components/ErrorAlert'
+import { updateEmailConfig } from '@/lib/api'
 import {
   fetchMockEmailConfig,
-  updateMockEmailConfig,
+  EmailConfig,
 } from '../__mocks__/email-config'
 
 // Interface defining the shape of email configuration data from the API
@@ -69,17 +70,11 @@ export default function EmailConfigPage() {
         throw new Error('Please enter a valid email address')
       }
 
-      // === API CALL: Replace updateMockEmailConfig with real API call when backend is connected ===
-      // Example:
-      // const response = await fetch('/api/email-config', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ recipientEmail: email }),
-      // })
-      // if (!response.ok) throw new Error('Failed to save')
-      // const data: EmailConfig = await response.json()
-      // setEmail(data.recipientEmail)
-      await updateMockEmailConfig(email)
+      // Get token from localStorage
+      const token = localStorage.getItem('token') || ''
+      
+      // Call backend API to update email recipient
+      await updateEmailConfig(email, token)
 
       setActionError(null)
       setIsSaving(false)

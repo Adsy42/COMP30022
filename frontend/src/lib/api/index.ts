@@ -38,3 +38,7 @@ export { fetchAnalytics } from './analytics'
 // Re-export form questions API (admin)
 export type { FormQuestionOption, FormQuestion } from './formQuestions'
 export { API_ENDPOINTS, fetchQuestions, reorderQuestions, updateQuestions } from './formQuestions'
+
+// Re-export config API (admin)
+export type { EmailConfig } from './config'
+export { updateEmailConfig } from './config'

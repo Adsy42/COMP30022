@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import Navbar from '@/components/Navbar'
 import { AnalyticsChart } from '@/components/AnalyticsChart'
-import { AnalyticsData, fetchMockAnalytics } from './__mocks__/analytics'
+import { AnalyticsData, fetchAnalytics } from '@/lib/api'
 import Link from 'next/link'
 import Button from '@/components/Button'
 import {
@@ -23,16 +23,13 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchAnalytics = async () => {
+    const loadAnalytics = async () => {
       try {
         setIsLoading(true)
         setError(null)
-        // === API CALL: Replace fetchMockAnalytics with real API call when backend is connected ===
-        // Example:
-        // const response = await fetch('/api/analytics')
-        // const data = await response.json()
-        // setAnalytics(data)
-        const data = await fetchMockAnalytics()
+        
+        // Fetch analytics from backend API
+        const data = await fetchAnalytics()
 
         if (!data) {
           throw new Error('No analytics data available')
@@ -47,7 +44,7 @@ export default function AdminPage() {
       }
     }
 
-    fetchAnalytics()
+    loadAnalytics()
   }, [])
 
   // Calculate percentages

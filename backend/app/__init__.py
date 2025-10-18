@@ -30,7 +30,17 @@ def create_app(config_name=None):
 
     # Register blueprints
     from .routes import main
-    from .api import templates, chats, uploads, admin, analytics, config_api, escalations
+    from .api import (
+        templates,
+        chats,
+        uploads,
+        admin,
+        analytics,
+        config_api,
+        escalations,
+        form_questions,
+        analytics_dashboard,
+    )
 
     app.register_blueprint(main)
     app.register_blueprint(templates.bp)
@@ -40,6 +50,8 @@ def create_app(config_name=None):
     app.register_blueprint(analytics.bp)
     app.register_blueprint(config_api.bp)
     app.register_blueprint(escalations.bp)
+    app.register_blueprint(form_questions.bp)
+    app.register_blueprint(analytics_dashboard.bp)
 
     # Error handlers
     @app.errorhandler(404)

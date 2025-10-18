@@ -10,7 +10,7 @@ import { API_BASE } from './client'
 
 export interface FormQuestionOption {
   label: string
-  followUp?: FormQuestion
+  followUp?: FormQuestion[]
 }
 
 export interface FormQuestion {

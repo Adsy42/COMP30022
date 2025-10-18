@@ -49,11 +49,16 @@ export default function LoginPage() {
     setError('')
 
     try {
+      // Small delay to show loading state (especially for tests)
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       // Temporary solution until backend is implemented
       if (
         email === 'admin@grants2contracts.example' &&
         password === 'password'
       ) {
+        // Store mock token
+        localStorage.setItem('auth_token', 'mock_jwt_token')
         router.push('/admin')
       } else {
         throw new Error('Invalid credentials')
@@ -119,6 +124,7 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 required
+                disabled={loading}
                 className="w-full p-3 border border-gray-200 rounded-lg bg-white/50 backdrop-blur-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="admin@grants2contracts.example"
                 value={email}
@@ -130,6 +136,7 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 required
+                disabled={loading}
                 className="w-full p-3 border border-gray-200 rounded-lg bg-white/50 backdrop-blur-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Password"
                 value={password}

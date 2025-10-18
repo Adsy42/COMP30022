@@ -72,8 +72,10 @@ describe('LoginPage', () => {
     // Submit form
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
-    // Check loading state
-    expect(screen.getByText('Signing in...')).toBeInTheDocument()
+    // Check loading state - wait for it to appear
+    await waitFor(() => {
+      expect(screen.getByText('Signing in...')).toBeInTheDocument()
+    })
 
     // Verify redirect and token storage
     await waitFor(() => {
@@ -129,12 +131,14 @@ describe('LoginPage', () => {
     // Submit form
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
-    // Check disabled states
-    expect(
-      screen.getByPlaceholderText('admin@grants2contracts.example')
-    ).toBeDisabled()
-    expect(screen.getByPlaceholderText('Password')).toBeDisabled()
-    expect(screen.getByLabelText('Remember Me')).toBeDisabled()
-    expect(screen.getByText('Signing in...')).toBeInTheDocument()
+    // Check disabled states - wait for state update
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText('admin@grants2contracts.example')
+      ).toBeDisabled()
+      expect(screen.getByPlaceholderText('Password')).toBeDisabled()
+      expect(screen.getByLabelText('Remember Me')).toBeDisabled()
+      expect(screen.getByText('Signing in...')).toBeInTheDocument()
+    })
   })
 })

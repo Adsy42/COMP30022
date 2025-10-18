@@ -14,7 +14,12 @@ Usage:
     python seed_db.py --mock       # Seed only mock data (questions, analytics)
 """
 import sys
+import os
 import argparse
+
+# Add backend to Python path since we're in the database folder
+sys.path.insert(0, '/app')
+
 from app import create_app
 from seeds import (
     seed_users,

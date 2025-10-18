@@ -32,8 +32,10 @@ def login():
         if not username or not password:
             return jsonify({"error": "Username and password are required"}), 400
 
-        # Find user
+        # Find user by username or email
         user = User.find_by_username(current_app.db, username)
+        if not user:
+            user = User.find_by_email(current_app.db, username)
 
         if not user or not user.check_password(password):
             return jsonify({"success": False, "token": None}), 200

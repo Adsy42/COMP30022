@@ -38,7 +38,7 @@ docs/
 ├── 01-setup.md                  # ⚙️ Development environment setup
 ├── 02-git-workflow.md           # 🌿 Git branching and workflow
 ├── 03-development-guide.md      # 💻 Daily development practices
-└── 04-project-structure.md     # 🏗️ Codebase organization
+└── 04-project-structure.md      # 🏗️ Codebase organization
 
 Root Files:
 ├── README.md                    # 📖 Project overview

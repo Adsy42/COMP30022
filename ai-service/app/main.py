@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from .api import chat, embeddings
+from .api import chat, embeddings, analyze
 
 # Load environment variables
 load_dotenv()
@@ -24,6 +24,7 @@ app.add_middleware(
 
 app.include_router(chat.router)
 app.include_router(embeddings.router)
+app.include_router(analyze.router)
 
 
 @app.get("/")

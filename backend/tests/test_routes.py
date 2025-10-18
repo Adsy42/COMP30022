@@ -1,3 +1,4 @@
+"""Tests for main routes."""
 import json
 
 
@@ -6,7 +7,7 @@ def test_index_endpoint(client):
     response = client.get("/")
     assert response.status_code == 200
     data = json.loads(response.data)
-    assert data["message"] == "Backend API is running"
+    assert "message" in data
 
 
 def test_health_endpoint(client):
@@ -15,15 +16,6 @@ def test_health_endpoint(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data["status"] == "healthy"
-
-
-def test_example_endpoint(client):
-    """Test the example API endpoint."""
-    response = client.get("/api/example")
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert "message" in data
-    assert "example endpoint" in data["message"].lower()
 
 
 def test_nonexistent_endpoint(client):

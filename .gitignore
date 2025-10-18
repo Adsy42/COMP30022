@@ -50,6 +50,10 @@ pip-delete-this-directory.txt
 mongo_data/
 data/vector_db/
 
+# Uploads
+backend/uploads/
+ai-service/data/documents/
+
 # Logs
 *.log
 logs/

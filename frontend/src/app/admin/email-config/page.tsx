@@ -5,14 +5,11 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { ErrorAlert } from '@/components/ErrorAlert'
-import {
-  fetchMockEmailConfig,
-  updateMockEmailConfig,
-} from '../__mocks__/email-config'
+import { fetchEmailConfig, updateEmailConfig } from '@/lib/api'
 
 // Interface defining the shape of email configuration data from the API
 interface EmailConfig {
-  recipientEmail: string // Email address where notifications will be sent
+  email_address: string // Email address where notifications will be sent
 }
 
 export default function EmailConfigPage() {
@@ -23,27 +20,34 @@ export default function EmailConfigPage() {
   const [error, setError] = useState<string | null>(null) // Error handling state
   const [actionError, setActionError] = useState<string | null>(null)
 
-  // Fetch initial email configuration from backend (mocked)
+  // Fetch initial email configuration from backend
   useEffect(() => {
-    const fetchEmailConfig = async () => {
+    const fetchConfig = async () => {
       try {
         setIsLoading(true)
         setError(null)
-        // === API CALL: Replace fetchMockEmailConfig with real API call when backend is connected ===
-        // Example:
-        // const response = await fetch('/api/email-config')
-        // const data: EmailConfig = await response.json()
-        // setEmail(data.recipientEmail)
-        const data: EmailConfig = await fetchMockEmailConfig()
-        setEmail(data.recipientEmail)
+
+        // Get token from localStorage
+        const token = localStorage.getItem('token')
+
+        if (!token) {
+          setError('Authentication required. Please log in again.')
+          setIsLoading(false)
+          return
+        }
+
+        // Fetch from real backend API
+        const data = await fetchEmailConfig(token)
+        setEmail(data.email_address)
         setIsLoading(false)
       } catch (err) {
+        console.error('Email config fetch error:', err)
         setError('Failed to load email configuration. Please try again later.')
         setIsLoading(false)
       }
     }
 
-    fetchEmailConfig()
+    fetchConfig()
   }, [])
 
   // Navigation component with back button
@@ -69,17 +73,15 @@ export default function EmailConfigPage() {
         throw new Error('Please enter a valid email address')
       }
 
-      // === API CALL: Replace updateMockEmailConfig with real API call when backend is connected ===
-      // Example:
-      // const response = await fetch('/api/email-config', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ recipientEmail: email }),
-      // })
-      // if (!response.ok) throw new Error('Failed to save')
-      // const data: EmailConfig = await response.json()
-      // setEmail(data.recipientEmail)
-      await updateMockEmailConfig(email)
+      // Get token from localStorage
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.')
+      }
+
+      // Call backend API to update email recipient
+      await updateEmailConfig(email, token)
 
       setActionError(null)
       setIsSaving(false)

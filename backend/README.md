@@ -41,9 +41,16 @@ backend/
 │       ├── auth.py          # Auth decorators
 │       ├── helpers.py       # Helper functions
 │       └── validators.py    # Input validators
+├── seeds/                   # Database seeding (organized by entity)
+│   ├── seed_users.py        # User seeding
+│   ├── seed_templates.py    # Template seeding
+│   ├── seed_config.py       # Config seeding
+│   ├── seed_form_questions.py # Form questions seeding
+│   ├── seed_analytics.py    # Analytics seeding
+│   └── data_*.py           # Large data structures
 ├── tests/                   # Test suite
 ├── run.py                   # Application entry point
-├── seed_db.py              # Database seeding script
+├── seed_db.py              # Main seeding script
 └── requirements.txt         # Python dependencies
 ```
 
@@ -214,6 +221,34 @@ File upload metadata.
 
 ## 🧪 Development
 
+### Database Initialization
+
+The database is automatically initialized when you start the containers in development mode:
+
+1. **MongoDB** creates the schema using `database/init-mongo.js`
+2. **Backend** automatically seeds data on startup via `entrypoint.sh`
+
+**What gets seeded:**
+- Admin user (username: `admin`, password: `admin123`)
+- Form templates (common, simple, complex)
+- Application configuration
+
+**Manual seeding (if needed):**
+
+```bash
+# Seed everything
+docker-compose exec backend python seed_db.py
+
+# Seed only essential data
+docker-compose exec backend python seed_db.py --essential
+
+# Seed specific categories
+docker-compose exec backend python seed_db.py --users
+docker-compose exec backend python seed_db.py --templates
+```
+
+**See [DATABASE_INIT.md](./DATABASE_INIT.md) for complete documentation** on initialization and seeding.
+
 ### Initialize Database
 
 After starting MongoDB, run the seeding script to create initial data:
@@ -221,12 +256,26 @@ After starting MongoDB, run the seeding script to create initial data:
 ```bash
 # From backend directory
 docker-compose exec backend python seed_db.py
+
+# Seed only essential data (users, templates, config)
+docker-compose exec backend python seed_db.py --essential
+
+# Seed only mock data (form questions, analytics)
+docker-compose exec backend python seed_db.py --mock
+
+# Seed specific categories
+docker-compose exec backend python seed_db.py --users
+docker-compose exec backend python seed_db.py --templates
 ```
 
 This creates:
 - Admin user (username: `admin`, password: `admin123`)
 - Default templates (common, simple, complex)
 - Default escalation email configuration
+- Form questions (with `--questions` or `--mock`)
+- Analytics data (with `--analytics` or `--mock`)
+
+See [seeds/README.md](./seeds/README.md) for detailed documentation on the seeding system.
 
 ### Running Tests
 

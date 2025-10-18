@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BackgroundIllustration } from '@/components/BackgroundIllustration'
+import { login } from '@/lib/api'
 
 /**
  * Expected API Response types
@@ -37,7 +38,7 @@ interface LoginResponse {
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -49,17 +50,21 @@ export default function LoginPage() {
     setError('')
 
     try {
-      // Temporary solution until backend is implemented
-      if (
-        email === 'admin@grants2contracts.example' &&
-        password === 'password'
-      ) {
-        router.push('/admin')
+      // Call the backend login API
+      const response = await login(username, password)
+      
+      if (response.success && response.token) {
+        // Store the JWT token in localStorage
+        localStorage.setItem('authToken', response.token)
+        
+        // Redirect to admin page
+        setIsTransitioning(true)
+        setTimeout(() => router.push('/admin'), 300)
       } else {
         throw new Error('Invalid credentials')
       }
     } catch (err) {
-      setError('Invalid email or password')
+      setError('Invalid username or password')
       // Shake animation for error
       const form = document.querySelector('form')
       form?.classList.add('animate-shake')
@@ -121,8 +126,8 @@ export default function LoginPage() {
                 required
                 className="w-full p-3 border border-gray-200 rounded-lg bg-white/50 backdrop-blur-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="admin@grants2contracts.example"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                value={username}
+                onChange={e => setUsername(e.target.value)}
               />
 
               <input

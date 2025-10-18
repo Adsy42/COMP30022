@@ -15,6 +15,10 @@ Usage:
 """
 import sys
 import argparse
+
+# Add database directory to Python path to import seeds
+sys.path.insert(0, '/database')
+
 from app import create_app
 from seeds import (
     seed_users,

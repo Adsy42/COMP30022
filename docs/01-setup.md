@@ -15,12 +15,14 @@
 ## Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd COMP30022
    ```
 
 2. **Set up environment variables**
+
    ```bash
    # Copy environment files
    cp .env.example .env
@@ -32,6 +34,7 @@
    ```
 
 3. **Start all services with Docker**
+
    ```bash
    # Development mode (with hot reload)
    make dev-up
@@ -68,6 +71,7 @@ docker-compose exec frontend npm test
 ## Database Setup
 
 MongoDB will be automatically initialized with:
+
 - Basic form templates
 - Required indexes
 
@@ -94,12 +98,15 @@ make clean
 ## Troubleshooting
 
 ### Port conflicts
+
 If ports are already in use, modify the port mappings in `docker-compose.yml`.
 
 ### Database connection issues
+
 Ensure MongoDB is running and the connection string is correct in your `.env` files.
 
 ### AI Service issues
+
 Check that you have valid API keys or local models configured in `ai-service/.env`.
 
 ## Development Workflow

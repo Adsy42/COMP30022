@@ -1,8 +1,15 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
 
 export const metadata: Metadata = {
-  title: 'Frontend App',
-  description: 'A minimal Next.js application',
+  title: 'Legal Query AI',
+  description: 'AI chatbot to help with your research-related legal query.',
 }
 
 export default function RootLayout({
@@ -11,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   )

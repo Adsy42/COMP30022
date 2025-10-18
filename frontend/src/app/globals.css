@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  background: #ffffff; /* force white background */
+  color: #171717; /* force dark text */
+  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
+
+/* Subtle horizontal bar for chip scroller */
+.chips-scroll {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+.chips-scroll::-webkit-scrollbar {
+  height: 6px;
+} /* Chrome/Edge */
+.chips-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chips-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.18);
+  border-radius: 9999px;
+}
+.chips-scroll:not(:hover)::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+.chips-scroll::-webkit-scrollbar-button {
+  display: none;
+}
+
+@keyframes typing-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #334155; /* slate-700-ish */
+  opacity: 0.7;
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
+.typing-dot.delay-150 {
+  animation-delay: 0.15s;
+}
+.typing-dot.delay-300 {
+  animation-delay: 0.3s;
+}

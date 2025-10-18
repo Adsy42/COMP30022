@@ -69,6 +69,7 @@ docker-compose exec frontend npm run format
 ## CI Pipeline
 
 Comprehensive GitHub Actions workflow that:
+
 - **Format checks**: Black for Python, Prettier for frontend
 - **Linting**: Ruff for Python, ESLint for frontend
 - **Type checking**: TypeScript for frontend
@@ -79,6 +80,7 @@ Comprehensive GitHub Actions workflow that:
 ## Development Workflow
 
 ### GitFlow Strategy
+
 We use a GitFlow-adapted strategy with `main` and `develop` branches:
 
 1. **Start containers**: `make dev-up`
@@ -91,6 +93,7 @@ We use a GitFlow-adapted strategy with `main` and `develop` branches:
 8. **Code review** and squash merge
 
 ### Commit Message Format
+
 ```
 type(SPRNT2-XX): description
 
@@ -102,6 +105,7 @@ Closes SPRNT2-XX
 **Types:** feat, fix, docs, style, refactor, test, chore
 
 ### Branch Protection
+
 - **main**: 2 reviewers required, admin-only
 - **develop**: 1 reviewer required, squash merge only
 

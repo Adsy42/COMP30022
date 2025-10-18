@@ -7,13 +7,13 @@ from datetime import datetime
 
 class TestValidators:
     """Test validation functions."""
-    
+
     def test_validate_email_valid(self):
         """Test validating valid email addresses."""
         assert validate_email("user@example.com") is True
         assert validate_email("test.user@domain.co.uk") is True
         assert validate_email("admin+tag@example.org") is True
-    
+
     def test_validate_email_invalid(self):
         """Test validating invalid email addresses."""
         assert validate_email("not-an-email") is False
@@ -21,13 +21,13 @@ class TestValidators:
         assert validate_email("user@") is False
         assert validate_email("") is False
         assert validate_email(None) is False
-    
+
     def test_validate_template_type_valid(self):
         """Test validating valid template types."""
         assert validate_template_type("common") is True
         assert validate_template_type("simple") is True
         assert validate_template_type("complex") is True
-    
+
     def test_validate_template_type_invalid(self):
         """Test validating invalid template types."""
         assert validate_template_type("invalid") is False
@@ -37,7 +37,7 @@ class TestValidators:
 
 class TestHelpers:
     """Test helper functions."""
-    
+
     def test_parse_date_range_valid(self):
         """Test parsing valid date range."""
         start_dt, end_dt = parse_date_range("01/01/2025", "31/12/2025")
@@ -53,14 +53,14 @@ class TestHelpers:
         assert end_dt.hour == 23
         assert end_dt.minute == 59
         assert end_dt.second == 59
-    
+
     def test_parse_date_range_invalid_format(self):
         """Test parsing with invalid date format."""
         with pytest.raises(ValueError):
             parse_date_range("2025-01-01", "2025-12-31")
-        
+
         with pytest.raises(ValueError):
             parse_date_range("01/13/2025", "12/31/2025")  # Invalid month
-        
+
         with pytest.raises(ValueError):
             parse_date_range("not a date", "31/12/2025")

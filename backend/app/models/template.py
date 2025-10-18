@@ -91,10 +91,9 @@ class Template:
         for question in questions:
             if not question.get("id"):
                 # Generate a simple ID based on the question text
-                question["id"] = (
-                    "q_"
-                    + question.get("question", "")[:20].lower().replace(" ", "_").replace("?", "")
-                )
+                question["id"] = "q_" + question.get("question", "")[
+                    :20
+                ].lower().replace(" ", "_").replace("?", "")
 
         existing = cls.find_by_type(db, template_type)
         if existing:

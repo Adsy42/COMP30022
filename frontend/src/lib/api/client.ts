@@ -5,7 +5,10 @@
  * ──────────────────────────────────────────────────────────────────────────────
  */
 
-export const API_BASE = (typeof window !== 'undefined' ? (window as any).ENV?.NEXT_PUBLIC_API_URL : '') || 'http://localhost:5000'
+export const API_BASE =
+  (typeof window !== 'undefined'
+    ? (window as any).ENV?.NEXT_PUBLIC_API_URL
+    : '') || 'http://localhost:5000'
 
 /**
  * Generic HTTP helper for making API requests

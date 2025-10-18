@@ -52,11 +52,11 @@ export default function LoginPage() {
     try {
       // Call the backend login API
       const response = await login(username, password)
-      
+
       if (response.success && response.token) {
         // Store the JWT token in localStorage
         localStorage.setItem('token', response.token)
-        
+
         // Redirect to admin page
         setIsTransitioning(true)
         setTimeout(() => router.push('/admin'), 300)

@@ -1,6 +1,6 @@
 """Authentication decorators and utilities."""
 from functools import wraps
-from flask import request, jsonify, current_app
+from flask import jsonify, current_app
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from ..models.user import User
 
@@ -31,7 +31,10 @@ def admin_required(f):
             # Verify user exists and is admin
             user = User.find_by_username(current_app.db, username)
             if not user or user.role != "admin" or not user.is_active:
-                return jsonify({"error": "Forbidden", "message": "Admin access required"}), 403
+                return (
+                    jsonify({"error": "Forbidden", "message": "Admin access required"}),
+                    403,
+                )
 
             return f(*args, **kwargs)
         except Exception as e:

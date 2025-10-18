@@ -31,7 +31,10 @@ export async function fetchEmailConfig(token: string): Promise<EmailConfig> {
       throw new Error('Authentication failed. Please log in again.')
     }
     const errorData = await response.json().catch(() => ({}))
-    throw new Error(errorData.message || `Failed to fetch email config: ${response.statusText}`)
+    throw new Error(
+      errorData.message ||
+        `Failed to fetch email config: ${response.statusText}`
+    )
   }
 
   return response.json()

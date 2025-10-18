@@ -8,4 +8,12 @@ from . import analytics
 from . import config as config_api
 from . import escalations
 
-__all__ = ["templates", "chats", "uploads", "admin", "analytics", "config_api", "escalations"]
+__all__ = [
+    "templates",
+    "chats",
+    "uploads",
+    "admin",
+    "analytics",
+    "config_api",
+    "escalations",
+]

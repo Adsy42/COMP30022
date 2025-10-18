@@ -3,7 +3,6 @@ from app import create_app
 from app.models.user import User
 from app.models.template import Template
 from app.models.chat import Chat
-from app.models.config import AppConfig
 
 
 @pytest.fixture
@@ -19,9 +18,9 @@ def app():
         app.db.drop_collection("templates")
         app.db.drop_collection("app_config")
         app.db.drop_collection("uploads")
-        
+
         yield app
-        
+
         # Cleanup after test
         app.db.drop_collection("users")
         app.db.drop_collection("chats")
@@ -50,7 +49,7 @@ def admin_user(app):
         email="test@example.com",
         password_hash=User.hash_password("testpass123"),
         role="admin",
-        is_active=True
+        is_active=True,
     )
     user.save(app.db)
     return user
@@ -60,8 +59,7 @@ def admin_user(app):
 def auth_token(client, admin_user):
     """Get JWT token for admin user."""
     response = client.post(
-        "/login",
-        json={"username": "testadmin", "password": "testpass123"}
+        "/login", json={"username": "testadmin", "password": "testpass123"}
     )
     data = response.get_json()
     return data["token"]
@@ -81,7 +79,7 @@ def sample_template(app):
             "id": "q_test",
             "question": "Test question?",
             "type": "freeform",
-            "options": None
+            "options": None,
         }
     ]
     template = Template.upsert_template(app.db, "common", questions)

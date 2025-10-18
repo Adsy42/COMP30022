@@ -7,7 +7,13 @@
  */
 
 // Re-export types (for chat flow)
-export type { Question, QuestionType, Option, FinalizeResponse, EscalateResponse } from './types'
+export type {
+  Question,
+  QuestionType,
+  Option,
+  FinalizeResponse,
+  EscalateResponse,
+} from './types'
 
 // Re-export client utilities
 export { API_BASE, api } from './client'
@@ -32,14 +38,23 @@ export { finalize } from './finalize'
 export { escalate } from './escalations'
 
 // Re-export analytics API (admin)
-export type { KPIData, ChoiceOption, ChoiceAnalyticsItem, AnalyticsData } from './analytics'
+export type {
+  KPIData,
+  ChoiceOption,
+  ChoiceAnalyticsItem,
+  AnalyticsData,
+} from './analytics'
 export { fetchAnalytics } from './analytics'
 
 // Re-export form questions API (admin)
 export type { FormQuestionOption, FormQuestion } from './formQuestions'
-export { API_ENDPOINTS, fetchQuestions, reorderQuestions, updateQuestions } from './formQuestions'
+export {
+  API_ENDPOINTS,
+  fetchQuestions,
+  reorderQuestions,
+  updateQuestions,
+} from './formQuestions'
 
 // Re-export config API (admin)
 export type { EmailConfig } from './config'
 export { fetchEmailConfig, updateEmailConfig } from './config'
-

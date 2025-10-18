@@ -24,7 +24,10 @@ export interface LoginResponse {
  * @param password - Admin password
  * @returns Login response with JWT token if successful
  */
-export async function login(username: string, password: string): Promise<LoginResponse> {
+export async function login(
+  username: string,
+  password: string
+): Promise<LoginResponse> {
   return api<LoginResponse>('/login', {
     method: 'POST',
     body: JSON.stringify({ username, password }),

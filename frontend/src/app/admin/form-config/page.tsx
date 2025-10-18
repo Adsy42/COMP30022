@@ -5,7 +5,12 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import { QuestionList } from '@/components/QuestionList'
-import { FormQuestion, fetchQuestions, updateQuestions, reorderQuestions } from '@/lib/api'
+import {
+  FormQuestion,
+  fetchQuestions,
+  updateQuestions,
+  reorderQuestions,
+} from '@/lib/api'
 import { AddQuestionModal } from '@/components/AddQuestionModal'
 
 // Navigation component with back button
@@ -35,7 +40,7 @@ export default function FormConfigPage() {
       try {
         setIsLoading(true)
         setError(null)
-        
+
         // Fetch questions from backend
         const response = await fetchQuestions()
         setQuestions(response.data)
@@ -62,12 +67,15 @@ export default function FormConfigPage() {
     const originalQuestions = [...questions]
     try {
       setActionError(null)
-      const updatedItems = items.map((q: FormQuestion, index: number) => ({ ...q, order: index }))
+      const updatedItems = items.map((q: FormQuestion, index: number) => ({
+        ...q,
+        order: index,
+      }))
       setQuestions(updatedItems)
-      
+
       // Get token from localStorage
       const token = localStorage.getItem('token') || ''
-      
+
       // Call backend API to persist reorder
       await reorderQuestions(
         updatedItems.map((q: FormQuestion) => q.id),
@@ -84,12 +92,14 @@ export default function FormConfigPage() {
     try {
       setActionError(null)
       setQuestions(questions.filter((q: FormQuestion) => q.id !== id))
-      
+
       // Get token from localStorage
       const token = localStorage.getItem('token') || ''
-      
+
       // Update backend with remaining questions
-      const remainingQuestions = questions.filter((q: FormQuestion) => q.id !== id)
+      const remainingQuestions = questions.filter(
+        (q: FormQuestion) => q.id !== id
+      )
       await updateQuestions(remainingQuestions, token)
     } catch (err) {
       setQuestions(originalQuestions)
@@ -115,7 +125,7 @@ export default function FormConfigPage() {
 
       // Get token from localStorage
       const token = localStorage.getItem('token') || ''
-      
+
       // Call backend API to persist changes
       await updateQuestions(updatedQuestions, token)
     } catch (err) {
@@ -144,7 +154,7 @@ export default function FormConfigPage() {
 
       // Get token from localStorage
       const token = localStorage.getItem('token') || ''
-      
+
       // Call backend API to persist changes
       await updateQuestions(updatedQuestions, token)
     } catch (err) {

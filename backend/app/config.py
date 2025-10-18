@@ -15,7 +15,8 @@ class Config:
 
     # MongoDB
     MONGODB_URI = os.getenv(
-        "MONGODB_URI", "mongodb://admin:password123@mongo:27017/legal_ai?authSource=admin"
+        "MONGODB_URI",
+        "mongodb://admin:password123@mongo:27017/legal_ai?authSource=admin",
     )
     MONGODB_DB_NAME = os.getenv("MONGO_DATABASE", "legal_ai")
 
@@ -70,7 +71,7 @@ class TestingConfig(Config):
     # Use mongo service when in Docker, localhost otherwise
     MONGODB_URI = os.getenv(
         "MONGODB_TEST_URI",
-        "mongodb://admin:password123@mongo:27017/legal_ai_test?authSource=admin"
+        "mongodb://admin:password123@mongo:27017/legal_ai_test?authSource=admin",
     )
 
 

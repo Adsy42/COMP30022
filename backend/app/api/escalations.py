@@ -1,6 +1,5 @@
 """Escalation API endpoints."""
 from flask import Blueprint, jsonify, request, current_app
-from datetime import datetime
 from ..models.chat import Chat
 from ..models.config import AppConfig
 from ..services.email_service import EmailService
@@ -60,4 +59,7 @@ def create_escalation():
 
     except Exception as e:
         current_app.logger.error(f"Error processing escalation: {str(e)}")
-        return jsonify({"error": "Failed to process escalation", "message": str(e)}), 500
+        return (
+            jsonify({"error": "Failed to process escalation", "message": str(e)}),
+            500,
+        )

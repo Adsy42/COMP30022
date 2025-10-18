@@ -20,16 +20,17 @@ def get_email_recipient():
     try:
         # Get email from config with default fallback
         email_address = AppConfig.get(
-            current_app.db,
-            "escalation_email",
-            default="ric-contracts@unimelb.edu.au"
+            current_app.db, "escalation_email", default="ric-contracts@unimelb.edu.au"
         )
 
         return jsonify({"email_address": email_address}), 200
 
     except Exception as e:
         current_app.logger.error(f"Error fetching email recipient: {str(e)}")
-        return jsonify({"error": "Failed to fetch email recipient", "message": str(e)}), 500
+        return (
+            jsonify({"error": "Failed to fetch email recipient", "message": str(e)}),
+            500,
+        )
 
 
 @bp.route("/email-recipient", methods=["PUT"])
@@ -70,4 +71,7 @@ def update_email_recipient():
 
     except Exception as e:
         current_app.logger.error(f"Error updating email recipient: {str(e)}")
-        return jsonify({"error": "Failed to update email recipient", "message": str(e)}), 500
+        return (
+            jsonify({"error": "Failed to update email recipient", "message": str(e)}),
+            500,
+        )

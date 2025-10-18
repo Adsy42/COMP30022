@@ -10,7 +10,7 @@ bp = Blueprint("form_questions", __name__, url_prefix="/api/form-questions")
 def get_form_questions():
     """
     Get all form questions.
-    
+
     Returns:
         200: List of form questions ordered by their order field
         {
@@ -39,7 +39,7 @@ def create_or_update_questions():
     """
     Create or update form questions (bulk operation).
     Admin only.
-    
+
     Request body:
         {
             "questions": [
@@ -53,7 +53,7 @@ def create_or_update_questions():
                 ...
             ]
         }
-    
+
     Returns:
         200: Questions updated successfully
         400: Invalid request body
@@ -70,9 +70,14 @@ def create_or_update_questions():
         # Validate each question has required fields
         for q in questions:
             if not all(k in q for k in ["id", "question", "type", "order"]):
-                return jsonify(
-                    {"error": "Each question must have id, question, type, and order"}
-                ), 400
+                return (
+                    jsonify(
+                        {
+                            "error": "Each question must have id, question, type, and order"
+                        }
+                    ),
+                    400,
+                )
 
         FormQuestion.bulk_insert(current_app.db, questions)
         return jsonify({"message": "Form questions updated successfully"}), 200
@@ -87,12 +92,12 @@ def reorder_questions():
     """
     Reorder form questions.
     Admin only.
-    
+
     Request body:
         {
             "order": ["1", "3", "2", "4"]  // Array of question IDs in new order
         }
-    
+
     Returns:
         200: Questions reordered successfully
         400: Invalid request body
@@ -120,7 +125,7 @@ def reorder_questions():
 def get_question(question_id):
     """
     Get a specific form question by ID.
-    
+
     Returns:
         200: Question data
         404: Question not found

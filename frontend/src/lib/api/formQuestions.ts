@@ -32,11 +32,11 @@ export const API_ENDPOINTS = {
  */
 export async function fetchQuestions(): Promise<{ data: FormQuestion[] }> {
   const response = await fetch(`${API_BASE}${API_ENDPOINTS.QUESTIONS}`)
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch questions: ${response.statusText}`)
   }
-  
+
   return response.json()
 }
 

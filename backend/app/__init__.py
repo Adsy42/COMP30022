@@ -19,7 +19,7 @@ def create_app(config_name=None):
 
     # Initialize extensions
     CORS(app, origins=app.config["CORS_ORIGINS"])
-    jwt = JWTManager(app)
+    JWTManager(app)
 
     # Initialize MongoDB
     mongo_client = MongoClient(app.config["MONGODB_URI"])

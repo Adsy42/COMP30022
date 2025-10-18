@@ -27,7 +27,7 @@ export default function AdminPage() {
       try {
         setIsLoading(true)
         setError(null)
-        
+
         // Fetch analytics from backend API
         const data = await fetchAnalytics()
 

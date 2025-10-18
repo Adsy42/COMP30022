@@ -37,15 +37,15 @@ def print_summary(stats):
     print("\n" + "=" * 60)
     print("   SEEDING SUMMARY")
     print("=" * 60)
-    if stats.get('users') is not None:
+    if stats.get("users") is not None:
         print(f"   Users: {stats['users']}")
-    if stats.get('templates') is not None:
+    if stats.get("templates") is not None:
         print(f"   Templates: {stats['templates']}")
-    if stats.get('config') is not None:
+    if stats.get("config") is not None:
         print(f"   Config entries: {stats['config']}")
-    if stats.get('form_questions') is not None:
+    if stats.get("form_questions") is not None:
         print(f"   Form questions: {stats['form_questions']}")
-    if stats.get('analytics') is not None:
+    if stats.get("analytics") is not None:
         print(f"   Analytics records: {stats['analytics']}")
     print("=" * 60)
 
@@ -55,27 +55,34 @@ def seed_all(db, args):
     stats = {}
 
     # Determine what to seed
-    seed_everything = not any([
-        args.users, args.templates, args.config,
-        args.questions, args.analytics, args.essential, args.mock
-    ])
+    seed_everything = not any(
+        [
+            args.users,
+            args.templates,
+            args.config,
+            args.questions,
+            args.analytics,
+            args.essential,
+            args.mock,
+        ]
+    )
 
     # Essential data (required for app to function)
     if seed_everything or args.essential or args.users:
-        stats['users'] = seed_users(db)
+        stats["users"] = seed_users(db)
 
     if seed_everything or args.essential or args.templates:
-        stats['templates'] = seed_templates(db)
+        stats["templates"] = seed_templates(db)
 
     if seed_everything or args.essential or args.config:
-        stats['config'] = seed_config(db)
+        stats["config"] = seed_config(db)
 
     # Mock data (for development/testing)
     if seed_everything or args.mock or args.questions:
-        stats['form_questions'] = seed_form_questions(db)
+        stats["form_questions"] = seed_form_questions(db)
 
     if seed_everything or args.mock or args.analytics:
-        stats['analytics'] = seed_analytics(db)
+        stats["analytics"] = seed_analytics(db)
 
     return stats
 
@@ -83,16 +90,24 @@ def seed_all(db, args):
 def main():
     """Main entry point for seeding script."""
     parser = argparse.ArgumentParser(
-        description='Seed the database with initial data.',
-        epilog='If no options are specified, all data will be seeded.'
+        description="Seed the database with initial data.",
+        epilog="If no options are specified, all data will be seeded.",
     )
-    parser.add_argument('--users', action='store_true', help='Seed users only')
-    parser.add_argument('--templates', action='store_true', help='Seed templates only')
-    parser.add_argument('--config', action='store_true', help='Seed config only')
-    parser.add_argument('--questions', action='store_true', help='Seed form questions only')
-    parser.add_argument('--analytics', action='store_true', help='Seed analytics only')
-    parser.add_argument('--essential', action='store_true', help='Seed essential data only (users, templates, config)')
-    parser.add_argument('--mock', action='store_true', help='Seed mock data only (questions, analytics)')
+    parser.add_argument("--users", action="store_true", help="Seed users only")
+    parser.add_argument("--templates", action="store_true", help="Seed templates only")
+    parser.add_argument("--config", action="store_true", help="Seed config only")
+    parser.add_argument(
+        "--questions", action="store_true", help="Seed form questions only"
+    )
+    parser.add_argument("--analytics", action="store_true", help="Seed analytics only")
+    parser.add_argument(
+        "--essential",
+        action="store_true",
+        help="Seed essential data only (users, templates, config)",
+    )
+    parser.add_argument(
+        "--mock", action="store_true", help="Seed mock data only (questions, analytics)"
+    )
 
     args = parser.parse_args()
 
@@ -108,7 +123,7 @@ def main():
             print("\n Database seeding completed successfully!\n")
 
             # Print default credentials if users were seeded
-            if stats.get('users') is not None:
+            if stats.get("users") is not None:
                 print(" Default Admin Credentials:")
                 print("   Username: admin")
                 print("   Password: admin123")
@@ -119,6 +134,7 @@ def main():
         except Exception as e:
             print(f"\n Error during seeding: {str(e)}")
             import traceback
+
             traceback.print_exc()
             return 1
 

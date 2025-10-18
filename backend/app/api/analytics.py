@@ -1,6 +1,5 @@
 """Analytics API endpoints."""
 from flask import Blueprint, jsonify, request, current_app, send_file
-from datetime import datetime
 from ..utils.auth import token_required
 from ..utils.helpers import parse_date_range
 from openpyxl import Workbook
@@ -105,9 +104,7 @@ def get_choice_analytics():
             return jsonify({"error": str(e)}), 400
 
         # Build query
-        query = {
-            "finalized_at": {"$gte": start_dt, "$lte": end_dt, "$exists": True}
-        }
+        query = {"finalized_at": {"$gte": start_dt, "$lte": end_dt, "$exists": True}}
 
         if template_filter:
             query["template_type"] = template_filter
@@ -128,7 +125,7 @@ def get_choice_analytics():
                     question_map[q_id] = {
                         "question": q_text,
                         "type": q_type,
-                        "options": {}
+                        "options": {},
                     }
 
                     # Initialize option labels
@@ -143,7 +140,9 @@ def get_choice_analytics():
 
         for chat in chats:
             # Process both common and template answers
-            all_answers = chat.get("common_answers", []) + chat.get("template_answers", [])
+            all_answers = chat.get("common_answers", []) + chat.get(
+                "template_answers", []
+            )
 
             for answer in all_answers:
                 q_id = answer.get("q_id")
@@ -173,7 +172,10 @@ def get_choice_analytics():
                             else:
                                 # Try to match by option ID
                                 for label in q_info["options"]:
-                                    if label.lower().replace(" ", "_") in option.lower():
+                                    if (
+                                        label.lower().replace(" ", "_")
+                                        in option.lower()
+                                    ):
                                         q_info["options"][label] += 1
                                         break
 
@@ -181,20 +183,25 @@ def get_choice_analytics():
         result = []
         for q_id, q_data in question_map.items():
             if any(count > 0 for count in q_data["options"].values()):
-                result.append({
-                    "question": q_data["question"],
-                    "type": q_data["type"],
-                    "options": [
-                        {"label": label, "count": count}
-                        for label, count in q_data["options"].items()
-                    ]
-                })
+                result.append(
+                    {
+                        "question": q_data["question"],
+                        "type": q_data["type"],
+                        "options": [
+                            {"label": label, "count": count}
+                            for label, count in q_data["options"].items()
+                        ],
+                    }
+                )
 
         return jsonify(result), 200
 
     except Exception as e:
         current_app.logger.error(f"Error getting choice analytics: {str(e)}")
-        return jsonify({"error": "Failed to get choice analytics", "message": str(e)}), 500
+        return (
+            jsonify({"error": "Failed to get choice analytics", "message": str(e)}),
+            500,
+        )
 
 
 @bp.route("/analytics/choice-export", methods=["GET"])
@@ -228,9 +235,7 @@ def export_choice_analytics():
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
 
-        query = {
-            "finalized_at": {"$gte": start_dt, "$lte": end_dt, "$exists": True}
-        }
+        query = {"finalized_at": {"$gte": start_dt, "$lte": end_dt, "$exists": True}}
 
         if template_filter:
             query["template_type"] = template_filter
@@ -250,7 +255,7 @@ def export_choice_analytics():
                     question_map[q_id] = {
                         "question": q_text,
                         "type": q_type,
-                        "options": {}
+                        "options": {},
                     }
 
                     if question.get("options"):
@@ -262,7 +267,9 @@ def export_choice_analytics():
         chats = current_app.db["chats"].find(query)
 
         for chat in chats:
-            all_answers = chat.get("common_answers", []) + chat.get("template_answers", [])
+            all_answers = chat.get("common_answers", []) + chat.get(
+                "template_answers", []
+            )
 
             for answer in all_answers:
                 q_id = answer.get("q_id")
@@ -287,7 +294,10 @@ def export_choice_analytics():
                                 q_info["options"][option] += 1
                             else:
                                 for label in q_info["options"]:
-                                    if label.lower().replace(" ", "_") in option.lower():
+                                    if (
+                                        label.lower().replace(" ", "_")
+                                        in option.lower()
+                                    ):
                                         q_info["options"][label] += 1
                                         break
 
@@ -297,7 +307,9 @@ def export_choice_analytics():
         ws.title = "Choice Analytics"
 
         # Header styling
-        header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+        header_fill = PatternFill(
+            start_color="4472C4", end_color="4472C4", fill_type="solid"
+        )
         header_font = Font(bold=True, color="FFFFFF")
 
         # Write headers

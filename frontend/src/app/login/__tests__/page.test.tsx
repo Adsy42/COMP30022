@@ -15,6 +15,7 @@ jest.mock('next/image', () => ({
   default: (props: any) => {
     // Omit priority from img attributes to avoid DOM warnings
     const { priority, ...imgProps } = props
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return <img {...imgProps} />
   },
 }))
@@ -46,7 +47,9 @@ describe('LoginPage', () => {
 
     // Check for main elements
     expect(screen.getByText('Administrator Sign In')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('admin@grants2contracts.example')).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText('admin@grants2contracts.example')
+    ).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Password')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sign In' })).toBeInTheDocument()
     expect(screen.getByLabelText('Remember Me')).toBeInTheDocument()
@@ -57,9 +60,12 @@ describe('LoginPage', () => {
     render(<LoginPage />)
 
     // Fill form with correct credentials
-    fireEvent.change(screen.getByPlaceholderText('admin@grants2contracts.example'), {
-      target: { value: 'admin@grants2contracts.example' },
-    })
+    fireEvent.change(
+      screen.getByPlaceholderText('admin@grants2contracts.example'),
+      {
+        target: { value: 'admin@grants2contracts.example' },
+      }
+    )
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'password' },
     })
@@ -72,7 +78,10 @@ describe('LoginPage', () => {
 
     // Verify redirect and token storage
     await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith('auth_token', 'mock_jwt_token')
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'auth_token',
+        'mock_jwt_token'
+      )
       expect(mockRouter.push).toHaveBeenCalledWith('/admin')
     })
   })
@@ -81,9 +90,12 @@ describe('LoginPage', () => {
     render(<LoginPage />)
 
     // Fill form with incorrect credentials
-    fireEvent.change(screen.getByPlaceholderText('admin@grants2contracts.example'), {
-      target: { value: 'wrong@example.com' },
-    })
+    fireEvent.change(
+      screen.getByPlaceholderText('admin@grants2contracts.example'),
+      {
+        target: { value: 'wrong@example.com' },
+      }
+    )
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'wrongpassword' },
     })
@@ -105,9 +117,12 @@ describe('LoginPage', () => {
     render(<LoginPage />)
 
     // Fill form
-    fireEvent.change(screen.getByPlaceholderText('admin@grants2contracts.example'), {
-      target: { value: 'admin@grants2contracts.example' },
-    })
+    fireEvent.change(
+      screen.getByPlaceholderText('admin@grants2contracts.example'),
+      {
+        target: { value: 'admin@grants2contracts.example' },
+      }
+    )
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'password' },
     })
@@ -116,7 +131,9 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     // Check disabled states
-    expect(screen.getByPlaceholderText('admin@grants2contracts.example')).toBeDisabled()
+    expect(
+      screen.getByPlaceholderText('admin@grants2contracts.example')
+    ).toBeDisabled()
     expect(screen.getByPlaceholderText('Password')).toBeDisabled()
     expect(screen.getByLabelText('Remember Me')).toBeDisabled()
     expect(screen.getByText('Signing in...')).toBeInTheDocument()

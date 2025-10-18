@@ -103,7 +103,9 @@ class Analytics:
         analytics = Analytics(
             total_queries=analytics_data.get("kpi", {}).get("total_queries", 0),
             simple_queries=analytics_data.get("kpi", {}).get("simple_queries", 0),
-            ai_resolved_queries=analytics_data.get("kpi", {}).get("ai_resolved_queries", 0),
+            ai_resolved_queries=analytics_data.get("kpi", {}).get(
+                "ai_resolved_queries", 0
+            ),
             question_analytics=analytics_data.get("questions", []),
         )
         analytics.save(db)

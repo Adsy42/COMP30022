@@ -28,7 +28,9 @@ class EmailService:
             msg = MIMEMultipart()
             msg["From"] = current_app.config["EMAIL_USER"]
             msg["To"] = recipient_email
-            msg["Subject"] = f"New Query Escalation - Chat {chat_data.get('chat_id', 'N/A')}"
+            msg[
+                "Subject"
+            ] = f"New Query Escalation - Chat {chat_data.get('chat_id', 'N/A')}"
 
             # Email body
             body = EmailService._format_escalation_body(chat_data)
@@ -49,7 +51,9 @@ class EmailService:
                             )
                             msg.attach(part)
                     except Exception as e:
-                        current_app.logger.error(f"Failed to attach file {file_path}: {str(e)}")
+                        current_app.logger.error(
+                            f"Failed to attach file {file_path}: {str(e)}"
+                        )
 
             # Send email
             with smtplib.SMTP(
@@ -84,10 +88,16 @@ class EmailService:
         template_answers = chat_data.get("template_answers", [])
 
         common_html = "<br>".join(
-            [f"<strong>{a.get('q_id')}:</strong> {a.get('ans')}" for a in common_answers]
+            [
+                f"<strong>{a.get('q_id')}:</strong> {a.get('ans')}"
+                for a in common_answers
+            ]
         )
         template_html = "<br>".join(
-            [f"<strong>{a.get('q_id')}:</strong> {a.get('ans')}" for a in template_answers]
+            [
+                f"<strong>{a.get('q_id')}:</strong> {a.get('ans')}"
+                for a in template_answers
+            ]
         )
 
         html = f"""

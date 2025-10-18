@@ -28,13 +28,20 @@ export default function EmailConfigPage() {
         setError(null)
         
         // Get token from localStorage
-        const token = localStorage.getItem('token') || ''
+        const token = localStorage.getItem('token')
+        
+        if (!token) {
+          setError('Authentication required. Please log in again.')
+          setIsLoading(false)
+          return
+        }
         
         // Fetch from real backend API
         const data = await fetchEmailConfig(token)
         setEmail(data.email_address)
         setIsLoading(false)
       } catch (err) {
+        console.error('Email config fetch error:', err)
         setError('Failed to load email configuration. Please try again later.')
         setIsLoading(false)
       }
@@ -67,7 +74,11 @@ export default function EmailConfigPage() {
       }
 
       // Get token from localStorage
-      const token = localStorage.getItem('token') || ''
+      const token = localStorage.getItem('token')
+      
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.')
+      }
       
       // Call backend API to update email recipient
       await updateEmailConfig(email, token)

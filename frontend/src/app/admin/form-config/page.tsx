@@ -5,14 +5,13 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import { QuestionList } from '@/components/QuestionList'
-import { FormQuestion, fetchMockQuestions } from '../__mocks__/questions'
+import {
+  FormQuestion,
+  fetchQuestions,
+  updateQuestions,
+  reorderQuestions,
+} from '@/lib/api'
 import { AddQuestionModal } from '@/components/AddQuestionModal'
-
-// API endpoints - Update when backend is implemented
-const API_ENDPOINTS = {
-  QUESTIONS: '/api/form-questions',
-  REORDER: '/api/form-questions/reorder',
-} as const
 
 // Navigation component with back button
 const navActions = (
@@ -35,18 +34,15 @@ export default function FormConfigPage() {
   )
   const [actionError, setActionError] = useState<string | null>(null)
 
-  // Update useEffect with better error handling
+  // Load questions from backend API
   useEffect(() => {
     const loadQuestions = async () => {
       try {
         setIsLoading(true)
         setError(null)
-        // === API CALL: Replace fetchMockQuestions with real API call when backend is connected ===
-        // Example:
-        // const response = await fetch('/api/form-questions')
-        // const data = await response.json()
-        // setQuestions(data)
-        const response = await fetchMockQuestions()
+
+        // Fetch questions from backend
+        const response = await fetchQuestions()
         setQuestions(response.data)
       } catch (err) {
         setError(
@@ -71,24 +67,20 @@ export default function FormConfigPage() {
     const originalQuestions = [...questions]
     try {
       setActionError(null)
-      setQuestions(items.map((q, index) => ({ ...q, order: index })))
-      // TODO: Implement API call to update order
-      // await fetch(API_ENDPOINTS.REORDER, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     questions: updatedQuestions.map(({ id, order }) => ({ id, order }))
-      //   })
-      // });
+      const updatedItems = items.map((q: FormQuestion, index: number) => ({
+        ...q,
+        order: index,
+      }))
+      setQuestions(updatedItems)
 
-      console.log('Orders updated:', {
-        moved: {
-          question: reorderedItem.question,
-          from: result.source.index,
-          to: result.destination.index,
-        },
-        newOrders: items.map(q => ({ id: q.id, order: q.order })),
-      })
+      // Get token from localStorage
+      const token = localStorage.getItem('token') || ''
+
+      // Call backend API to persist reorder
+      await reorderQuestions(
+        updatedItems.map((q: FormQuestion) => q.id),
+        token
+      )
     } catch (err) {
       setQuestions(originalQuestions)
       setActionError('Failed to reorder questions. Please try again.')
@@ -99,13 +91,16 @@ export default function FormConfigPage() {
     const originalQuestions = [...questions]
     try {
       setActionError(null)
-      setQuestions(questions.filter(q => q.id !== id))
-      // TODO: Implement actual API call when backend is ready
-      // await fetch(`${API_ENDPOINTS.QUESTIONS}/${id}`, {
-      //   method: 'DELETE'
-      // });
+      setQuestions(questions.filter((q: FormQuestion) => q.id !== id))
 
-      console.log('Question deleted:', id)
+      // Get token from localStorage
+      const token = localStorage.getItem('token') || ''
+
+      // Update backend with remaining questions
+      const remainingQuestions = questions.filter(
+        (q: FormQuestion) => q.id !== id
+      )
+      await updateQuestions(remainingQuestions, token)
     } catch (err) {
       setQuestions(originalQuestions)
       setActionError('Failed to delete question. Please try again.')
@@ -113,7 +108,7 @@ export default function FormConfigPage() {
   }
 
   // Add handler for new questions
-  const handleAddQuestion = (
+  const handleAddQuestion = async (
     newQuestion: Omit<FormQuestion, 'id' | 'order'>
   ) => {
     try {
@@ -125,17 +120,14 @@ export default function FormConfigPage() {
       }
 
       // Optimistically update UI
-      setQuestions([...questions, question])
+      const updatedQuestions = [...questions, question]
+      setQuestions(updatedQuestions)
 
-      // TODO: Implement actual API call when backend is ready
-      // const response = await fetch(API_ENDPOINTS.QUESTIONS, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(question)
-      // });
-      // const data = await response.json();
+      // Get token from localStorage
+      const token = localStorage.getItem('token') || ''
 
-      console.log('Question added:', question)
+      // Call backend API to persist changes
+      await updateQuestions(updatedQuestions, token)
     } catch (err) {
       // Revert on failure
       setQuestions(questions)
@@ -155,23 +147,16 @@ export default function FormConfigPage() {
 
     try {
       // Optimistically update UI
-      setQuestions(
-        questions.map(q =>
-          q.id === editingQuestion.id ? { ...q, ...updatedQuestion } : q
-        )
+      const updatedQuestions = questions.map((q: FormQuestion) =>
+        q.id === editingQuestion.id ? { ...q, ...updatedQuestion } : q
       )
+      setQuestions(updatedQuestions)
 
-      // TODO: Implement actual API call when backend is ready
-      // await fetch(`${API_ENDPOINTS.QUESTIONS}/${editingQuestion.id}`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(updatedQuestion)
-      // });
+      // Get token from localStorage
+      const token = localStorage.getItem('token') || ''
 
-      console.log('Question updated:', {
-        id: editingQuestion.id,
-        ...updatedQuestion,
-      })
+      // Call backend API to persist changes
+      await updateQuestions(updatedQuestions, token)
     } catch (err) {
       // Revert on failure
       setQuestions(questions)

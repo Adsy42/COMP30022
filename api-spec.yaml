@@ -1,0 +1,643 @@
+openapi: 3.0.3
+info:
+  title: Grants Query & Referral – Frontend API
+  version: 0.4.1
+  description: |
+    Frontend-facing API for templates, chat sessions, uploads, analytics, and admin config.
+    Flow: create chat → upload files → upsert answers (common→simple/complex) → finalize (AI or human).
+
+    NOTE: ID fields are unified — the chat/session identifier is consistently named **chat_id**
+    across all endpoints (including escalation and legacy submission).
+
+servers:
+  - url: https://api.example.com
+
+tags:
+  - name: Public
+  - name: Chat
+  - name: Uploads
+  - name: Admin
+  - name: Analytics
+  - name: Config
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ===== TEMPLATE / QUESTIONS =====
+    Option:
+      type: object
+      required: [label]
+      properties:
+        label:
+          type: string
+          example: Sponsor
+        followUp:
+          $ref: '#/components/schemas/Question'
+          nullable: true
+
+    Question:
+      type: object
+      required: [id, question, type]
+      properties:
+        id:
+          type: string
+          description: Globally-unique question id (follow-ups must also be unique).
+          example: q_role
+        question:
+          type: string
+          example: What is your role?
+        type:
+          type: string
+          enum: [freeform, single, multi]
+          example: single
+        options:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Option'
+
+    # ===== CHAT / ANSWERS / FINALIZE =====
+    Answer:
+      type: object
+      required: [q_id, ans]
+      properties:
+        q_id:
+          type: string
+          example: q_role
+        ans:
+          description: For freeform/single = string (optionId for single). For multi = array of strings (optionIds).
+          oneOf:
+            - type: string
+              example: opt_sponsor
+            - type: array
+              items: { type: string }
+              example: [opt_indemnity, opt_ip]
+
+    ChatStartResponse:
+      type: object
+      required: [chat_id]
+      properties:
+        chat_id:
+          type: string
+          example: chat_7f2c11b6
+
+    FinalizeResponse:
+      type: object
+      required: [chat_id, status]
+      properties:
+        chat_id:
+          type: string
+          example: chat_7f2c11b6
+        status:
+          type: string
+          enum: [simple, complex]
+          example: simple
+        ai_response:
+          type: string
+          nullable: true
+          example: Based on your inputs, a Collaboration Agreement fits best…
+
+    # ===== (LEGACY) SINGLE-SHOT SUBMISSION =====
+    SubmissionRequest:
+      type: object
+      required: [form_type, answers]
+      properties:
+        form_type:
+          type: string
+          enum: [simple, complex, common]
+          example: simple
+        attachments:
+          type: array
+          items: { type: string, example: f_01abc }
+        answers:
+          type: array
+          items: { $ref: '#/components/schemas/Answer' }
+
+    SubmissionResponse:
+      type: object
+      required: [chat_id]
+      properties:
+        chat_id:
+          type: string
+          example: chat_7f2c11b6
+        response:
+          type: string
+          nullable: true
+          example: "Here's some info about what you're asking for ..."
+
+    # ===== ESCALATION =====
+    EscalationRequest:
+      type: object
+      required: [chat_id, escalate]
+      properties:
+        chat_id: { type: string, example: chat_7f2c11b6 }
+        escalate: { type: boolean, example: true }
+        reason:
+          type: string
+          nullable: true
+          example: AI missed indemnity nuance.
+
+    OkResponse:
+      type: object
+      properties:
+        ok: { type: boolean, example: true }
+
+    # ===== AUTH =====
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string, example: admin }
+        password: { type: string, example: password }
+
+    LoginResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        token:
+          type: string
+          nullable: true
+          example: a1b2c3d4
+
+    # ===== KPIs & ANALYTICS =====
+    KPIResponse:
+      type: object
+      properties:
+        total_queries: { type: integer, example: 100 }
+        simple_queries: { type: integer, example: 70 }
+        ai_resolved_queries: { type: integer, example: 50 }
+
+    SingleChoiceAnalyticsRequest:
+      type: object
+      required: [start_time, end_time]
+      properties:
+        start_time: { type: string, example: "01/09/2025", description: dd/MM/yyyy }
+        end_time:   { type: string, example: "01/10/2025", description: dd/MM/yyyy }
+
+    SingleChoiceAnalyticsItem:
+      type: object
+      properties:
+        question: { type: string, example: What is your role? }
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              label: { type: string, example: Researcher }
+              count: { type: integer, example: 10 }
+
+    RecipientEmailRequest:
+      type: object
+      required: [email_address]
+      properties:
+        email_address:
+          type: string
+          format: email
+          example: ric-contracts@unimelb.edu.au
+
+    TemplateUpsertRequest:
+      type: array
+      description: Same shape as GET /templates response; new questions may have null id.
+      items:
+        $ref: '#/components/schemas/Question'
+
+    # ===== UPLOADS =====
+    UploadResponse:
+      type: object
+      required: [fileId, name, size, mime]
+      properties:
+        fileId: { type: string, example: f_01hxyz }
+        name:   { type: string, example: grant.pdf }
+        size:   { type: integer, example: 234522 }
+        mime:   { type: string, example: application/pdf }
+
+    # ===== NEW: Choice analytics (single + multi) =====
+    ChoiceAnalyticsRequest:
+      type: object
+      required: [start_time, end_time]
+      properties:
+        start_time: { type: string, example: "01/09/2025", description: dd/MM/yyyy }
+        end_time:   { type: string, example: "01/10/2025", description: dd/MM/yyyy }
+        template:
+          type: string
+          nullable: true
+          description: Optional filter for template type
+          enum: [common, simple, complex]
+
+    ChoiceAnalyticsItem:
+      type: object
+      properties:
+        question: { type: string, example: "What is your role?" }
+        type:
+          type: string
+          enum: [single, multi]
+          example: single
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              label: { type: string, example: "Researcher" }
+              count: { type: integer, example: 42 }
+
+paths:
+  # ---------- Public / Templates ----------
+  /templates:
+    get:
+      tags: [Public]
+      summary: Fetch questions by template
+      parameters:
+        - in: query
+          name: template
+          required: true
+          schema: { type: string, enum: [simple, complex, common] }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Question' }
+              examples:
+                simpleTemplate:
+                  summary: Simple template example
+                  value:
+                    - { id: q_name, question: "What is your name?", type: freeform, options: null }
+                    - id: q_role
+                      question: "What is your role?"
+                      type: single
+                      options:
+                        - { label: "Researcher", followUp: null }
+                        - label: "Sponsor"
+                          followUp:
+                            id: q_kind_of_sponsor
+                            question: "What kind of sponsor?"
+                            type: single
+                            options:
+                              - { label: "A", followUp: null }
+                              - { label: "B", followUp: null }
+
+  # ---------- Chat / Sessions & Answers ----------
+  /chats:
+    post:
+      tags: [Chat]
+      summary: Start a chat/session (server generates chat_id)
+      description: Creates a new chat session to tie together common + simple/complex answers and uploads.
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatStartResponse' }
+              examples:
+                created: { value: { chat_id: "chat_7f2c11b6" } }
+
+  /uploads:
+    post:
+      tags: [Uploads]
+      summary: Upload a file and link it to a chat
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [chat_id, file]
+              properties:
+                chat_id: { type: string, example: chat_7f2c11b6 }
+                file: { type: string, format: binary }
+      responses:
+        '201':
+          description: Uploaded
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UploadResponse' }
+              examples:
+                ok:
+                  value: { fileId: "f_01hxyz", name: "grant.pdf", size: 234522, mime: "application/pdf" }
+        '413': { description: File too large }
+        '415': { description: Unsupported media type }
+        '404': { description: chat_id not found }
+
+  /chats/{chat_id}/answers:
+    post:
+      tags: [Chat]
+      summary: Upsert answers for a template in this chat
+      description: Server upserts by (chat_id, q_id) to avoid duplicates.
+      parameters:
+        - in: path
+          name: chat_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [template, answers]
+              properties:
+                template: { type: string, enum: [common, simple, complex] }
+                answers:
+                  type: array
+                  items: { $ref: '#/components/schemas/Answer' }
+                attachments:
+                  type: array
+                  items: { type: string, example: f_01hxyz }
+            examples:
+              commonAnswers:
+                summary: Common block first
+                value:
+                  template: "common"
+                  answers:
+                    - { q_id: q_name, ans: "Alice Smith" }
+                    - { q_id: q_role, ans: "opt_sponsor" }
+              complexWithFiles:
+                summary: Complex branch with attachments
+                value:
+                  template: "complex"
+                  answers:
+                    - { q_id: q_kind_of_sponsor, ans: "opt_kind_A" }
+                    - { q_id: q_topics, ans: [ "opt_indemnity", "opt_ip" ] }
+                    - { q_id: q_other_details, ans: "Tight deadline; unusual IP terms." }
+                  attachments: ["f_01hxyz", "f_02abcd"]
+      responses:
+        '200': { description: Upserted }
+        '404': { description: chat_id not found }
+
+  /chats/{chat_id}/finalize:
+    post:
+      tags: [Chat]
+      summary: Finalize a chat and get routing/AI result
+      parameters:
+        - in: path
+          name: chat_id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Finalized
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FinalizeResponse' }
+              examples:
+                simpleRouted:
+                  summary: Simple → AI replied
+                  value:
+                    chat_id: "chat_7f2c11b6"
+                    status: "simple"
+                    ai_response: "Based on your inputs, a Collaboration Agreement fits best…"
+                complexRouted:
+                  summary: Complex → human handoff
+                  value:
+                    chat_id: "chat_7f2c11b6"
+                    status: "complex"
+        '404': { description: chat_id not found }
+
+  # ---------- (Deprecated) Single-shot submission ----------
+  /submissions:
+    post:
+      deprecated: true
+      tags: [Chat]
+      summary: (Deprecated) Submit a completed form in one request
+      description: Replaced by the /chats flow (create → upload(s) → answers → finalize).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SubmissionRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SubmissionResponse' }
+        '400': { description: Validation error }
+
+  # ---------- Chat / Escalation ----------
+  /escalations:
+    post:
+      tags: [Chat]
+      summary: Mark simple query outcome (escalate or complete)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EscalationRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OkResponse' }
+        '404': { description: chat_id not found }
+
+  # ---------- Admin / Auth ----------
+  /login:
+    post:
+      tags: [Admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+            examples:
+              example:
+                value: { username: "admin", password: "password" }
+      responses:
+        '200':
+          description: Success or failure (per your draft)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginResponse' }
+              examples:
+                ok:   { value: { success: true,  token: "a1b2c3d4" } }
+                fail: { value: { success: false, token: null } }
+        '401': { description: Invalid credentials }
+
+  # ---------- Admin / KPIs & Analytics ----------
+  /kpis:
+    get:
+      tags: [Analytics]
+      summary: Get KPI information
+      description: Returns aggregate KPIs. (Auth required)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: query
+          name: start_time
+          schema: { type: string, example: "01/09/2025" }
+        - in: query
+          name: end_time
+          schema: { type: string, example: "01/10/2025" }
+      responses:
+        '200':
+          description: KPI summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KPIResponse' }
+              examples:
+                sample:
+                  value: { total_queries: 120, simple_queries: 80, ai_resolved_queries: 60 }
+        '401': { description: Unauthorized }
+
+  # ---------- NEW: Unified choice analytics (single + multi) ----------
+  /analytics/choice:
+    post:
+      tags: [Analytics]
+      summary: Choice question distribution (single + multi)
+      description: |
+        Returns option selection counts for both single- and multi-choice questions
+        between dates. (Auth required)
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChoiceAnalyticsRequest' }
+            examples:
+              range:
+                value: { start_time: "01/09/2025", end_time: "01/10/2025", template: "common" }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ChoiceAnalyticsItem' }
+              examples:
+                sample:
+                  value:
+                    - question: "What is your role?"
+                      type: "single"
+                      options:
+                        - { label: "Researcher", count: 42 }
+                        - { label: "Sponsor",   count: 18 }
+                    - question: "Which topics apply?"
+                      type: "multi"
+                      options:
+                        - { label: "Indemnity", count: 27 }
+                        - { label: "IP",        count: 31 }
+        '401': { description: Unauthorized }
+
+  # ---------- NEW: Excel export for choice analytics ----------
+  /analytics/choice-export:
+    get:
+      tags: [Analytics]
+      summary: Export choice analytics as Excel (.xlsx)
+      description: |
+        Returns an Excel file containing choice analytics (single + multi) for the given range.
+        (Auth required)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: query
+          name: start_time
+          required: true
+          schema: { type: string, example: "01/09/2025" }
+          description: dd/MM/yyyy
+        - in: query
+          name: end_time
+          required: true
+          schema: { type: string, example: "01/10/2025" }
+          description: dd/MM/yyyy
+        - in: query
+          name: template
+          required: false
+          schema: { type: string, enum: [common, simple, complex] }
+          description: Optional template filter
+      responses:
+        '200':
+          description: Excel file
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+        '401': { description: Unauthorized }
+
+  # ---------- (Deprecated) Single-choice analytics (kept for BC) ----------
+  /analytics/single-choice:
+    post:
+      deprecated: true
+      tags: [Analytics]
+      summary: (Deprecated) Single-choice distribution across templates
+      description: Replaced by POST /analytics/choice (covers single + multi). (Auth required)
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SingleChoiceAnalyticsRequest' }
+            examples:
+              range:
+                value: { start_time: "01/09/2025", end_time: "01/10/2025" }
+      responses:
+        '200':
+          description: OK (use /analytics/choice going forward)
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/SingleChoiceAnalyticsItem' }
+              examples:
+                sample:
+                  value:
+                    - question: "What is your role?"
+                      options:
+                        - { label: "Researcher", count: 42 }
+                        - { label: "Sponsor",   count: 18 }
+        '401': { description: Unauthorized }
+
+  # ---------- Admin / Config ----------
+  /config/email-recipient:
+    put:
+      tags: [Config]
+      summary: Update escalation recipient email
+      description: Updates the recipient email address for complex/escalated cases. (Auth required)
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecipientEmailRequest' }
+            examples:
+              sample: { value: { email_address: "ric-contracts@unimelb.edu.au" } }
+      responses:
+        '200':
+          description: Boolean flag
+          content:
+            application/json:
+              schema: { type: boolean, example: true }
+        '401': { description: Unauthorized }
+        '422': { description: Invalid email }
+
+  /templates/save:
+    post:
+      tags: [Config]
+      summary: Save template questions
+      description: Saves the full question list for a template after admin edits. New questions may have null id. (Auth required)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: query
+          name: template
+          required: true
+          schema: { type: string, enum: [simple, complex, common] }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TemplateUpsertRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OkResponse' }
+        '401': { description: Unauthorized }

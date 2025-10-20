@@ -279,3 +279,13 @@ class RAGServicePinecone:
             }
         except Exception as e:
             return {"error": str(e)}
+
+    def get_embeddings(self, text: str) -> List[float]:
+        """Get embeddings for a given text"""
+        try:
+            # Use the embeddings model to generate embeddings
+            embeddings = self.embeddings.embed_query(text)
+            return embeddings
+        except Exception as e:
+            print(f"Error generating embeddings: {str(e)}")
+            return []

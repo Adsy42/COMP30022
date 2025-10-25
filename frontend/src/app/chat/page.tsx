@@ -653,6 +653,9 @@ export default function ChatPage() {
                   }}
                 />
               </div>
+              <p className="mt-2 text-center text-xs text-gray-500">
+                This AI chatbot is in early iteration and can make mistakes.
+              </p>
             </div>
           </footer>
         </div>

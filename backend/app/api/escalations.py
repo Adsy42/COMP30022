@@ -1,4 +1,5 @@
 """Escalation API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from ..models.chat import Chat
 from ..models.config import AppConfig

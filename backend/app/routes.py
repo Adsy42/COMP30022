@@ -1,4 +1,5 @@
 """Main routes for health checks and root endpoints."""
+
 from flask import Blueprint, jsonify
 
 main = Blueprint("main", __name__)

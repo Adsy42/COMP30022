@@ -14,31 +14,41 @@ def _auto_seed_database(app):
     try:
         # Check if templates collection is empty
         template_count = app.db["templates"].count_documents({})
-        
+
         if template_count == 0:
             app.logger.info("Database appears empty. Auto-seeding essential data...")
-            
+
             # Import seed functions
             # Add database directory to path
-            db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "database")
+            db_path = os.path.join(
+                os.path.dirname(os.path.dirname(__file__)), "..", "database"
+            )
             sys.path.insert(0, db_path)
-            
+
             from seeds import seed_users, seed_templates, seed_config
-            
+
             # Seed essential data
             users_count = seed_users(app.db)
             templates_count = seed_templates(app.db)
             config_count = seed_config(app.db)
-            
-            app.logger.info(f"✓ Auto-seeded: {users_count} users, {templates_count} templates, {config_count} config entries")
-            app.logger.info("✓ Default admin credentials - username: admin, password: admin123")
+
+            app.logger.info(
+                f"✓ Auto-seeded: {users_count} users, {templates_count} templates, {config_count} config entries"
+            )
+            app.logger.info(
+                "✓ Default admin credentials - username: admin, password: admin123"
+            )
         else:
-            app.logger.info(f"Database already initialized ({template_count} templates found)")
-            
+            app.logger.info(
+                f"Database already initialized ({template_count} templates found)"
+            )
+
     except Exception as e:
         app.logger.error(f"Error during auto-seeding: {str(e)}")
         # Don't crash the app if seeding fails
-        app.logger.warning("App will continue without seeded data. Run 'python seed_db.py --essential' manually.")
+        app.logger.warning(
+            "App will continue without seeded data. Run 'python seed_db.py --essential' manually."
+        )
 
 
 def create_app(config_name=None):

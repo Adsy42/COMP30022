@@ -1,4 +1,5 @@
 """Admin authentication API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from flask_jwt_extended import create_access_token
 from ..models.user import User

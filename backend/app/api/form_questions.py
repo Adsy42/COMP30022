@@ -1,4 +1,5 @@
 """API endpoints for form questions configuration."""
+
 from flask import Blueprint, jsonify, request, current_app
 from app.models.form_question import FormQuestion
 from app.utils.auth import admin_required

@@ -1,4 +1,5 @@
 """AI Service client for communicating with the AI microservice."""
+
 import requests
 from flask import current_app
 

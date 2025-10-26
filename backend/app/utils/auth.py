@@ -1,4 +1,5 @@
 """Authentication decorators and utilities."""
+
 from functools import wraps
 from flask import jsonify, current_app
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity

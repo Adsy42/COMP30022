@@ -1,4 +1,5 @@
 """Template API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from ..models.template import Template
 from ..utils.auth import token_required

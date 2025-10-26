@@ -1,0 +1,25 @@
+# Railway.toml - AI Service Configuration
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.prod"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Resource limits (AI service may need more memory)
+[deploy.resources]
+memory = 1024
+cpu = 2
+
+# Environment-specific settings
+[[deploy.environment]]
+name = "PORT"
+value = "8000"
+
+[[deploy.environment]]
+name = "ENVIRONMENT"
+value = "production"

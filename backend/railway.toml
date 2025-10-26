@@ -1,0 +1,25 @@
+# Railway.toml - Backend Flask Service Configuration
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.prod"
+
+[deploy]
+startCommand = "gunicorn --bind 0.0.0.0:$PORT --workers 4 --timeout 120 app:app"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Resource limits
+[deploy.resources]
+memory = 512
+cpu = 1
+
+# Environment-specific settings
+[[deploy.environment]]
+name = "FLASK_ENV"
+value = "production"
+
+[[deploy.environment]]
+name = "PORT"
+value = "5000"

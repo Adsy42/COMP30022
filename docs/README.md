@@ -18,6 +18,14 @@ Welcome to the Legal AI Query & Referral System documentation. Follow this guide
 - **[🏗️ Project Structure](./04-project-structure.md)** - Codebase organization and architecture
 - **[🤖 Project Context (CLAUDE.md)](../CLAUDE.md)** - Technical details and environment setup
 
+## 🚀 Deployment Documentation
+
+**Production deployment guides:**
+
+- **[⚡ Deployment Quick Start](./DEPLOYMENT-QUICKSTART.md)** - Deploy to production in 30 minutes
+- **[🌐 Full Deployment Guide](./06-deployment-guide.md)** - Comprehensive deployment instructions
+- **[🔐 Environment Variables Reference](./07-environment-variables.md)** - Complete env var documentation
+
 ## 🔄 Development Flow
 
 ```mermaid
@@ -38,12 +46,18 @@ docs/
 ├── 01-setup.md                  # ⚙️ Development environment setup
 ├── 02-git-workflow.md           # 🌿 Git branching and workflow
 ├── 03-development-guide.md      # 💻 Daily development practices
-└── 04-project-structure.md      # 🏗️ Codebase organization
+├── 04-project-structure.md      # 🏗️ Codebase organization
+├── DEPLOYMENT-QUICKSTART.md     # ⚡ Quick deployment guide
+├── 06-deployment-guide.md       # 🌐 Full deployment documentation
+└── 07-environment-variables.md  # 🔐 Environment variables reference
 
 Root Files:
 ├── README.md                    # 📖 Project overview
 ├── CLAUDE.md                    # 🤖 Technical context and instructions
 └── .github/
+    ├── workflows/
+    │   ├── ci.yml               # 🧪 Continuous Integration
+    │   └── cd.yml               # 🚀 Continuous Deployment
     └── pull_request_template.md # 📝 PR template
 ```
 
@@ -69,6 +83,9 @@ Root Files:
 
 - Setup Guide (environment configuration)
 - Development Guide (CI/CD pipeline)
+- Deployment Quick Start (production setup)
+- Full Deployment Guide (detailed instructions)
+- Environment Variables Reference (configuration)
 - Project Context (technical details)
 
 ## 🔗 External Resources

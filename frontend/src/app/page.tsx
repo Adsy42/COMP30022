@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="h-screen flex flex-col overflow-hidden relative">
       <PlayfulBackground />
-      
+
       <Navbar
         variant="transparent"
         actions={

@@ -42,13 +42,13 @@ type Props = {
 }
 
 export default function Navbar({ actions, variant = 'solid' }: Props) {
-  const navStyles = variant === 'transparent'
-    ? ''
-    : 'bg-white'
+  const navStyles = variant === 'transparent' ? '' : 'bg-white'
 
   return (
     <header className="sticky top-0 z-50">
-      <nav className={`mx-auto flex w-full max-w-screen-3xl items-center justify-between px-6 py-3 ${navStyles}`}>
+      <nav
+        className={`mx-auto flex w-full max-w-screen-3xl items-center justify-between px-6 py-3 ${navStyles}`}
+      >
         {/* left side */}
         <Link href="/" className="flex items-center gap-3 hover:opacity-90">
           <Image

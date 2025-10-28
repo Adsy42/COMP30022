@@ -50,6 +50,11 @@ type Phase =
   | 'escalating'
 
 const OTHER = 'Other (please specify)'
+const MIN_TYPING_MS = 400 // minimum duration to show the typing indicator
+const QUEUE_PADDING_MS = 100 // extra buffer between bot messages so they feel distinct
+
+const delay = (ms: number) =>
+  new Promise<void>(resolve => setTimeout(resolve, ms))
 
 export default function ChatPage() {
   // Transcript
@@ -71,7 +76,7 @@ export default function ChatPage() {
   const [complexAnswers, setComplexAnswers] = useState<AnswerPayload[]>([])
   const [attachmentIds, setAttachmentIds] = useState<string[]>([])
   const endRef = useRef<HTMLDivElement>(null)
-  const nextMessageIdRef = useRef(0)
+  const nextMessageIdRef = useRef(0) // stable keys so React keeps bubble state per message
 
   // UI selection buffer
   const [tempChoices, setTempChoices] = useState<string[]>([])
@@ -107,21 +112,18 @@ export default function ChatPage() {
     return updated
   }
 
-  function delay(ms: number) {
-    return new Promise(res => setTimeout(res, ms))
-  }
-  const MIN_TYPING_MS = 400
   const appendBot = useCallback(
     (text: string, onComplete?: () => void) => {
       const id = nextMessageIdRef.current++
       setMessages(prev => [...prev, { id, role: 'bot', text, onComplete }])
     },
-    []
+    [setMessages]
   )
   const appendUser = useCallback((text: string) => {
     const id = nextMessageIdRef.current++
     setMessages(prev => [...prev, { id, role: 'user', text }])
-  }, [])
+  }, [setMessages])
+  // Ensure the typing indicator is visible for at least MIN_TYPING_MS
   const withTyping = useCallback(
     async <T,>(work: Promise<T>) => {
       setBotTyping(true)
@@ -161,7 +163,7 @@ export default function ChatPage() {
         await botSay(text, minMs, handleComplete)
         // wait for the typewriter animation to complete
         await completion
-        await delay(100) // small cushion so the next line isn't immediate
+        await delay(QUEUE_PADDING_MS) // small cushion so the next line isn't immediate
       })
       return botQueueRef.current
     },
@@ -566,8 +568,7 @@ export default function ChatPage() {
         queueMessage(
           "Thanks - your query has been routed to the Contracts team. They'll follow up shortly."
         )
-          .then(() => queueMessage('You may close this page now.'))
-          .then(() => setPhase('done'))
+        queueMessage('You may close this page now.').then(() => setPhase('done'))
       } catch (err) {
         setPhase('error')
         queueMessage('Sorry, there was a problem finalizing your query.')

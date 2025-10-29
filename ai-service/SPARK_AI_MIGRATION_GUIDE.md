@@ -1,6 +1,8 @@
-# Spark AI Integration Guide
+# 🔄 Spark AI Migration Guide
 
-This document provides comprehensive instructions for switching from Hugging Face to Spark AI in the Legal AI Query & Referral System.
+This guide provides comprehensive instructions for switching from Hugging Face to Spark AI in the Legal AI Query & Referral System.
+
+---
 
 ## Overview
 
@@ -118,6 +120,17 @@ The migration primarily affects the **AI microservice** (`ai-service/`). The bac
    - Query the knowledge base
    - Verify embeddings generation
    - Test chat analysis
+
+## Code Comments Reference
+
+Throughout the codebase, you'll find comments marked with `SPARK AI INTEGRATION NOTE:` that identify specific change points:
+
+**Key Files with Integration Comments:**
+- `ai-service/app/config.py` - Configuration migration notes
+- `ai-service/app/core/rag.py` - LLM and embedding integration points
+- `ai-service/requirements.txt` - Dependency changes needed
+- `backend/app/services/ai_client.py` - API client modifications
+- `docker-compose.yml` - Environment variable updates
 
 ## API Compatibility
 

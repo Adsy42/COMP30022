@@ -11,9 +11,16 @@ class Settings:
     PINECONE_INDEX_NAME: str = os.getenv("PINECONE_INDEX_NAME", "legalai")
 
     # Hugging Face Configuration
+    # SPARK AI INTEGRATION NOTE: When switching to Spark AI, replace HF_TOKEN with SPARK_API_KEY
+    # and update the token usage in rag.py _initialize_llm() method
     HF_TOKEN: str = os.getenv("HF_TOKEN", "") or os.getenv("HUGGINGFACE_API_TOKEN", "")
 
     # Model Configuration
+    # SPARK AI INTEGRATION NOTE: For Spark AI integration, you'll need to:
+    # 1. Replace EMBEDDING_MODEL with Spark AI's embedding model identifier
+    # 2. Replace LLM_MODEL with Spark AI's LLM model identifier
+    # 3. Update the model initialization in rag.py to use Spark AI's client instead of HuggingFace
+    # 4. Adapt any model-specific configuration parameters to Spark AI's requirements
     EMBEDDING_MODEL: str = os.getenv(
         "EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
     )

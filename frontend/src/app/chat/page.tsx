@@ -50,7 +50,7 @@ type Phase =
   | 'escalating'
 
 const OTHER = 'Other (please specify)'
-const MIN_TYPING_MS = 400 // minimum duration to show the typing indicator
+const MIN_TYPING_MS = 500 // minimum duration to show the typing indicator
 const QUEUE_PADDING_MS = 100 // extra buffer between bot messages so they feel distinct
 
 const delay = (ms: number) =>
@@ -119,10 +119,13 @@ export default function ChatPage() {
     },
     [setMessages]
   )
-  const appendUser = useCallback((text: string) => {
-    const id = nextMessageIdRef.current++
-    setMessages(prev => [...prev, { id, role: 'user', text }])
-  }, [setMessages])
+  const appendUser = useCallback(
+    (text: string) => {
+      const id = nextMessageIdRef.current++
+      setMessages(prev => [...prev, { id, role: 'user', text }])
+    },
+    [setMessages]
+  )
   // Ensure the typing indicator is visible for at least MIN_TYPING_MS
   const withTyping = useCallback(
     async <T,>(work: Promise<T>) => {
@@ -568,7 +571,9 @@ export default function ChatPage() {
         queueMessage(
           "Thanks - your query has been routed to the Contracts team. They'll follow up shortly."
         )
-        queueMessage('You may close this page now.').then(() => setPhase('done'))
+        queueMessage('You may close this page now.').then(() =>
+          setPhase('done')
+        )
       } catch (err) {
         setPhase('error')
         queueMessage('Sorry, there was a problem finalizing your query.')
@@ -683,5 +688,3 @@ export default function ChatPage() {
     </>
   )
 }
-
-

@@ -1,4 +1,5 @@
 """API endpoints for form questions configuration."""
+
 from flask import Blueprint, jsonify, request, current_app
 from app.models.form_question import FormQuestion
 from app.utils.auth import admin_required
@@ -9,27 +10,67 @@ bp = Blueprint("form_questions", __name__, url_prefix="/api/form-questions")
 @bp.route("", methods=["GET"])
 def get_form_questions():
     """
-    Get all form questions.
+    Get all form questions from templates.
 
-    Returns:
-        200: List of form questions ordered by their order field
-        {
-            "data": [
-                {
-                    "id": "1",
-                    "question": "Your name",
-                    "type": "text",
-                    "options": null,
-                    "order": 0
-                },
-                ...
-            ]
-        }
+    Returns all questions from common, simple, and complex templates combined.
     """
     try:
-        questions = FormQuestion.get_all(current_app.db)
-        return jsonify({"data": [q.to_dict() for q in questions]}), 200
+        from app.models.template import Template
+
+        # Fetch all three templates
+        common = Template.find_by_type(current_app.db, "common")
+        simple = Template.find_by_type(current_app.db, "simple")
+        complex = Template.find_by_type(current_app.db, "complex")
+
+        # Combine all questions with order preserved
+        all_questions = []
+        order = 0
+
+        # Add common questions first
+        if common:
+            for q in common.questions:
+                all_questions.append(
+                    {
+                        "id": q.get("id"),
+                        "question": q.get("question"),
+                        "type": q.get("type"),
+                        "options": q.get("options"),
+                        "order": order,
+                    }
+                )
+                order += 1
+
+        # Add simple questions
+        if simple:
+            for q in simple.questions:
+                all_questions.append(
+                    {
+                        "id": q.get("id"),
+                        "question": q.get("question"),
+                        "type": q.get("type"),
+                        "options": q.get("options"),
+                        "order": order,
+                    }
+                )
+                order += 1
+
+        # Add complex questions
+        if complex:
+            for q in complex.questions:
+                all_questions.append(
+                    {
+                        "id": q.get("id"),
+                        "question": q.get("question"),
+                        "type": q.get("type"),
+                        "options": q.get("options"),
+                        "order": order,
+                    }
+                )
+                order += 1
+
+        return jsonify({"data": all_questions}), 200
     except Exception as e:
+        current_app.logger.error(f"Error fetching form questions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
@@ -40,25 +81,11 @@ def create_or_update_questions():
     Create or update form questions (bulk operation).
     Admin only.
 
-    Request body:
-        {
-            "questions": [
-                {
-                    "id": "1",
-                    "question": "Your name",
-                    "type": "text",
-                    "options": null,
-                    "order": 0
-                },
-                ...
-            ]
-        }
-
-    Returns:
-        200: Questions updated successfully
-        400: Invalid request body
+    This now saves to templates collection instead of form_questions.
     """
     try:
+        from app.models.template import Template
+
         data = request.get_json()
         if not data or "questions" not in data:
             return jsonify({"error": "questions field is required"}), 400
@@ -69,20 +96,64 @@ def create_or_update_questions():
 
         # Validate each question has required fields
         for q in questions:
-            if not all(k in q for k in ["id", "question", "type", "order"]):
+            if not all(k in q for k in ["id", "question", "type"]):
                 return (
                     jsonify(
-                        {
-                            "error": "Each question must have id, question, type, and order"
-                        }
+                        {"error": "Each question must have id, question, and type"}
                     ),
                     400,
                 )
 
-        FormQuestion.bulk_insert(current_app.db, questions)
+        # Sort questions by order if provided
+        questions_sorted = sorted(questions, key=lambda x: x.get("order", 0))
+
+        # Split questions back into templates based on their IDs
+        # Common: q_name, q_role
+        # Simple: q_project_name, q_grant_type, q_brief_description
+        # Complex: q_detailed_description, q_topics, q_urgency, q_other_details
+
+        common_ids = {"q_name", "q_role"}
+        simple_ids = {"q_project_name", "q_grant_type", "q_brief_description"}
+        complex_ids = {
+            "q_detailed_description",
+            "q_topics",
+            "q_urgency",
+            "q_other_details",
+        }
+
+        common_questions = []
+        simple_questions = []
+        complex_questions = []
+
+        for q in questions_sorted:
+            # Remove the 'order' field as templates don't use it
+            question_data = {
+                "id": q["id"],
+                "question": q["question"],
+                "type": q["type"],
+                "options": q.get("options"),
+            }
+
+            q_id = q["id"]
+            if q_id in common_ids or q_id.startswith("q_kind_of_"):
+                common_questions.append(question_data)
+            elif q_id in simple_ids:
+                simple_questions.append(question_data)
+            elif q_id in complex_ids:
+                complex_questions.append(question_data)
+
+        # Update each template
+        if common_questions:
+            Template.upsert_template(current_app.db, "common", common_questions)
+        if simple_questions:
+            Template.upsert_template(current_app.db, "simple", simple_questions)
+        if complex_questions:
+            Template.upsert_template(current_app.db, "complex", complex_questions)
+
         return jsonify({"message": "Form questions updated successfully"}), 200
 
     except Exception as e:
+        current_app.logger.error(f"Error updating form questions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 

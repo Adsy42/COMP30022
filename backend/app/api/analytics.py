@@ -369,3 +369,5 @@ def get_single_choice_analytics():
     """
     # Redirect to new endpoint
     return get_choice_analytics()
+
+

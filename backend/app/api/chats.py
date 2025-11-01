@@ -1,4 +1,5 @@
 """Chat session API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from datetime import datetime
 from ..models.chat import Chat
@@ -102,6 +103,14 @@ def finalize_chat(chat_id):
         chat.ai_response = ai_result.get("response")
         chat.finalized_at = datetime.utcnow()
         chat.save(current_app.db)
+
+        # 🆕 UPDATE ANALYTICS
+        from app.models.analytics import Analytics
+        Analytics.increment_chat_stats(
+            current_app.db,
+            chat_status=chat.status,
+            is_ai_resolved=bool(chat.ai_response)
+        )
 
         response = {
             "chat_id": chat.chat_id,

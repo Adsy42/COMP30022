@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import List
-from langchain.schema import Document as LangchainDocument
+from langchain_core.documents import Document as LangchainDocument
 
 
 class FAQProcessor:

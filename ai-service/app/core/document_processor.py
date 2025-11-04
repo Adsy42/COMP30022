@@ -2,8 +2,8 @@ import os
 from typing import List
 import PyPDF2
 from docx import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema import Document as LangchainDocument
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document as LangchainDocument
 from ..config import settings
 
 

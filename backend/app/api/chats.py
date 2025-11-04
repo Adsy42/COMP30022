@@ -105,8 +105,8 @@ def finalize_chat(chat_id):
         chat.save(current_app.db)
 
         # 🆕 UPDATE ANALYTICS
-        from app.models.analytics import Analytics
-        Analytics.increment_chat_stats(
+        from app.models.analytics import increment_chat_stats
+        increment_chat_stats(
             current_app.db,
             chat_status=chat.status,
             is_ai_resolved=bool(chat.ai_response)

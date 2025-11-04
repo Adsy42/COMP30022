@@ -6,8 +6,17 @@ python-dotenv>=1.0.0
 pydantic>=2.7.4
 
 # AI/ML dependencies
+# SPARK AI INTEGRATION NOTE: When switching to Spark AI, you'll need to:
+# 1. Replace langchain-huggingface with Spark AI's SDK/client library
+# 2. Replace huggingface-hub with Spark AI's Python client
+# 3. Remove transformers and torch if Spark AI handles model inference remotely
+# 4. Replace sentence-transformers with Spark AI's embedding client
+# 5. Keep langchain and langchain-pinecone as they handle document processing and vector storage
+# 6. Add Spark AI's Python SDK (check Spark AI documentation for the correct package name)
 langchain>=0.2.0
+langchain-core>=0.2.0
 langchain-community>=0.2.0
+langchain-text-splitters>=0.2.0
 langchain-huggingface>=0.1.0
 huggingface-hub>=0.20.0
 transformers>=4.36.0

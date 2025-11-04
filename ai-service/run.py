@@ -10,6 +10,8 @@ import sys
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
+
 load_dotenv()
 
 
@@ -64,7 +66,7 @@ def main():
     try:
         # Start the server
         uvicorn.run(
-            "app.main:app", host="0.0.0.0", port=8000, reload=True, log_level="info"
+            "app.main:app", host="0.0.0.0", port=8080, reload=True, log_level="info"
         )
     except KeyboardInterrupt:
         print("\n👋 Service stopped by user")

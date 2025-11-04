@@ -37,7 +37,7 @@ components:
           type: string
           example: Sponsor
         followUp:
-          $ref: '#/components/schemas/Question'
+          $ref: "#/components/schemas/Question"
           nullable: true
 
     Question:
@@ -59,7 +59,7 @@ components:
           type: array
           nullable: true
           items:
-            $ref: '#/components/schemas/Option'
+            $ref: "#/components/schemas/Option"
 
     # ===== CHAT / ANSWERS / FINALIZE =====
     Answer:
@@ -116,7 +116,7 @@ components:
           items: { type: string, example: f_01abc }
         answers:
           type: array
-          items: { $ref: '#/components/schemas/Answer' }
+          items: { $ref: "#/components/schemas/Answer" }
 
     SubmissionResponse:
       type: object
@@ -176,8 +176,10 @@ components:
       type: object
       required: [start_time, end_time]
       properties:
-        start_time: { type: string, example: "01/09/2025", description: dd/MM/yyyy }
-        end_time:   { type: string, example: "01/10/2025", description: dd/MM/yyyy }
+        start_time:
+          { type: string, example: "01/09/2025", description: dd/MM/yyyy }
+        end_time:
+          { type: string, example: "01/10/2025", description: dd/MM/yyyy }
 
     SingleChoiceAnalyticsItem:
       type: object
@@ -204,7 +206,7 @@ components:
       type: array
       description: Same shape as GET /templates response; new questions may have null id.
       items:
-        $ref: '#/components/schemas/Question'
+        $ref: "#/components/schemas/Question"
 
     # ===== UPLOADS =====
     UploadResponse:
@@ -212,17 +214,19 @@ components:
       required: [fileId, name, size, mime]
       properties:
         fileId: { type: string, example: f_01hxyz }
-        name:   { type: string, example: grant.pdf }
-        size:   { type: integer, example: 234522 }
-        mime:   { type: string, example: application/pdf }
+        name: { type: string, example: grant.pdf }
+        size: { type: integer, example: 234522 }
+        mime: { type: string, example: application/pdf }
 
     # ===== NEW: Choice analytics (single + multi) =====
     ChoiceAnalyticsRequest:
       type: object
       required: [start_time, end_time]
       properties:
-        start_time: { type: string, example: "01/09/2025", description: dd/MM/yyyy }
-        end_time:   { type: string, example: "01/10/2025", description: dd/MM/yyyy }
+        start_time:
+          { type: string, example: "01/09/2025", description: dd/MM/yyyy }
+        end_time:
+          { type: string, example: "01/10/2025", description: dd/MM/yyyy }
         template:
           type: string
           nullable: true
@@ -257,18 +261,23 @@ paths:
           required: true
           schema: { type: string, enum: [simple, complex, common] }
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/Question' }
+                items: { $ref: "#/components/schemas/Question" }
               examples:
                 simpleTemplate:
                   summary: Simple template example
                   value:
-                    - { id: q_name, question: "What is your name?", type: freeform, options: null }
+                    - {
+                        id: q_name,
+                        question: "What is your name?",
+                        type: freeform,
+                        options: null,
+                      }
                     - id: q_role
                       question: "What is your role?"
                       type: single
@@ -290,11 +299,11 @@ paths:
       summary: Start a chat/session (server generates chat_id)
       description: Creates a new chat session to tie together common + simple/complex answers and uploads.
       responses:
-        '201':
+        "201":
           description: Created
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/ChatStartResponse' }
+              schema: { $ref: "#/components/schemas/ChatStartResponse" }
               examples:
                 created: { value: { chat_id: "chat_7f2c11b6" } }
 
@@ -313,17 +322,23 @@ paths:
                 chat_id: { type: string, example: chat_7f2c11b6 }
                 file: { type: string, format: binary }
       responses:
-        '201':
+        "201":
           description: Uploaded
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/UploadResponse' }
+              schema: { $ref: "#/components/schemas/UploadResponse" }
               examples:
                 ok:
-                  value: { fileId: "f_01hxyz", name: "grant.pdf", size: 234522, mime: "application/pdf" }
-        '413': { description: File too large }
-        '415': { description: Unsupported media type }
-        '404': { description: chat_id not found }
+                  value:
+                    {
+                      fileId: "f_01hxyz",
+                      name: "grant.pdf",
+                      size: 234522,
+                      mime: "application/pdf",
+                    }
+        "413": { description: File too large }
+        "415": { description: Unsupported media type }
+        "404": { description: chat_id not found }
 
   /chats/{chat_id}/answers:
     post:
@@ -346,7 +361,7 @@ paths:
                 template: { type: string, enum: [common, simple, complex] }
                 answers:
                   type: array
-                  items: { $ref: '#/components/schemas/Answer' }
+                  items: { $ref: "#/components/schemas/Answer" }
                 attachments:
                   type: array
                   items: { type: string, example: f_01hxyz }
@@ -364,12 +379,15 @@ paths:
                   template: "complex"
                   answers:
                     - { q_id: q_kind_of_sponsor, ans: "opt_kind_A" }
-                    - { q_id: q_topics, ans: [ "opt_indemnity", "opt_ip" ] }
-                    - { q_id: q_other_details, ans: "Tight deadline; unusual IP terms." }
+                    - { q_id: q_topics, ans: ["opt_indemnity", "opt_ip"] }
+                    - {
+                        q_id: q_other_details,
+                        ans: "Tight deadline; unusual IP terms.",
+                      }
                   attachments: ["f_01hxyz", "f_02abcd"]
       responses:
-        '200': { description: Upserted }
-        '404': { description: chat_id not found }
+        "200": { description: Upserted }
+        "404": { description: chat_id not found }
 
   /chats/{chat_id}/finalize:
     post:
@@ -381,11 +399,11 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        '200':
+        "200":
           description: Finalized
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/FinalizeResponse' }
+              schema: { $ref: "#/components/schemas/FinalizeResponse" }
               examples:
                 simpleRouted:
                   summary: Simple → AI replied
@@ -398,7 +416,7 @@ paths:
                   value:
                     chat_id: "chat_7f2c11b6"
                     status: "complex"
-        '404': { description: chat_id not found }
+        "404": { description: chat_id not found }
 
   # ---------- (Deprecated) Single-shot submission ----------
   /submissions:
@@ -411,14 +429,14 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/SubmissionRequest' }
+            schema: { $ref: "#/components/schemas/SubmissionRequest" }
       responses:
-        '201':
+        "201":
           description: Created
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SubmissionResponse' }
-        '400': { description: Validation error }
+              schema: { $ref: "#/components/schemas/SubmissionResponse" }
+        "400": { description: Validation error }
 
   # ---------- Chat / Escalation ----------
   /escalations:
@@ -429,14 +447,14 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/EscalationRequest' }
+            schema: { $ref: "#/components/schemas/EscalationRequest" }
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/OkResponse' }
-        '404': { description: chat_id not found }
+              schema: { $ref: "#/components/schemas/OkResponse" }
+        "404": { description: chat_id not found }
 
   # ---------- Admin / Auth ----------
   /login:
@@ -447,20 +465,20 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/LoginRequest' }
+            schema: { $ref: "#/components/schemas/LoginRequest" }
             examples:
               example:
                 value: { username: "admin", password: "password" }
       responses:
-        '200':
+        "200":
           description: Success or failure (per your draft)
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/LoginResponse' }
+              schema: { $ref: "#/components/schemas/LoginResponse" }
               examples:
-                ok:   { value: { success: true,  token: "a1b2c3d4" } }
+                ok: { value: { success: true, token: "a1b2c3d4" } }
                 fail: { value: { success: false, token: null } }
-        '401': { description: Invalid credentials }
+        "401": { description: Invalid credentials }
 
   # ---------- Admin / KPIs & Analytics ----------
   /kpis:
@@ -468,7 +486,7 @@ paths:
       tags: [Analytics]
       summary: Get KPI information
       description: Returns aggregate KPIs. (Auth required)
-      security: [ { bearerAuth: [] } ]
+      security: [{ bearerAuth: [] }]
       parameters:
         - in: query
           name: start_time
@@ -477,15 +495,20 @@ paths:
           name: end_time
           schema: { type: string, example: "01/10/2025" }
       responses:
-        '200':
+        "200":
           description: KPI summary
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/KPIResponse' }
+              schema: { $ref: "#/components/schemas/KPIResponse" }
               examples:
                 sample:
-                  value: { total_queries: 120, simple_queries: 80, ai_resolved_queries: 60 }
-        '401': { description: Unauthorized }
+                  value:
+                    {
+                      total_queries: 120,
+                      simple_queries: 80,
+                      ai_resolved_queries: 60,
+                    }
+        "401": { description: Unauthorized }
 
   # ---------- NEW: Unified choice analytics (single + multi) ----------
   /analytics/choice:
@@ -495,23 +518,28 @@ paths:
       description: |
         Returns option selection counts for both single- and multi-choice questions
         between dates. (Auth required)
-      security: [ { bearerAuth: [] } ]
+      security: [{ bearerAuth: [] }]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ChoiceAnalyticsRequest' }
+            schema: { $ref: "#/components/schemas/ChoiceAnalyticsRequest" }
             examples:
               range:
-                value: { start_time: "01/09/2025", end_time: "01/10/2025", template: "common" }
+                value:
+                  {
+                    start_time: "01/09/2025",
+                    end_time: "01/10/2025",
+                    template: "common",
+                  }
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/ChoiceAnalyticsItem' }
+                items: { $ref: "#/components/schemas/ChoiceAnalyticsItem" }
               examples:
                 sample:
                   value:
@@ -519,13 +547,13 @@ paths:
                       type: "single"
                       options:
                         - { label: "Researcher", count: 42 }
-                        - { label: "Sponsor",   count: 18 }
+                        - { label: "Sponsor", count: 18 }
                     - question: "Which topics apply?"
                       type: "multi"
                       options:
                         - { label: "Indemnity", count: 27 }
-                        - { label: "IP",        count: 31 }
-        '401': { description: Unauthorized }
+                        - { label: "IP", count: 31 }
+        "401": { description: Unauthorized }
 
   # ---------- NEW: Excel export for choice analytics ----------
   /analytics/choice-export:
@@ -535,7 +563,7 @@ paths:
       description: |
         Returns an Excel file containing choice analytics (single + multi) for the given range.
         (Auth required)
-      security: [ { bearerAuth: [] } ]
+      security: [{ bearerAuth: [] }]
       parameters:
         - in: query
           name: start_time
@@ -553,14 +581,14 @@ paths:
           schema: { type: string, enum: [common, simple, complex] }
           description: Optional template filter
       responses:
-        '200':
+        "200":
           description: Excel file
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
               schema:
                 type: string
                 format: binary
-        '401': { description: Unauthorized }
+        "401": { description: Unauthorized }
 
   # ---------- (Deprecated) Single-choice analytics (kept for BC) ----------
   /analytics/single-choice:
@@ -569,31 +597,33 @@ paths:
       tags: [Analytics]
       summary: (Deprecated) Single-choice distribution across templates
       description: Replaced by POST /analytics/choice (covers single + multi). (Auth required)
-      security: [ { bearerAuth: [] } ]
+      security: [{ bearerAuth: [] }]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/SingleChoiceAnalyticsRequest' }
+            schema:
+              { $ref: "#/components/schemas/SingleChoiceAnalyticsRequest" }
             examples:
               range:
                 value: { start_time: "01/09/2025", end_time: "01/10/2025" }
       responses:
-        '200':
+        "200":
           description: OK (use /analytics/choice going forward)
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/SingleChoiceAnalyticsItem' }
+                items:
+                  { $ref: "#/components/schemas/SingleChoiceAnalyticsItem" }
               examples:
                 sample:
                   value:
                     - question: "What is your role?"
                       options:
                         - { label: "Researcher", count: 42 }
-                        - { label: "Sponsor",   count: 18 }
-        '401': { description: Unauthorized }
+                        - { label: "Sponsor", count: 18 }
+        "401": { description: Unauthorized }
 
   # ---------- Admin / Config ----------
   /config/email-recipient:
@@ -601,29 +631,30 @@ paths:
       tags: [Config]
       summary: Update escalation recipient email
       description: Updates the recipient email address for complex/escalated cases. (Auth required)
-      security: [ { bearerAuth: [] } ]
+      security: [{ bearerAuth: [] }]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/RecipientEmailRequest' }
+            schema: { $ref: "#/components/schemas/RecipientEmailRequest" }
             examples:
-              sample: { value: { email_address: "ric-contracts@unimelb.edu.au" } }
+              sample:
+                { value: { email_address: "ric-contracts@unimelb.edu.au" } }
       responses:
-        '200':
+        "200":
           description: Boolean flag
           content:
             application/json:
               schema: { type: boolean, example: true }
-        '401': { description: Unauthorized }
-        '422': { description: Invalid email }
+        "401": { description: Unauthorized }
+        "422": { description: Invalid email }
 
   /templates/save:
     post:
       tags: [Config]
       summary: Save template questions
       description: Saves the full question list for a template after admin edits. New questions may have null id. (Auth required)
-      security: [ { bearerAuth: [] } ]
+      security: [{ bearerAuth: [] }]
       parameters:
         - in: query
           name: template
@@ -633,11 +664,11 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/TemplateUpsertRequest' }
+            schema: { $ref: "#/components/schemas/TemplateUpsertRequest" }
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/OkResponse' }
-        '401': { description: Unauthorized }
+              schema: { $ref: "#/components/schemas/OkResponse" }
+        "401": { description: Unauthorized }

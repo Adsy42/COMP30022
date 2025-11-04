@@ -8,8 +8,11 @@ import Threads from '@/components/Threads'
 
 export default function Home() {
   return (
-    <main className="h-screen flex flex-col overflow-hidden">
+    <main className="h-screen flex flex-col overflow-hidden relative">
+      <PlayfulBackground />
+
       <Navbar
+        variant="transparent"
         actions={
           <div className="flex gap-3">
             <Link href="/chat">

@@ -1,4 +1,10 @@
 import { render, screen } from '@testing-library/react'
+
+jest.mock('@/components/Threads', () => ({
+  __esModule: true,
+  default: () => null,
+}))
+
 import Home from '../page'
 
 describe('Home Page', () => {

@@ -16,6 +16,8 @@ type Props = {
   typewriterSpeed?: number
   /** Called as text reveals (for auto-scroll) */
   onChunk?: () => void
+  /** Called once when the message has fully rendered */
+  onComplete?: () => void
 }
 
 export default function ChatBubble({
@@ -27,6 +29,7 @@ export default function ChatBubble({
   animate = false,
   typewriterSpeed = 24,
   onChunk,
+  onComplete,
 }: Props) {
   const isUser = role === 'user'
   const label = isUser ? 'You' : 'Support Assistant'
@@ -40,11 +43,45 @@ export default function ChatBubble({
   const shouldAnimate = animate && role === 'bot'
   const [shown, setShown] = useState<string>(shouldAnimate ? '' : text)
   const timerRef = useRef<number | null>(null)
+  const chunkCallbackRef = useRef(onChunk)
+  const completeCallbackRef = useRef(onComplete)
+  const completionCalledRef = useRef(false)
+  const cleanupPendingRef = useRef(false)
+  const cleanupTimeoutRef = useRef<number | null>(null)
 
   useEffect(() => {
+    chunkCallbackRef.current = onChunk
+  }, [onChunk])
+
+  useEffect(() => {
+    completeCallbackRef.current = onComplete
+  }, [onComplete])
+
+  useEffect(() => {
+    completionCalledRef.current = false
+    if (cleanupTimeoutRef.current) {
+      clearTimeout(cleanupTimeoutRef.current)
+      cleanupTimeoutRef.current = null
+    }
+    cleanupPendingRef.current = false
+
+    const signalComplete = () => {
+      if (completionCalledRef.current) return
+      completionCalledRef.current = true
+      cleanupPendingRef.current = false
+      completeCallbackRef.current?.()
+    }
+
     if (!shouldAnimate) {
       setShown(text)
-      return
+      signalComplete()
+      return () => {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current)
+          timerRef.current = null
+        }
+        signalComplete()
+      }
     }
 
     if (timerRef.current) {
@@ -57,18 +94,29 @@ export default function ChatBubble({
     const step = () => {
       i++
       setShown(text.slice(0, i))
-      onChunk?.()
+      chunkCallbackRef.current?.()
       if (i < text.length) {
         timerRef.current = window.setTimeout(step, typewriterSpeed)
+      } else {
+        timerRef.current = null
+        signalComplete()
       }
     }
     timerRef.current = window.setTimeout(step, typewriterSpeed)
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-      timerRef.current = null
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
+      cleanupPendingRef.current = true
+      cleanupTimeoutRef.current = window.setTimeout(() => {
+        if (cleanupPendingRef.current && !completionCalledRef.current) {
+          signalComplete()
+        }
+        cleanupTimeoutRef.current = null
+      }, 0)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, shouldAnimate, typewriterSpeed])
 
   return (

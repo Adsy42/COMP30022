@@ -33,6 +33,7 @@ type Question = {
 }
 
 type AnswerPayload = { q_id: string; ans: string | string[] }
+type Message = { id: number; role: Role; text: string; onComplete?: () => void }
 
 type Phase =
   | 'boot'
@@ -49,12 +50,15 @@ type Phase =
   | 'escalating'
 
 const OTHER = 'Other (please specify)'
+const MIN_TYPING_MS = 500 // minimum duration to show the typing indicator
+const QUEUE_PADDING_MS = 100 // extra buffer between bot messages so they feel distinct
+
+const delay = (ms: number) =>
+  new Promise<void>(resolve => setTimeout(resolve, ms))
 
 export default function ChatPage() {
   // Transcript
-  const [messages, setMessages] = useState<Array<{ role: Role; text: string }>>(
-    []
-  )
+  const [messages, setMessages] = useState<Message[]>([])
 
   // Driver state
   const [phase, setPhase] = useState<Phase>('boot')
@@ -72,6 +76,7 @@ export default function ChatPage() {
   const [complexAnswers, setComplexAnswers] = useState<AnswerPayload[]>([])
   const [attachmentIds, setAttachmentIds] = useState<string[]>([])
   const endRef = useRef<HTMLDivElement>(null)
+  const nextMessageIdRef = useRef(0) // stable keys so React keeps bubble state per message
 
   // UI selection buffer
   const [tempChoices, setTempChoices] = useState<string[]>([])
@@ -107,13 +112,25 @@ export default function ChatPage() {
     return updated
   }
 
-  function delay(ms: number) {
-    return new Promise(res => setTimeout(res, ms))
-  }
+  const appendBot = useCallback(
+    (text: string, onComplete?: () => void) => {
+      const id = nextMessageIdRef.current++
+      setMessages(prev => [...prev, { id, role: 'bot', text, onComplete }])
+    },
+    [setMessages]
+  )
+  const appendUser = useCallback(
+    (text: string) => {
+      const id = nextMessageIdRef.current++
+      setMessages(prev => [...prev, { id, role: 'user', text }])
+    },
+    [setMessages]
+  )
+  // Ensure the typing indicator is visible for at least MIN_TYPING_MS
   const withTyping = useCallback(
     async <T,>(work: Promise<T>) => {
       setBotTyping(true)
-      const [result] = await Promise.all([work, delay(1000)]) // ≥1s typing
+      const [result] = await Promise.all([work, delay(MIN_TYPING_MS)])
       setBotTyping(false)
       return result
     },
@@ -121,35 +138,41 @@ export default function ChatPage() {
   )
 
   const botSay = useCallback(
-    async (text: string, minMs = 500) => {
+    async (text: string, minMs = MIN_TYPING_MS, onComplete?: () => void) => {
       await withTyping(delay(minMs)) // guarantees typing bubble
-      appendBot(text)
+      appendBot(text, onComplete)
     },
-    [withTyping]
+    [withTyping, appendBot]
   )
 
   // Keep a promise chain for queued bot messages
   const botQueueRef = useRef<Promise<void>>(Promise.resolve())
 
   const queueMessage = useCallback(
-    (text: string, minMs = 500) => {
+    (text: string, minMs = MIN_TYPING_MS) => {
       botQueueRef.current = botQueueRef.current.then(async () => {
+        let resolveDone!: () => void
+        let resolved = false
+        const completion = new Promise<void>(resolve => {
+          resolveDone = resolve
+        })
+        const handleComplete = () => {
+          if (resolved) return
+          resolved = true
+          resolveDone()
+        }
+
         // run existing botSay for this message
-        await botSay(text, minMs)
-        // wait long enough for the typewriter animation to complete
-        await delay(text.length * 16 + 100) // * the typewriter speed
+        await botSay(text, minMs, handleComplete)
+        // wait for the typewriter animation to complete
+        await completion
+        await delay(QUEUE_PADDING_MS) // small cushion so the next line isn't immediate
       })
       return botQueueRef.current
     },
     [botSay]
   )
 
-  function appendBot(text: string) {
-    setMessages(prev => [...prev, { role: 'bot', text }])
-  }
-  function appendUser(text: string) {
-    setMessages(prev => [...prev, { role: 'user', text }])
-  }
   const presentQuestion = useCallback(
     (q: Question) => {
       setTempChoices([])
@@ -211,7 +234,7 @@ export default function ChatPage() {
         if (!mounted) return
         logApi('POST /chats', null, started)
         setChatId(started.chat_id)
-        queueMessage('Hi — I’m here to help you fill the form.')
+        queueMessage("Hi - I'm here to help you fill the form.")
 
         const qs = await withTyping(getTemplate('common'))
         if (!mounted) return
@@ -299,7 +322,7 @@ export default function ChatPage() {
           setPhase('simple')
           setQIdx(0)
           queueMessage(
-            'Okay — I can provide an answer after a few more questions.'
+            'Okay - I can provide an answer after a few more questions.'
           )
           if (Array.isArray(qs) && qs.length > 0) {
             queueMessage(qs[0].question).then(() => {
@@ -324,7 +347,7 @@ export default function ChatPage() {
         setComplexQs(qs as Question[])
         setPhase('complex')
         setQIdx(0)
-        queueMessage('Great — let’s capture a few details for complex queries.')
+        queueMessage("Great - let's capture a few details for complex queries.")
         if (Array.isArray(qs) && qs.length > 0) {
           queueMessage(qs[0].question).then(() => {
             setTempChoices([])
@@ -394,7 +417,7 @@ export default function ChatPage() {
         return
       }
 
-      // done with simple → POST, then finalize(simple) → show AI → escalate?
+      // done with simple -> POST, then finalize(simple) -> show AI -> escalate?
       try {
         const payload = {
           template: 'simple',
@@ -414,7 +437,7 @@ export default function ChatPage() {
         setPhase('finalizing')
         const fin = await withTyping(finalize(chatId!, 'simple'))
         logApi(`POST /chats/${chatId}/finalize`, { expected: 'simple' }, fin)
-        queueMessage(fin.ai_response || 'Here’s our best guidance.')
+        queueMessage(fin.ai_response || "Here's our best guidance.")
 
         // Move into escalate prompt
         setPhase('simple_ai')
@@ -437,7 +460,7 @@ export default function ChatPage() {
     // ============ ESCALATE CONFIRM (chips) ============
     if (phase === 'escalate_confirm') {
       if (built === 'Escalate') {
-        queueMessage('Please tell us briefly why you’d like to escalate.').then(
+        queueMessage("Please tell us briefly why you'd like to escalate.").then(
           () => setPhase('escalate_reason')
         )
       } else {
@@ -459,7 +482,7 @@ export default function ChatPage() {
           res
         )
         queueMessage(
-          'Your query has been escalated to our team. We’ll reach out via email shortly.'
+          "Your query has been escalated to our team. We'll reach out via email shortly."
         )
         queueMessage('You may close this page now.').then(() =>
           setPhase('done')
@@ -499,7 +522,7 @@ export default function ChatPage() {
           const merged = [...attachmentIds, ...newIds]
           setAttachmentIds(merged) // keep state in sync for future questions
         } catch (err) {
-          queueMessage('Some files failed to upload — you can try again later.')
+          queueMessage('Some files failed to upload - you can try again later.')
           // eslint-disable-next-line no-console
           console.error('[API ERROR] POST /uploads', err)
         }
@@ -529,7 +552,7 @@ export default function ChatPage() {
         const payload = {
           template: 'complex',
           answers: complexAnswers.concat([{ q_id: currQ.id, ans: built }]),
-          attachments: attachmentsForSubmit, // ✅ never empty due to async state
+          attachments: attachmentsForSubmit, // never empty due to async state
         }
         const res = await withTyping(submitAnswers(chatId!, payload))
         logApi(`POST /chats/${chatId}/answers`, payload, res)
@@ -546,10 +569,11 @@ export default function ChatPage() {
         const fin = await withTyping(finalize(chatId!, 'complex'))
         logApi(`POST /chats/${chatId}/finalize`, { expected: 'complex' }, fin)
         queueMessage(
-          'Thanks — your query has been routed to the Contracts team. They’ll follow up shortly.'
+          "Thanks - your query has been routed to the Contracts team. They'll follow up shortly."
         )
-          .then(() => queueMessage('You may close this page now.'))
-          .then(() => setPhase('done'))
+        queueMessage('You may close this page now.').then(() =>
+          setPhase('done')
+        )
       } catch (err) {
         setPhase('error')
         queueMessage('Sorry, there was a problem finalizing your query.')
@@ -588,9 +612,9 @@ export default function ChatPage() {
           {/* Transcript */}
           <section className="flex-1 overflow-y-auto pt-6 pb-1 px-1 sm:px-2">
             <div className="mx-auto flex max-w-4xl flex-col gap-10 overflow-x-visible">
-              {messages.map((m, i) => (
+              {messages.map(m => (
                 <ChatBubble
-                  key={`m-${i}`}
+                  key={`m-${m.id}`}
                   role={m.role}
                   text={m.text}
                   animate={m.role === 'bot'} // animate bot messages only
@@ -598,6 +622,7 @@ export default function ChatPage() {
                   onChunk={() =>
                     endRef.current?.scrollIntoView({ behavior: 'smooth' })
                   }
+                  onComplete={m.onComplete}
                 />
               ))}
               {botTyping && <TypingBubble />}
@@ -653,6 +678,9 @@ export default function ChatPage() {
                   }}
                 />
               </div>
+              <p className="mt-2 text-center text-xs text-gray-500">
+                This AI chatbot is in early iteration and can make mistakes.
+              </p>
             </div>
           </footer>
         </div>

@@ -2,7 +2,7 @@ import os
 from typing import List, Dict, Any
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import PineconeVectorStore
-from langchain.schema import Document as LangchainDocument
+from langchain_core.documents import Document as LangchainDocument
 from huggingface_hub import InferenceClient
 from pinecone import Pinecone
 import uuid

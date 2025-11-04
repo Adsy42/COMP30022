@@ -34,7 +34,18 @@ class Config:
     # SPARK AI INTEGRATION NOTE: The AI_SERVICE_URL remains the same when switching to Spark AI.
     # The AI microservice will handle the Spark AI integration internally, so the backend
     # continues to communicate with the same AI service endpoint.
-    AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://ai-service:8000")
+    _ai_service_url = os.getenv("AI_SERVICE_URL")
+    if not _ai_service_url:
+        private_domain = os.getenv("AI_SERVICE_PRIVATE_DOMAIN") or os.getenv(
+            "AI_SERVICE_RAILWAY_PRIVATE_DOMAIN"
+        )
+        if private_domain:
+            scheme = os.getenv("AI_SERVICE_PRIVATE_SCHEME", "https")
+            _ai_service_url = f"{scheme}://{private_domain}"
+        else:
+            _ai_service_url = "http://ai-service:8000"
+
+    AI_SERVICE_URL = _ai_service_url
 
     # Email Configuration
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")

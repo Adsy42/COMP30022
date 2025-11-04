@@ -60,6 +60,59 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 # AI Service: http://localhost:8000
 ```
 
+## 🚢 Deploying to Railway
+
+**🎯 DEPLOYING NOW?** → **[START HERE](./START-HERE.md)** ← Complete step-by-step guide!
+
+**🚨 Already deployed and having issues?** See [`RAILWAY-QUICK-FIX.md`](./RAILWAY-QUICK-FIX.md) for troubleshooting.
+
+**📋 Complete deployment guide:** See [`.railway-env-template.md`](./.railway-env-template.md) for detailed setup instructions.
+
+### Quick Setup:
+
+1. **Add MongoDB database** to your Railway project
+2. **Configure environment variables** for each service (see template)
+3. **Set Docker build variables** for each service:
+   - `RAILWAY_DOCKERFILE_PATH`: Path to production Dockerfile (e.g., `backend/Dockerfile.prod`)
+   - `RAILWAY_DOCKER_BUILD_CONTEXT`: `.` (monorepo root)
+4. **Deploy services in order**: MongoDB → AI Service → Backend → Frontend
+
+### Critical Environment Variables:
+
+**Frontend** (must be set before deployment - required at build time):
+```
+NEXT_PUBLIC_API_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}/api
+NEXT_PUBLIC_AI_SERVICE_URL=https://${{ai-service.RAILWAY_PUBLIC_DOMAIN}}
+RAILWAY_DOCKERFILE_PATH=frontend/Dockerfile.prod
+RAILWAY_DOCKER_BUILD_CONTEXT=.
+```
+
+**Backend**:
+```
+MONGODB_URI=${{MongoDB.MONGO_URL}}
+AI_SERVICE_URL=https://${{ai-service.RAILWAY_PRIVATE_DOMAIN}}
+CORS_ORIGINS=https://${{frontend.RAILWAY_PUBLIC_DOMAIN}}
+FLASK_SECRET_KEY=<generate-secure-random-string>
+JWT_SECRET_KEY=<generate-secure-random-string>
+RAILWAY_DOCKERFILE_PATH=backend/Dockerfile.prod
+RAILWAY_DOCKER_BUILD_CONTEXT=.
+```
+
+**AI Service**:
+```
+CORS_ALLOW_ORIGINS=https://${{frontend.RAILWAY_PUBLIC_DOMAIN}},https://${{backend.RAILWAY_PUBLIC_DOMAIN}}
+RAILWAY_DOCKERFILE_PATH=ai-service/Dockerfile.prod
+RAILWAY_DOCKER_BUILD_CONTEXT=.
+```
+
+⚠️ **Important**: 
+- Use **PUBLIC** domains for frontend (users access it externally)
+- Use **PRIVATE** domains for backend-to-ai-service communication (internal)
+- Frontend `NEXT_PUBLIC_*` vars must be set BEFORE deployment
+- If you change `NEXT_PUBLIC_*` vars, you MUST redeploy the frontend
+
+📖 **Troubleshooting**: See `.railway-env-template.md` for common issues and solutions.
+
 ## Development Workflow
 
 ### GitFlow Strategy

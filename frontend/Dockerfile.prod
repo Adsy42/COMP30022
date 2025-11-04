@@ -1,0 +1,47 @@
+## Production Dockerfile for Next.js frontend
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+# Install dependencies (including dev deps required for build)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Accept build arguments for Next.js public env vars
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_AI_SERVICE_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_AI_SERVICE_URL=${NEXT_PUBLIC_AI_SERVICE_URL}
+
+COPY package.json package-lock.json ./
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+
+# Copy only the files needed at runtime
+COPY package.json package-lock.json ./
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/next.config.js ./next.config.js
+COPY --from=builder /app/postcss.config.js ./postcss.config.js
+
+# Remove devDependencies for smaller runtime image
+RUN npm prune --omit=dev
+
+EXPOSE 3000
+
+USER node
+
+CMD ["npm", "run", "start"]
+

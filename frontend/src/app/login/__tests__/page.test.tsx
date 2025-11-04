@@ -40,10 +40,7 @@ describe('LoginPage', () => {
     jest.clearAllMocks()
     ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
     mockLogin.mockImplementation((username: string, password: string) => {
-      if (
-        username === 'admin@grants2contracts.example' &&
-        password === 'password'
-      ) {
+      if (username === 'admin@unimelb.edu.au' && password === 'password') {
         return Promise.resolve({ success: true, token: 'mock_jwt_token' })
       }
       return Promise.reject(new Error('Invalid credentials'))
@@ -63,7 +60,7 @@ describe('LoginPage', () => {
     // Check for main elements
     expect(screen.getByText('Administrator Sign In')).toBeInTheDocument()
     expect(
-      screen.getByPlaceholderText('admin@grants2contracts.example')
+      screen.getByPlaceholderText('admin@unimelb.edu.au')
     ).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Password')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sign In' })).toBeInTheDocument()
@@ -75,12 +72,9 @@ describe('LoginPage', () => {
     render(<LoginPage />)
 
     // Fill form with correct credentials
-    fireEvent.change(
-      screen.getByPlaceholderText('admin@grants2contracts.example'),
-      {
-        target: { value: 'admin@grants2contracts.example' },
-      }
-    )
+    fireEvent.change(screen.getByPlaceholderText('admin@unimelb.edu.au'), {
+      target: { value: 'admin@unimelb.edu.au' },
+    })
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'password' },
     })
@@ -105,12 +99,9 @@ describe('LoginPage', () => {
     render(<LoginPage />)
 
     // Fill form with incorrect credentials
-    fireEvent.change(
-      screen.getByPlaceholderText('admin@grants2contracts.example'),
-      {
-        target: { value: 'wrong@example.com' },
-      }
-    )
+    fireEvent.change(screen.getByPlaceholderText('admin@unimelb.edu.au'), {
+      target: { value: 'wrong@example.com' },
+    })
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'wrongpassword' },
     })
@@ -135,12 +126,9 @@ describe('LoginPage', () => {
     render(<LoginPage />)
 
     // Fill form
-    fireEvent.change(
-      screen.getByPlaceholderText('admin@grants2contracts.example'),
-      {
-        target: { value: 'admin@grants2contracts.example' },
-      }
-    )
+    fireEvent.change(screen.getByPlaceholderText('admin@unimelb.edu.au'), {
+      target: { value: 'admin@unimelb.edu.au' },
+    })
     fireEvent.change(screen.getByPlaceholderText('Password'), {
       target: { value: 'password' },
     })
@@ -150,7 +138,7 @@ describe('LoginPage', () => {
 
     // Check disabled states
     expect(
-      screen.getByPlaceholderText('admin@grants2contracts.example')
+      screen.getByPlaceholderText('admin@unimelb.edu.au')
     ).toBeDisabled()
     expect(screen.getByPlaceholderText('Password')).toBeDisabled()
     expect(screen.getByLabelText('Remember Me')).toBeDisabled()

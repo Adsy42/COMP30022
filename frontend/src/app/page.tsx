@@ -5,6 +5,7 @@ import Button from '@/components/Button'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import Threads from '@/components/Threads'
+import PlayfulBackground from '@/components/PlayfulBackground'
 
 export default function Home() {
   return (

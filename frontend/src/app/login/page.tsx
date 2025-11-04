@@ -125,7 +125,7 @@ export default function LoginPage() {
                 type="email"
                 required
                 className="w-full p-3 border border-gray-200 rounded-lg bg-white/50 backdrop-blur-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="admin@grants2contracts.example"
+                placeholder="admin@unimelb.edu.au"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
               />

@@ -39,6 +39,8 @@ services:
       - legal-ai-network
 
   # AI Microservice
+  # SPARK AI INTEGRATION NOTE: When switching to Spark AI, update the environment variables
+  # in ./ai-service/.env file to include SPARK_API_KEY instead of HF_TOKEN
   ai-service:
     build:
       context: ./ai-service

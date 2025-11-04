@@ -8,6 +8,13 @@ from pinecone import Pinecone
 import uuid
 from ..config import settings
 
+# SPARK AI INTEGRATION NOTE: When switching to Spark AI, you'll need to:
+# 1. Replace HuggingFaceEmbeddings with Spark AI's embedding client
+# 2. Replace InferenceClient with Spark AI's LLM client
+# 3. Update the imports to include Spark AI SDK
+# 4. Modify the _initialize_llm() method to use Spark AI's API
+# 5. Update the query() method to use Spark AI's chat completion format
+
 # Global storage for resource metadata
 resources = {}
 
@@ -17,6 +24,8 @@ class RAGServicePinecone:
         self.index_name = index_name
 
         # Initialize embeddings
+        # SPARK AI INTEGRATION NOTE: Replace HuggingFaceEmbeddings with Spark AI's embedding client
+        # You'll need to adapt this to Spark AI's specific embedding initialization requirements
         self.embeddings = HuggingFaceEmbeddings(
             model_name=settings.EMBEDDING_MODEL, model_kwargs={"device": "cpu"}
         )
@@ -71,6 +80,13 @@ class RAGServicePinecone:
 
     def _initialize_llm(self):
         """Initialize the Hugging Face InferenceClient directly"""
+        # SPARK AI INTEGRATION NOTE: This entire method needs to be replaced with Spark AI initialization
+        # You'll need to:
+        # 1. Replace the Hugging Face client initialization with Spark AI's client
+        # 2. Update authentication to use SPARK_API_KEY instead of HF_TOKEN
+        # 3. Adapt the initialization to Spark AI's specific API requirements
+        # 4. Handle any Spark AI-specific configuration or setup steps
+        
         try:
             # Get Hugging Face token from environment
             hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_API_TOKEN")
@@ -177,6 +193,13 @@ class RAGServicePinecone:
             # Create context for the LLM
             # Note: We'll use the context directly in the messages below
 
+            # SPARK AI INTEGRATION NOTE: Replace Hugging Face client with Spark AI client
+            # You'll need to:
+            # 1. Replace the Hugging Face completion call with Spark AI's API
+            # 2. Adapt the prompt format to Spark AI's requirements
+            # 3. Update the response parsing to match Spark AI's response structure
+            # 4. Handle any Spark AI-specific parameters or options
+            
             # Use Hugging Face client directly as per their template
             # Format the prompt as a conversation message
             messages = [
@@ -282,6 +305,13 @@ class RAGServicePinecone:
 
     def get_embeddings(self, text: str) -> List[float]:
         """Get embeddings for a given text"""
+        # SPARK AI INTEGRATION NOTE: When switching to Spark AI, update this method to use Spark AI's embedding API
+        # You'll need to:
+        # 1. Replace the current embedding call with Spark AI's embedding API
+        # 2. Adapt the input format to Spark AI's requirements
+        # 3. Update the response parsing to match Spark AI's response structure
+        # 4. Handle any Spark AI-specific parameters or options
+        
         try:
             # Use the embeddings model to generate embeddings
             embeddings = self.embeddings.embed_query(text)

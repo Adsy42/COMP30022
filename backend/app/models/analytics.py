@@ -1,4 +1,5 @@
 """Analytics model for storing form response statistics."""
+
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from bson import ObjectId
@@ -110,6 +111,8 @@ class Analytics:
         )
         analytics.save(db)
         return analytics
+
+
 def increment_chat_stats(db, chat_status="completed", is_ai_resolved=False):
     """
     Increment basic analytics counters in MongoDB for monitoring usage patterns.
@@ -124,30 +127,22 @@ def increment_chat_stats(db, chat_status="completed", is_ai_resolved=False):
 
         # Increment total chats count
         analytics.update_one(
-            {"metric": "total_chats"},
-            {"$inc": {"count": 1}},
-            upsert=True
+            {"metric": "total_chats"}, {"$inc": {"count": 1}}, upsert=True
         )
 
         # Increment resolved vs unresolved
         if is_ai_resolved:
             analytics.update_one(
-                {"metric": "resolved_chats"},
-                {"$inc": {"count": 1}},
-                upsert=True
+                {"metric": "resolved_chats"}, {"$inc": {"count": 1}}, upsert=True
             )
         else:
             analytics.update_one(
-                {"metric": "unresolved_chats"},
-                {"$inc": {"count": 1}},
-                upsert=True
+                {"metric": "unresolved_chats"}, {"$inc": {"count": 1}}, upsert=True
             )
 
         # Increment by chat status
         analytics.update_one(
-            {"metric": f"chats_{chat_status}"},
-            {"$inc": {"count": 1}},
-            upsert=True
+            {"metric": f"chats_{chat_status}"}, {"$inc": {"count": 1}}, upsert=True
         )
 
         print(f"[Analytics] Updated stats: {chat_status}, resolved={is_ai_resolved}")

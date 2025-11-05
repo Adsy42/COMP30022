@@ -110,3 +110,47 @@ class Analytics:
         )
         analytics.save(db)
         return analytics
+def increment_chat_stats(db, chat_status="completed", is_ai_resolved=False):
+    """
+    Increment basic analytics counters in MongoDB for monitoring usage patterns.
+
+    Args:
+        db: The MongoDB database connection (from current_app.db).
+        chat_status (str): The status of the chat, e.g., "completed" or "pending".
+        is_ai_resolved (bool): Whether the chat was successfully handled by the AI.
+    """
+    try:
+        analytics = db.analytics
+
+        # Increment total chats count
+        analytics.update_one(
+            {"metric": "total_chats"},
+            {"$inc": {"count": 1}},
+            upsert=True
+        )
+
+        # Increment resolved vs unresolved
+        if is_ai_resolved:
+            analytics.update_one(
+                {"metric": "resolved_chats"},
+                {"$inc": {"count": 1}},
+                upsert=True
+            )
+        else:
+            analytics.update_one(
+                {"metric": "unresolved_chats"},
+                {"$inc": {"count": 1}},
+                upsert=True
+            )
+
+        # Increment by chat status
+        analytics.update_one(
+            {"metric": f"chats_{chat_status}"},
+            {"$inc": {"count": 1}},
+            upsert=True
+        )
+
+        print(f"[Analytics] Updated stats: {chat_status}, resolved={is_ai_resolved}")
+
+    except Exception as e:
+        print(f"[Analytics] Failed to increment stats: {e}")

@@ -105,12 +105,12 @@ def finalize_chat(chat_id):
         chat.save(current_app.db)
 
  # 🆕 UPDATE ANALYTICS (temporarily disabled, function missing)
-        # from app.models.analytics import increment_chat_stats
-        # increment_chat_stats(
-        #     current_app.db,
-        #     chat_status=chat.status,
-        #     is_ai_resolved=bool(chat.ai_response)
-        # )
+        from app.models.analytics import increment_chat_stats
+        increment_chat_stats(
+            current_app.db,
+            chat_status=chat.status,
+            is_ai_resolved=bool(chat.ai_response)
+        )
 
         response = {
             "chat_id": chat.chat_id,

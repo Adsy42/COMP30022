@@ -1,17 +1,14 @@
 """Template API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from ..models.template import Template
 from ..utils.auth import token_required
 
 bp = Blueprint("templates", __name__, url_prefix="")
 
-
 @bp.route("/templates", methods=["GET"])
 def get_templates():
-    """
-    GET /templates?template=<type>
-    Fetch questions by template type.
-    """
+    """GET /templates?template=<type>"""
     template_type = request.args.get("template")
 
     if not template_type:
@@ -23,9 +20,9 @@ def get_templates():
     template = Template.find_by_type(current_app.db, template_type)
 
     if not template:
-        # Return empty array if template doesn't exist yet
         return jsonify([]), 200
 
+    # Just return questions as-is - MongoDB preserves array order
     return jsonify(template.questions), 200
 
 

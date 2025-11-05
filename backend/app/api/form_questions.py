@@ -9,64 +9,31 @@ bp = Blueprint("form_questions", __name__, url_prefix="/api/form-questions")
 
 @bp.route("", methods=["GET"])
 def get_form_questions():
-    """
-    Get all form questions from templates.
-
-    Returns all questions from common, simple, and complex templates combined.
-    """
+    """Get all form questions with proper ordering."""
     try:
         from app.models.template import Template
 
-        # Fetch all three templates
+        # Fetch all templates
         common = Template.find_by_type(current_app.db, "common")
         simple = Template.find_by_type(current_app.db, "simple")
-        complex = Template.find_by_type(current_app.db, "complex")
+        complex_template = Template.find_by_type(current_app.db, "complex")
 
-        # Combine all questions with order preserved
+        # Combine all questions
         all_questions = []
-        order = 0
-
-        # Add common questions first
+        
         if common:
-            for q in common.questions:
-                all_questions.append(
-                    {
-                        "id": q.get("id"),
-                        "question": q.get("question"),
-                        "type": q.get("type"),
-                        "options": q.get("options"),
-                        "order": order,
-                    }
-                )
-                order += 1
-
-        # Add simple questions
+            all_questions.extend(common.questions)
         if simple:
-            for q in simple.questions:
-                all_questions.append(
-                    {
-                        "id": q.get("id"),
-                        "question": q.get("question"),
-                        "type": q.get("type"),
-                        "options": q.get("options"),
-                        "order": order,
-                    }
-                )
-                order += 1
+            all_questions.extend(simple.questions)
+        if complex_template:
+            all_questions.extend(complex_template.questions)
 
-        # Add complex questions
-        if complex:
-            for q in complex.questions:
-                all_questions.append(
-                    {
-                        "id": q.get("id"),
-                        "question": q.get("question"),
-                        "type": q.get("type"),
-                        "options": q.get("options"),
-                        "order": order,
-                    }
-                )
-                order += 1
+        # Sort by global_order if it exists, otherwise maintain current order
+        all_questions.sort(key=lambda q: q.get('global_order', 999))
+
+        # Add order field for response
+        for i, q in enumerate(all_questions):
+            q['order'] = i
 
         return jsonify({"data": all_questions}), 200
     except Exception as e:
@@ -161,51 +128,52 @@ def create_or_update_questions():
 @admin_required
 def reorder_questions():
     """
-    Reorder form questions.
-    Admin only.
-
+    Reorder form questions within their template.
+    
     Request body:
-        {
-            "order": ["1", "3", "2", "4"]  // Array of question IDs in new order
-        }
-
-    Returns:
-        200: Questions reordered successfully
-        400: Invalid request body
+    {
+        "template": "common",  // which template to reorder
+        "order": ["q_role", "q_name"]  // new order of question IDs
+    }
     """
     try:
+        from app.models.template import Template
+        
         data = request.get_json()
-        if not data or "order" not in data:
-            return jsonify({"error": "order field is required"}), 400
+        if not data or "order" not in data or "template" not in data:
+            return jsonify({"error": "template and order fields are required"}), 400
 
+        template_type = data["template"]
         new_order = data["order"]
+        
+        if template_type not in ["common", "simple", "complex"]:
+            return jsonify({"error": "Invalid template type"}), 400
+            
         if not isinstance(new_order, list):
             return jsonify({"error": "order must be an array"}), 400
 
-        success = FormQuestion.reorder(current_app.db, new_order)
-        if success:
-            return jsonify({"message": "Questions reordered successfully"}), 200
-        else:
-            return jsonify({"error": "Failed to reorder questions"}), 500
+        # Get the template
+        template = Template.find_by_type(current_app.db, template_type)
+        if not template:
+            return jsonify({"error": f"Template {template_type} not found"}), 404
+
+        # Create a map of questions by ID
+        question_map = {q['id']: q for q in template.questions}
+
+        # Reorder based on new_order
+        reordered_questions = []
+        for q_id in new_order:
+            if q_id in question_map:
+                # Remove global_order if it exists
+                question = question_map[q_id].copy()
+                question.pop('global_order', None)
+                reordered_questions.append(question)
+
+        # Update the template
+        Template.upsert_template(current_app.db, template_type, reordered_questions)
+
+        return jsonify({"message": f"{template_type} questions reordered successfully"}), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@bp.route("/<question_id>", methods=["GET"])
-def get_question(question_id):
-    """
-    Get a specific form question by ID.
-
-    Returns:
-        200: Question data
-        404: Question not found
-    """
-    try:
-        question = FormQuestion.get_by_id(current_app.db, question_id)
-        if not question:
-            return jsonify({"error": "Question not found"}), 404
-
-        return jsonify(question.to_dict()), 200
-    except Exception as e:
+        current_app.logger.error(f"Error reordering questions: {str(e)}")
         return jsonify({"error": str(e)}), 500

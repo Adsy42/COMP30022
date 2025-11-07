@@ -18,11 +18,11 @@ RUN apt-get update \
         pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt ./
+COPY ai-service/requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY ai-service/ ./
 
 RUN mkdir -p /app/data/documents /app/data/vector_db
 

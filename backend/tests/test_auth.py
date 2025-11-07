@@ -7,7 +7,8 @@ class TestLoginEndpoint:
     def test_successful_login(self, client, admin_user):
         """Test successful login with valid credentials."""
         response = client.post(
-            "/login", json={"username": "testadmin", "password": "testpass123"}
+            "/api/login",
+            json={"username": "testadmin", "password": "testpass123"},
         )
         assert response.status_code == 200
         data = response.get_json()
@@ -18,7 +19,8 @@ class TestLoginEndpoint:
     def test_invalid_username(self, client, admin_user):
         """Test login with invalid username."""
         response = client.post(
-            "/login", json={"username": "wronguser", "password": "testpass123"}
+            "/api/login",
+            json={"username": "wronguser", "password": "testpass123"},
         )
         assert response.status_code == 200
         data = response.get_json()
@@ -28,7 +30,8 @@ class TestLoginEndpoint:
     def test_invalid_password(self, client, admin_user):
         """Test login with invalid password."""
         response = client.post(
-            "/login", json={"username": "testadmin", "password": "wrongpass"}
+            "/api/login",
+            json={"username": "testadmin", "password": "wrongpass"},
         )
         assert response.status_code == 200
         data = response.get_json()
@@ -37,17 +40,21 @@ class TestLoginEndpoint:
 
     def test_missing_username(self, client):
         """Test login without username."""
-        response = client.post("/login", json={"password": "testpass123"})
+        response = client.post(
+            "/api/login", json={"password": "testpass123"}
+        )
         assert response.status_code == 400
 
     def test_missing_password(self, client):
         """Test login without password."""
-        response = client.post("/login", json={"username": "testadmin"})
+        response = client.post(
+            "/api/login", json={"username": "testadmin"}
+        )
         assert response.status_code == 400
 
     def test_empty_request_body(self, client):
         """Test login with empty request body."""
-        response = client.post("/login", json={})
+        response = client.post("/api/login", json={})
         assert response.status_code == 400
 
 
@@ -56,19 +63,19 @@ class TestTokenRequired:
 
     def test_protected_endpoint_without_token(self, client):
         """Test accessing protected endpoint without token."""
-        response = client.get("/kpis")
+        response = client.get("/api/kpis")
         assert response.status_code == 401
 
     def test_protected_endpoint_with_invalid_token(self, client):
         """Test accessing protected endpoint with invalid token."""
         response = client.get(
-            "/kpis", headers={"Authorization": "Bearer invalid_token"}
+            "/api/kpis", headers={"Authorization": "Bearer invalid_token"}
         )
         assert response.status_code == 401  # JWT decode error returns 401
 
     def test_protected_endpoint_with_valid_token(self, client, auth_headers):
         """Test accessing protected endpoint with valid token."""
-        response = client.get("/kpis", headers=auth_headers)
+        response = client.get("/api/kpis", headers=auth_headers)
         # Should not return 401/422 (might return 200 or 400 for missing params)
         assert response.status_code != 401
         assert response.status_code != 422

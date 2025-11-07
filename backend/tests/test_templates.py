@@ -6,7 +6,7 @@ class TestGetTemplates:
 
     def test_get_template_success(self, client, sample_template):
         """Test getting template with valid type."""
-        response = client.get("/templates?template=common")
+        response = client.get("/api/templates?template=common")
         assert response.status_code == 200
         data = response.get_json()
         assert isinstance(data, list)
@@ -15,7 +15,7 @@ class TestGetTemplates:
 
     def test_get_nonexistent_template(self, client):
         """Test getting template that doesn't exist returns empty array."""
-        response = client.get("/templates?template=simple")
+        response = client.get("/api/templates?template=simple")
         assert response.status_code == 200
         data = response.get_json()
         assert isinstance(data, list)
@@ -23,12 +23,12 @@ class TestGetTemplates:
 
     def test_missing_template_parameter(self, client):
         """Test getting template without template parameter."""
-        response = client.get("/templates")
+        response = client.get("/api/templates")
         assert response.status_code == 400
 
     def test_invalid_template_type(self, client):
         """Test getting template with invalid type."""
-        response = client.get("/templates?template=invalid")
+        response = client.get("/api/templates?template=invalid")
         assert response.status_code == 400
 
 
@@ -49,7 +49,9 @@ class TestSaveTemplate:
             }
         ]
         response = client.post(
-            "/templates/save?template=simple", headers=auth_headers, json=questions
+            "/api/templates/save?template=simple",
+            headers=auth_headers,
+            json=questions,
         )
         assert response.status_code == 200
         data = response.get_json()
@@ -60,7 +62,9 @@ class TestSaveTemplate:
         questions = [
             {"id": "q_test", "question": "Test?", "type": "freeform", "options": None}
         ]
-        response = client.post("/templates/save?template=simple", json=questions)
+        response = client.post(
+            "/api/templates/save?template=simple", json=questions
+        )
         assert response.status_code == 401
 
     def test_save_template_invalid_type(self, client, auth_headers):
@@ -69,7 +73,9 @@ class TestSaveTemplate:
             {"id": "q_test", "question": "Test?", "type": "freeform", "options": None}
         ]
         response = client.post(
-            "/templates/save?template=invalid", headers=auth_headers, json=questions
+            "/api/templates/save?template=invalid",
+            headers=auth_headers,
+            json=questions,
         )
         assert response.status_code == 400
 
@@ -78,12 +84,16 @@ class TestSaveTemplate:
         questions = [
             {"id": "q_test", "question": "Test?", "type": "freeform", "options": None}
         ]
-        response = client.post("/templates/save", headers=auth_headers, json=questions)
+        response = client.post(
+            "/api/templates/save", headers=auth_headers, json=questions
+        )
         assert response.status_code == 400
 
     def test_save_template_invalid_json(self, client, auth_headers):
         """Test saving template with invalid JSON structure."""
         response = client.post(
-            "/templates/save?template=simple", headers=auth_headers, json="not a list"
+            "/api/templates/save?template=simple",
+            headers=auth_headers,
+            json="not a list",
         )
         assert response.status_code == 400

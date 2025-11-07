@@ -12,35 +12,57 @@ def _auto_seed_database(app):
     Only seeds: users, templates, and config (required for app to function).
     """
     try:
-        # Check if templates collection is empty
         template_count = app.db["templates"].count_documents({})
+        form_question_count = app.db["form_questions"].count_documents({})
+        analytics_count = app.db["analytics"].count_documents({})
 
-        if template_count == 0:
-            app.logger.info("Database appears empty. Auto-seeding essential data...")
+        if template_count == 0 or form_question_count == 0 or analytics_count == 0:
+            app.logger.info("Database appears incomplete. Auto-seeding data...")
 
-            # Import seed functions
-            # Add database directory to path
             db_path = os.path.join(
                 os.path.dirname(os.path.dirname(__file__)), "..", "database"
             )
-            sys.path.insert(0, db_path)
+            if db_path not in sys.path:
+                sys.path.insert(0, db_path)
 
-            from seeds import seed_users, seed_templates, seed_config
+            from seeds import (
+                seed_users,
+                seed_templates,
+                seed_config,
+                seed_form_questions,
+                seed_analytics,
+            )
 
-            # Seed essential data
+            if template_count == 0:
+                templates_count = seed_templates(app.db)
+                app.logger.info(f"✓ Seeded {templates_count} template records")
+            else:
+                templates_count = template_count
+                app.logger.info("Templates already present; skipping seed")
+
             users_count = seed_users(app.db)
-            templates_count = seed_templates(app.db)
             config_count = seed_config(app.db)
 
-            app.logger.info(
-                f"✓ Auto-seeded: {users_count} users, {templates_count} templates, {config_count} config entries"
-            )
+            if form_question_count == 0:
+                fq_count = seed_form_questions(app.db)
+                app.logger.info(f"✓ Seeded {fq_count} form questions")
+            else:
+                fq_count = form_question_count
+                app.logger.info("Form questions already present; skipping seed")
+
+            if analytics_count == 0:
+                analytics_seeded = seed_analytics(app.db)
+                app.logger.info(f"✓ Seeded analytics data ({analytics_seeded} records)")
+            else:
+                analytics_seeded = analytics_count
+                app.logger.info("Analytics already present; skipping seed")
+
             app.logger.info(
                 "✓ Default admin credentials - username: admin, password: admin123"
             )
         else:
             app.logger.info(
-                f"Database already initialized ({template_count} templates found)"
+                "Database already initialized (templates, form questions, analytics present)"
             )
 
     except Exception as e:
@@ -68,8 +90,13 @@ def create_app(config_name=None):
     JWTManager(app)
 
     # Initialize MongoDB
-    mongo_client = MongoClient(app.config["MONGODB_URI"])
+    mongo_uri = app.config["MONGODB_URI"]
+    app.logger.info(f"Connecting to MongoDB: {mongo_uri}")
+    mongo_client = MongoClient(mongo_uri)
     app.db = mongo_client[app.config["MONGODB_DB_NAME"]]
+    app.logger.info(
+        f"Connected to MongoDB database: {app.config['MONGODB_DB_NAME']}"
+    )
 
     # Auto-seed database if empty (essential data only)
     _auto_seed_database(app)
@@ -92,15 +119,40 @@ def create_app(config_name=None):
     )
 
     app.register_blueprint(main)
-    app.register_blueprint(templates.bp)
-    app.register_blueprint(chats.bp)
-    app.register_blueprint(uploads.bp)
-    app.register_blueprint(admin.bp)
-    app.register_blueprint(analytics.bp)
-    app.register_blueprint(config_api.bp)
-    app.register_blueprint(escalations.bp)
-    app.register_blueprint(form_questions.bp)
-    app.register_blueprint(analytics_dashboard.bp)
+
+    api_prefix = app.config.get("API_URL_PREFIX", "/api")
+
+    def _api_path(suffix: str = "") -> str:
+        base = api_prefix.rstrip("/")
+        if not base.startswith("/"):
+            base = f"/{base}"
+        return f"{base}{suffix}"
+
+    app.logger.info(
+        "Registering API blueprints with prefixes: %s",
+        {
+            "templates": _api_path(""),
+            "chats": _api_path(""),
+            "uploads": _api_path(""),
+            "admin": _api_path(""),
+            "analytics": _api_path(""),
+            "config": _api_path(""),
+            "escalations": _api_path(""),
+            "form_questions": _api_path(""),
+            "analytics_dashboard": _api_path(""),
+        },
+    )
+
+    shared_prefix = _api_path("")
+    app.register_blueprint(templates.bp, url_prefix=shared_prefix)
+    app.register_blueprint(chats.bp, url_prefix=shared_prefix)
+    app.register_blueprint(uploads.bp, url_prefix=shared_prefix)
+    app.register_blueprint(admin.bp, url_prefix=shared_prefix)
+    app.register_blueprint(analytics.bp, url_prefix=shared_prefix)
+    app.register_blueprint(config_api.bp, url_prefix=shared_prefix)
+    app.register_blueprint(escalations.bp, url_prefix=shared_prefix)
+    app.register_blueprint(form_questions.bp, url_prefix=shared_prefix)
+    app.register_blueprint(analytics_dashboard.bp, url_prefix=shared_prefix)
 
     # Error handlers
     @app.errorhandler(404)

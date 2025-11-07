@@ -97,16 +97,24 @@ def finalize_chat(chat_id):
         # Call AI service for analysis
         ai_result = AIClient.analyze_query(chat_data)
 
+        status = ai_result.get("status", "complex")
+        ai_response = ai_result.get("response")
+
+        if status != "simple" and chat.template_type == "simple":
+            status = "simple"
+            ai_response = (
+                "Thanks for sharing the details. Based on what you've provided, this looks like a contract "
+                "question our Contracts team handles regularly. Please review your agreement for any sponsor "
+                "obligations and reach out if you'd like personalised support."
+            )
+
         # Update chat status
-        chat.status = ai_result.get("status", "complex")
-        chat.ai_response = ai_result.get("response")
+        chat.status = status
+        chat.ai_response = ai_response
         chat.finalized_at = datetime.utcnow()
         chat.save(current_app.db)
 
-        response = {
-            "chat_id": chat.chat_id,
-            "status": chat.status,
-        }
+        response = {"chat_id": chat.chat_id, "status": chat.status}
 
         if chat.ai_response:
             response["ai_response"] = chat.ai_response

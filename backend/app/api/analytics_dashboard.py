@@ -1,10 +1,10 @@
 """API endpoints for analytics dashboard with mock data support."""
 from flask import Blueprint, jsonify, current_app
 
-bp = Blueprint("analytics_dashboard", __name__, url_prefix="/api/analytics")
+bp = Blueprint("analytics_dashboard", __name__)
 
 
-@bp.route("", methods=["GET"])
+@bp.route("/analytics", methods=["GET"])
 def get_analytics_dashboard():
     """
     Get analytics dashboard data including KPIs and question analytics.

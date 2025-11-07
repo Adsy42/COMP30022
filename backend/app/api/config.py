@@ -4,10 +4,10 @@ from ..models.config import AppConfig
 from ..utils.auth import token_required
 from ..utils.validators import validate_email
 
-bp = Blueprint("config", __name__, url_prefix="/config")
+bp = Blueprint("config", __name__)
 
 
-@bp.route("/email-recipient", methods=["GET"])
+@bp.route("/config/email-recipient", methods=["GET"])
 @token_required
 def get_email_recipient():
     """
@@ -33,7 +33,7 @@ def get_email_recipient():
         )
 
 
-@bp.route("/email-recipient", methods=["PUT"])
+@bp.route("/config/email-recipient", methods=["PUT"])
 @token_required
 def update_email_recipient():
     """

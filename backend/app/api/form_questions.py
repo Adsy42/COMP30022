@@ -3,10 +3,10 @@ from flask import Blueprint, jsonify, request, current_app
 from app.models.form_question import FormQuestion
 from app.utils.auth import admin_required
 
-bp = Blueprint("form_questions", __name__, url_prefix="/api/form-questions")
+bp = Blueprint("form_questions", __name__)
 
 
-@bp.route("", methods=["GET"])
+@bp.route("/form-questions", methods=["GET"])
 def get_form_questions():
     """
     Get all form questions.
@@ -33,7 +33,7 @@ def get_form_questions():
         return jsonify({"error": str(e)}), 500
 
 
-@bp.route("", methods=["POST"])
+@bp.route("/form-questions", methods=["POST"])
 @admin_required
 def create_or_update_questions():
     """
@@ -86,7 +86,7 @@ def create_or_update_questions():
         return jsonify({"error": str(e)}), 500
 
 
-@bp.route("/reorder", methods=["POST"])
+@bp.route("/form-questions/reorder", methods=["POST"])
 @admin_required
 def reorder_questions():
     """
@@ -121,7 +121,7 @@ def reorder_questions():
         return jsonify({"error": str(e)}), 500
 
 
-@bp.route("/<question_id>", methods=["GET"])
+@bp.route("/form-questions/<question_id>", methods=["GET"])
 def get_question(question_id):
     """
     Get a specific form question by ID.

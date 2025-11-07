@@ -30,6 +30,9 @@ class Config:
     # CORS
     CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 
+    # API routing
+    API_URL_PREFIX = os.getenv("API_URL_PREFIX", "/api")
+
     # AI Service
     # SPARK AI INTEGRATION NOTE: The AI_SERVICE_URL remains the same when switching to Spark AI.
     # The AI microservice will handle the Spark AI integration internally, so the backend

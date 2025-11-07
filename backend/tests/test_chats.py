@@ -6,7 +6,7 @@ class TestCreateChat:
 
     def test_create_chat_success(self, client):
         """Test creating a new chat session."""
-        response = client.post("/chats")
+        response = client.post("/api/chats")
         assert response.status_code == 201
         data = response.get_json()
         assert "chat_id" in data
@@ -26,7 +26,7 @@ class TestUpsertAnswers:
             ],
         }
         response = client.post(
-            f"/chats/{sample_chat.chat_id}/answers", json=answers_data
+            f"/api/chats/{sample_chat.chat_id}/answers", json=answers_data
         )
         assert response.status_code == 200
         data = response.get_json()
@@ -39,7 +39,7 @@ class TestUpsertAnswers:
             "answers": [{"q_id": "q_project", "ans": "Test Project"}],
         }
         response = client.post(
-            f"/chats/{sample_chat.chat_id}/answers", json=answers_data
+            f"/api/chats/{sample_chat.chat_id}/answers", json=answers_data
         )
         assert response.status_code == 200
 
@@ -51,7 +51,7 @@ class TestUpsertAnswers:
             "attachments": ["f_test123", "f_test456"],
         }
         response = client.post(
-            f"/chats/{sample_chat.chat_id}/answers", json=answers_data
+            f"/api/chats/{sample_chat.chat_id}/answers", json=answers_data
         )
         assert response.status_code == 200
 
@@ -61,13 +61,15 @@ class TestUpsertAnswers:
             "template": "common",
             "answers": [{"q_id": "q_test", "ans": "test"}],
         }
-        response = client.post("/chats/chat_nonexistent/answers", json=answers_data)
+        response = client.post(
+            "/api/chats/chat_nonexistent/answers", json=answers_data
+        )
         assert response.status_code == 404
 
     def test_upsert_missing_template(self, client, sample_chat):
         """Test upserting without template field."""
         response = client.post(
-            f"/chats/{sample_chat.chat_id}/answers",
+            f"/api/chats/{sample_chat.chat_id}/answers",
             json={"answers": [{"q_id": "q_test", "ans": "test"}]},
         )
         assert response.status_code == 400
@@ -79,7 +81,7 @@ class TestUpsertAnswers:
             "answers": [{"q_id": "q_test", "ans": "test"}],
         }
         response = client.post(
-            f"/chats/{sample_chat.chat_id}/answers", json=answers_data
+            f"/api/chats/{sample_chat.chat_id}/answers", json=answers_data
         )
         assert response.status_code == 400
 
@@ -94,7 +96,7 @@ class TestFinalizeChat:
         sample_chat.add_answers("simple", [{"q_id": "q_project", "ans": "Project"}])
         sample_chat.save(app.db)
 
-        response = client.post(f"/chats/{sample_chat.chat_id}/finalize")
+        response = client.post(f"/api/chats/{sample_chat.chat_id}/finalize")
         assert response.status_code == 200
         data = response.get_json()
         assert "chat_id" in data
@@ -103,5 +105,5 @@ class TestFinalizeChat:
 
     def test_finalize_nonexistent_chat(self, client):
         """Test finalizing non-existent chat."""
-        response = client.post("/chats/chat_nonexistent/finalize")
+        response = client.post("/api/chats/chat_nonexistent/finalize")
         assert response.status_code == 404

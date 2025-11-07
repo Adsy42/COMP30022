@@ -144,6 +144,11 @@ jobs:
           echo "  - Token length: ${#RAILWAY_TOKEN}"
           echo "  - Project ID: $RAILWAY_PROJECT_ID"
 
+      - name: Link Railway Project
+        run: |
+          echo "🔗 Linking to Railway project..."
+          railway link --project $RAILWAY_PROJECT_ID
+
       - name: Deploy Frontend
         run: |
           echo "🚀 Deploying Frontend service..."

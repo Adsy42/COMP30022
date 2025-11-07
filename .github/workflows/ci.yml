@@ -138,7 +138,19 @@ jobs:
       - name: Link Railway Project
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "Error: RAILWAY_TOKEN secret is not set"
+            echo "Please set RAILWAY_TOKEN in GitHub repository secrets"
+            exit 1
+          fi
+          if [ -z "$RAILWAY_PROJECT_ID" ]; then
+            echo "Error: RAILWAY_PROJECT_ID secret is not set"
+            echo "Please set RAILWAY_PROJECT_ID in GitHub repository secrets"
+            exit 1
+          fi
+          railway link --project $RAILWAY_PROJECT_ID
 
       - name: Deploy Frontend
         env:

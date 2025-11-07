@@ -136,25 +136,17 @@ jobs:
           fi
           echo "✓ RAILWAY_TOKEN is configured (length: ${#RAILWAY_TOKEN})"
 
-      - name: Link Railway Project
-        run: |
-          echo "🔗 Linking to Railway project..."
-          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
-
       - name: Deploy Frontend
         run: |
           echo "🚀 Deploying Frontend service..."
-          cd frontend
           railway up --service=frontend --detach
 
       - name: Deploy Backend
         run: |
           echo "🚀 Deploying Backend service..."
-          cd backend
           railway up --service=backend --detach
 
       - name: Deploy AI Service
         run: |
           echo "🚀 Deploying AI Service..."
-          cd ai-service
           railway up --service=ai-service --detach

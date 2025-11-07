@@ -144,17 +144,22 @@ jobs:
           echo "  - Token length: ${#RAILWAY_TOKEN}"
           echo "  - Project ID: $RAILWAY_PROJECT_ID"
 
+      - name: Link Railway Project
+        run: |
+          echo "🔗 Linking to Railway project..."
+          railway link $RAILWAY_PROJECT_ID
+
       - name: Deploy Frontend
         run: |
-          echo "🚀 Deploying Frontend service to project $RAILWAY_PROJECT_ID..."
-          railway up --service=frontend --detach --project=$RAILWAY_PROJECT_ID
+          echo "🚀 Deploying Frontend service..."
+          railway up --service=frontend --detach
 
       - name: Deploy Backend
         run: |
-          echo "🚀 Deploying Backend service to project $RAILWAY_PROJECT_ID..."
-          railway up --service=backend --detach --project=$RAILWAY_PROJECT_ID
+          echo "🚀 Deploying Backend service..."
+          railway up --service=backend --detach
 
       - name: Deploy AI Service
         run: |
-          echo "🚀 Deploying AI Service to project $RAILWAY_PROJECT_ID..."
-          railway up --service=ai-service --detach --project=$RAILWAY_PROJECT_ID
+          echo "🚀 Deploying AI Service..."
+          railway up --service=ai-service --detach

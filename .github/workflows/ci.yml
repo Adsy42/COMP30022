@@ -146,34 +146,16 @@ jobs:
           echo "✓ RAILWAY_TOKEN is configured (length: ${#RAILWAY_TOKEN})"
 
       - name: Deploy Frontend
-        env:
-          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_FRONTEND_SERVICE_ID }}
         run: |
-          if [ -z "$RAILWAY_SERVICE_ID" ]; then
-            echo "Warning: RAILWAY_FRONTEND_SERVICE_ID not set, attempting deploy without service ID"
-            railway up --detach
-          else
-            railway up --service=$RAILWAY_SERVICE_ID --detach
-          fi
+          echo "🚀 Deploying Frontend service..."
+          railway up --service=frontend --detach
 
       - name: Deploy Backend
-        env:
-          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_BACKEND_SERVICE_ID }}
         run: |
-          if [ -z "$RAILWAY_SERVICE_ID" ]; then
-            echo "Warning: RAILWAY_BACKEND_SERVICE_ID not set, attempting deploy without service ID"
-            railway up --detach
-          else
-            railway up --service=$RAILWAY_SERVICE_ID --detach
-          fi
+          echo "🚀 Deploying Backend service..."
+          railway up --service=backend --detach
 
       - name: Deploy AI Service
-        env:
-          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_AI_SERVICE_ID }}
         run: |
-          if [ -z "$RAILWAY_SERVICE_ID" ]; then
-            echo "Warning: RAILWAY_AI_SERVICE_ID not set, attempting deploy without service ID"
-            railway up --detach
-          else
-            railway up --service=$RAILWAY_SERVICE_ID --detach
-          fi
+          echo "🚀 Deploying AI Service..."
+          railway up --service=ai-service --detach

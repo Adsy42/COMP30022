@@ -59,7 +59,7 @@ def admin_user(app):
 def auth_token(client, admin_user):
     """Get JWT token for admin user."""
     response = client.post(
-        "/login", json={"username": "testadmin", "password": "testpass123"}
+        "/api/login", json={"username": "testadmin", "password": "testpass123"}
     )
     data = response.get_json()
     return data["token"]

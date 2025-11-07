@@ -1,0 +1,58 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "defaultEnvironment": "production",
+  "services": {
+    "frontend": {
+      "source": "./frontend",
+      "env": "production",
+      "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "frontend/Dockerfile.prod",
+        "buildContext": "."
+      },
+      "deploy": {
+        "healthcheckPath": "/",
+        "healthcheckTimeout": 100,
+        "restartPolicyType": "ON_FAILURE"
+      }
+    },
+    "backend": {
+      "source": "./backend",
+      "env": "production",
+      "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "backend/Dockerfile.prod",
+        "buildContext": "."
+      },
+      "deploy": {
+        "healthcheckPath": "/health",
+        "healthcheckTimeout": 100,
+        "restartPolicyType": "ON_FAILURE"
+      }
+    },
+    "ai-service": {
+      "source": "./ai-service",
+      "env": "production",
+      "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "ai-service/Dockerfile.prod",
+        "buildContext": "."
+      },
+      "deploy": {
+        "healthcheckPath": "/health",
+        "healthcheckTimeout": 100,
+        "restartPolicyType": "ON_FAILURE"
+      }
+    }
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "NODE_ENV": "production",
+        "FLASK_ENV": "production",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}
+

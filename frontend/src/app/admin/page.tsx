@@ -47,13 +47,18 @@ export default function AdminPage() {
     loadAnalytics()
   }, [])
 
-  // Calculate percentages
-  const simpleQueriesPercentage = Math.round(
-    (analytics?.kpi.simple_queries! / analytics?.kpi.total_queries!) * 100
-  )
-  const aiResolvedPercentage = Math.round(
-    (analytics?.kpi.ai_resolved_queries! / analytics?.kpi.total_queries!) * 100
-  )
+  // Calculate percentages with safe fallback when totals are zero
+  const totalQueries = analytics?.kpi.total_queries ?? 0
+  const simpleQueriesPercentage =
+    totalQueries > 0
+      ? Math.round(((analytics?.kpi.simple_queries ?? 0) / totalQueries) * 100)
+      : 0
+  const aiResolvedPercentage =
+    totalQueries > 0
+      ? Math.round(
+          ((analytics?.kpi.ai_resolved_queries ?? 0) / totalQueries) * 100
+        )
+      : 0
 
   return (
     <div className="min-h-screen">

@@ -1,0 +1,33 @@
+## Production Dockerfile for Flask backend
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install system dependencies required for some Python packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy backend source and shared database seeds into the image. The Docker
+# build context is set to the monorepo root (".."), so we reference paths
+# relative to that root.
+COPY backend/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+COPY backend/ ./
+COPY database/ /database/
+
+ENV FLASK_ENV=production
+ENV PORT=5000
+ENV WORKERS=4
+ENV THREADS=4
+ENV TIMEOUT=120
+
+EXPOSE 5000
+
+CMD ["sh", "-c", "gunicorn run:app --bind 0.0.0.0:${PORT:-5000} --workers ${WORKERS:-4} --threads ${THREADS:-4} --timeout ${TIMEOUT:-120}"]
+

@@ -12,7 +12,7 @@ class TestUploads:
             "file": (io.BytesIO(b"test file content"), "test.pdf"),
         }
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 201
         json_data = response.get_json()
@@ -26,7 +26,7 @@ class TestUploads:
         """Test uploading without chat_id."""
         data = {"file": (io.BytesIO(b"content"), "test.pdf")}
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 400
 
@@ -37,7 +37,7 @@ class TestUploads:
             "file": (io.BytesIO(b"content"), "test.pdf"),
         }
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 404
 
@@ -45,7 +45,7 @@ class TestUploads:
         """Test uploading without file."""
         data = {"chat_id": sample_chat.chat_id}
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 400
 
@@ -56,7 +56,7 @@ class TestUploads:
             "file": (io.BytesIO(b"content"), "test.exe"),
         }
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 415
 
@@ -67,7 +67,7 @@ class TestUploads:
             "file": (io.BytesIO(b"text content"), "document.txt"),
         }
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 201
 
@@ -78,6 +78,6 @@ class TestUploads:
             "file": (io.BytesIO(b"docx content"), "document.docx"),
         }
         response = client.post(
-            "/uploads", data=data, content_type="multipart/form-data"
+            "/api/uploads", data=data, content_type="multipart/form-data"
         )
         assert response.status_code == 201

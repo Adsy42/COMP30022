@@ -29,9 +29,9 @@ class EmailService:
             msg = MIMEMultipart()
             msg["From"] = current_app.config["EMAIL_USER"]
             msg["To"] = recipient_email
-            msg["Subject"] = (
-                f"New Query Escalation - Chat {chat_data.get('chat_id', 'N/A')}"
-            )
+            msg[
+                "Subject"
+            ] = f"New Query Escalation - Chat {chat_data.get('chat_id', 'N/A')}"
 
             # Email body
             body = EmailService._format_escalation_body(chat_data)

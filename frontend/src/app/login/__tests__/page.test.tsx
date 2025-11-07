@@ -1,3 +1,8 @@
+/**
+ * @file Tests for the admin login experience.
+ * Assert rendering of form controls plus successful and failed authentication flows.
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import LoginPage from '../page'

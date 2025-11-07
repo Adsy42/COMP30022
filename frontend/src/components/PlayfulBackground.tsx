@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Provides the animated landing-page background composed of gradients, SVG flourishes, and CSS keyframes.
+ * Runs entirely on the client to keep the marketing hero lively without extra markup at the page level.
+ */
+
 import React from 'react'
 
 export default function PlayfulBackground() {

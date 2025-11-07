@@ -1,3 +1,8 @@
+/**
+ * @file Client helper for escalating a chat to human experts when automation is insufficient.
+ * Wraps the POST payload to keep calling sites simple.
+ */
+
 // src/lib/api/escalations.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

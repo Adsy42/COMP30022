@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Primary modal for creating or editing form questions, including nested follow-up logic.
+ * Manages option CRUD, keyboard shortcuts, and recursively spawns itself for follow-up branches.
+ */
+
 import { useState, useEffect } from 'react'
 
 interface Option {

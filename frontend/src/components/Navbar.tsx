@@ -1,4 +1,9 @@
 /**
+ * @file Shared top navigation bar that renders the Grants2Contract brand plus an actions slot.
+ * Used across landing, chat, and admin views to keep primary navigation consistent.
+ */
+
+/**
  * Navbar — sticky top navigation bar
  * ----------------------------------
  * Presents a branded left section (logo + title) and a right-aligned actions slot.

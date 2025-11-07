@@ -1,3 +1,8 @@
+/**
+ * @file Unit tests for the ChoiceGroup chip selector.
+ * Validate ARIA roles, option order, and toggling rules for single- and multi-select modes.
+ */
+
 // src/app/__tests__/choicegroup.test.tsx
 import React from 'react'
 import { render, screen, within } from '@testing-library/react'

@@ -1,3 +1,8 @@
+/**
+ * @file Draws the animated thread background using OGL shaders for the marketing surfaces.
+ * Props let pages tweak color, amplitude, distance, and optional mouse interaction to keep the effect flexible.
+ */
+
 import React, { useEffect, useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl'
 

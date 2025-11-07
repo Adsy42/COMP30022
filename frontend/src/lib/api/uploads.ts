@@ -1,3 +1,8 @@
+/**
+ * @file API helper for uploading attachments against a chat session.
+ * Wraps the FormData POST call so UI components only deal with chat IDs and File objects.
+ */
+
 // src/lib/api/uploads.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

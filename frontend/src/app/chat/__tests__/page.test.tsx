@@ -1,3 +1,8 @@
+/**
+ * @file Smoke test for the ChatPage state machine.
+ * Mocks API helpers to verify initial bootstrapping, disclaimers, and action controls render.
+ */
+
 import React from 'react'
 import { render, screen, waitFor, act } from '@testing-library/react'
 

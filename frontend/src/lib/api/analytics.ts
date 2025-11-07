@@ -1,3 +1,8 @@
+/**
+ * @file Admin analytics API helper that fetches KPI and question distribution data.
+ * Handles optional auth headers before delivering typed dashboard data.
+ */
+
 // src/lib/api/analytics.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

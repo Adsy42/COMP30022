@@ -1,3 +1,8 @@
+/**
+ * @file Shared TypeScript definitions for chat templates, options, and finalize/escalation responses.
+ * Keeps the frontend builder and client helpers aligned with the backend contract.
+ */
+
 // src/lib/api/types.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

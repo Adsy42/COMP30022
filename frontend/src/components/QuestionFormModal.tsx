@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Legacy location for the AddQuestionModal implementation used by the admin form builder.
+ * Ensures older imports still receive the full follow-up editing experience for branching forms.
+ */
+
 import { useState, useEffect } from 'react'
 
 interface Option {

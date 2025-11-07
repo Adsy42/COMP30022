@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Administrator login screen that wraps the BackgroundIllustration with a branded form.
+ * Handles credential submission, API integration, transitions, and error messaging.
+ */
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'

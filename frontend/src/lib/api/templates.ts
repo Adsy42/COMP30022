@@ -1,3 +1,8 @@
+/**
+ * @file Fetch helper for retrieving predefined question templates (common/simple/complex).
+ * Exposes a typed wrapper so chat flows can request template variants without repeating fetch logic.
+ */
+
 // src/lib/api/templates.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Admin page for managing form questions and their branching logic.
+ * Fetches question data, wires drag-and-drop reorder, and opens the AddQuestionModal for CRUD.
+ */
+
 import { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'

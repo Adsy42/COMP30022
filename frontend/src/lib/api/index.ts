@@ -1,3 +1,8 @@
+/**
+ * @file Barrel that re-exports every API helper and related TypeScript types.
+ * Allows pages and components to import from '@/lib/api' without caring about file boundaries.
+ */
+
 // src/lib/api/index.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

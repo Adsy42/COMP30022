@@ -1,3 +1,8 @@
+/**
+ * @file Admin endpoints for reading and writing escalation email configuration.
+ * Surfaces typed helpers so the email-config screen can focus on UI logic.
+ */
+
 // src/lib/api/config.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

@@ -1,3 +1,8 @@
+/**
+ * @file Regression tests for the landing page component.
+ * Ensure the hero heading, description copy, and semantic main tag stay present.
+ */
+
 import { render, screen } from '@testing-library/react'
 
 jest.mock('@/components/Threads', () => ({

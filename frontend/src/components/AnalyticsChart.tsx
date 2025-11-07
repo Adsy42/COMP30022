@@ -1,3 +1,8 @@
+/**
+ * @file Thin wrapper around Nivo's ResponsivePie used on the admin analytics dashboard.
+ * Normalizes dataset shape and palette so KPI cards and charts share the same styling.
+ */
+
 import { ResponsivePie } from '@nivo/pie'
 
 interface ChartProps {

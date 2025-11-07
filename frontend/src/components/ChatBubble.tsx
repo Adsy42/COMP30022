@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Renders individual chat transcript bubbles for both user and assistant roles.
+ * Supports optional typewriter animation with chunk/complete callbacks so the parent can drive autoscroll.
+ */
+
 import { useEffect, useRef, useState } from 'react'
 
 type Role = 'user' | 'bot'

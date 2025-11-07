@@ -1,3 +1,8 @@
+/*
+ * @file Global stylesheet for the frontend.
+ * Imports Tailwind, defines CSS custom properties, and includes helpers for chip scrollbars and typing indicators.
+ */
+
 @import 'tailwindcss';
 
 :root {

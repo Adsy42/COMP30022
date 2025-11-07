@@ -1,4 +1,9 @@
 /**
+ * @file Chat composer responsible for the auto-resizing textarea, send button, and optional attachment flow.
+ * Handles disabled states, enter-to-send semantics, and exposes callbacks for the chat state machine.
+ */
+
+/**
  * ChatInput Component
  * -------------------
  * A controlled text input area with auto-expanding rows and a submit button.

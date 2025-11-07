@@ -1,4 +1,5 @@
 """Application configuration model."""
+
 from datetime import datetime
 
 

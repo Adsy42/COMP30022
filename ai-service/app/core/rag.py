@@ -86,7 +86,7 @@ class RAGServicePinecone:
         # 2. Update authentication to use SPARK_API_KEY instead of HF_TOKEN
         # 3. Adapt the initialization to Spark AI's specific API requirements
         # 4. Handle any Spark AI-specific configuration or setup steps
-        
+
         try:
             # Get Hugging Face token from environment
             hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_API_TOKEN")
@@ -199,7 +199,7 @@ class RAGServicePinecone:
             # 2. Adapt the prompt format to Spark AI's requirements
             # 3. Update the response parsing to match Spark AI's response structure
             # 4. Handle any Spark AI-specific parameters or options
-            
+
             # Use Hugging Face client directly as per their template
             # Format the prompt as a conversation message
             messages = [
@@ -311,7 +311,7 @@ class RAGServicePinecone:
         # 2. Adapt the input format to Spark AI's requirements
         # 3. Update the response parsing to match Spark AI's response structure
         # 4. Handle any Spark AI-specific parameters or options
-        
+
         try:
             # Use the embeddings model to generate embeddings
             embeddings = self.embeddings.embed_query(text)

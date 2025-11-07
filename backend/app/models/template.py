@@ -1,4 +1,5 @@
 """Template model for managing form templates."""
+
 from datetime import datetime
 
 

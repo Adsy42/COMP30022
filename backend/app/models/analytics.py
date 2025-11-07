@@ -1,4 +1,5 @@
 """Analytics model for storing form response statistics."""
+
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from bson import ObjectId

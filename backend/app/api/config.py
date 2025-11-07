@@ -1,4 +1,5 @@
 """Configuration API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from ..models.config import AppConfig
 from ..utils.auth import token_required

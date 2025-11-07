@@ -1,4 +1,5 @@
 """Tests for database models."""
+
 from app.models.user import User
 from app.models.chat import Chat
 from app.models.template import Template

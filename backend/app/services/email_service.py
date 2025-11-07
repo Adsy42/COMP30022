@@ -1,4 +1,5 @@
 """Email service for sending escalation notifications."""
+
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart

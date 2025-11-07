@@ -40,16 +40,12 @@ class TestLoginEndpoint:
 
     def test_missing_username(self, client):
         """Test login without username."""
-        response = client.post(
-            "/api/login", json={"password": "testpass123"}
-        )
+        response = client.post("/api/login", json={"password": "testpass123"})
         assert response.status_code == 400
 
     def test_missing_password(self, client):
         """Test login without password."""
-        response = client.post(
-            "/api/login", json={"username": "testadmin"}
-        )
+        response = client.post("/api/login", json={"username": "testadmin"})
         assert response.status_code == 400
 
     def test_empty_request_body(self, client):

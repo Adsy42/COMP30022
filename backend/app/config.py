@@ -1,6 +1,7 @@
 """
 Configuration settings for the Flask backend application.
 """
+
 import os
 from datetime import timedelta
 

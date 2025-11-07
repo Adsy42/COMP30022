@@ -1,4 +1,5 @@
 """Analytics API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app, send_file
 from ..utils.auth import token_required
 from ..utils.helpers import parse_date_range

@@ -61,9 +61,7 @@ class TestUpsertAnswers:
             "template": "common",
             "answers": [{"q_id": "q_test", "ans": "test"}],
         }
-        response = client.post(
-            "/api/chats/chat_nonexistent/answers", json=answers_data
-        )
+        response = client.post("/api/chats/chat_nonexistent/answers", json=answers_data)
         assert response.status_code == 404
 
     def test_upsert_missing_template(self, client, sample_chat):

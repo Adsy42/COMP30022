@@ -2,7 +2,7 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/cd]
 
 env:
   NODE_VERSION: "20"
@@ -126,7 +126,7 @@ jobs:
       - frontend
       - backend
       - ai-service
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/cd'
 
     steps:
       - name: Checkout code

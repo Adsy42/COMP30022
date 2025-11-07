@@ -150,19 +150,32 @@ jobs:
             echo "Please set RAILWAY_PROJECT_ID in GitHub repository secrets"
             exit 1
           fi
+          # Export token for Railway CLI
+          export RAILWAY_TOKEN
+          # Verify token is set (without showing the actual value)
+          if [ -n "$RAILWAY_TOKEN" ]; then
+            echo "RAILWAY_TOKEN is set (length: ${#RAILWAY_TOKEN})"
+          fi
+          # Link to Railway project
           railway link --project $RAILWAY_PROJECT_ID
 
       - name: Deploy Frontend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service frontend --detach
+        run: |
+          export RAILWAY_TOKEN
+          railway up --service frontend --detach
 
       - name: Deploy Backend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service backend --detach
+        run: |
+          export RAILWAY_TOKEN
+          railway up --service backend --detach
 
       - name: Deploy AI Service
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service ai-service --detach
+        run: |
+          export RAILWAY_TOKEN
+          railway up --service ai-service --detach

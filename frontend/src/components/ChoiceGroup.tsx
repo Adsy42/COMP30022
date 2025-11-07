@@ -1,4 +1,9 @@
 /**
+ * @file Horizontally scrollable chip selector that can emulate radio or checkbox behavior.
+ * Implements the necessary ARIA roles and change notifications so chat flows can capture quick answers.
+ */
+
+/**
  * ChoiceGroup Component
  * ---------------------
  * A horizontally scrollable group of selectable buttons (chips).

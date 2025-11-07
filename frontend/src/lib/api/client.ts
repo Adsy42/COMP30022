@@ -1,3 +1,8 @@
+/**
+ * @file Centralized API base URL and lightweight fetch wrapper for the frontend.
+ * Ensures every helper shares headers, error handling, and env-aware base resolution.
+ */
+
 // src/lib/api/client.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

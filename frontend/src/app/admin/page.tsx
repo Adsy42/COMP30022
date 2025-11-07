@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Admin analytics dashboard showing KPIs, charts, and navigation shortcuts.
+ * Coordinates data fetching, loading/error states, and links to deeper configuration pages.
+ */
+
 import { useEffect, useState } from 'react'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import Navbar from '@/components/Navbar'

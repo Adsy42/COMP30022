@@ -1,4 +1,9 @@
 /**
+ * @file Small button primitive with primary and outline variants used throughout the app.
+ * Centralizes Tailwind styles so CTAs stay visually consistent.
+ */
+
+/**
  * Button — primary/outline action button
  * --------------------------------------
  * A styled wrapper around <button> that accepts standard button attributes.

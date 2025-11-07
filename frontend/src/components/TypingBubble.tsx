@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Renders the assistant typing indicator bubble while bot responses are streaming.
+ * Matches ChatBubble spacing and exposes label/className overrides so any transcript section can drop it in without layout shifts.
+ */
+
 export default function TypingBubble({
   label = 'Support Assistant',
   className = '',

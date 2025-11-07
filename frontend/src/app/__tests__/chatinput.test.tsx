@@ -1,3 +1,8 @@
+/**
+ * @file Behavioral tests for the ChatInput composer.
+ * Exercises submission gating, timers, external busy state, and attachment handling.
+ */
+
 import React from 'react'
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'

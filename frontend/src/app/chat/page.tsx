@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Chat experience that orchestrates templates, branching logic, and file uploads for end users.
+ * Manages the transcript state machine, handles API lifecycles, and renders the composer/choice UI.
+ */
+
 import Button from '@/components/Button'
 import Navbar from '@/components/Navbar'
 import ChatInput from '@/components/ChatInput'

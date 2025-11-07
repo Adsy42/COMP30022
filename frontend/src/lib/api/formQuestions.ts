@@ -1,3 +1,8 @@
+/**
+ * @file Admin API helpers for listing, reordering, and updating form questions.
+ * Backs the configuration screens that let teams curate branching interview flows.
+ */
+
 // src/lib/api/formQuestions.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

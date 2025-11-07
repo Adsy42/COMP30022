@@ -1,3 +1,8 @@
+/**
+ * @file Admin drag-and-drop list that renders QuestionCard entries within a Hello Pangea DnD context.
+ * Provides edit/delete hooks so the form builder can manage nested question definitions.
+ */
+
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { QuestionCard } from './QuestionCard'
 

@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Marketing landing page that assembles Navbar, hero content, CTA buttons, and decorative threads.
+ * Serves as the public entry point into the chat workflow.
+ */
+
 import Link from 'next/link'
 import Button from '@/components/Button'
 import Navbar from '@/components/Navbar'

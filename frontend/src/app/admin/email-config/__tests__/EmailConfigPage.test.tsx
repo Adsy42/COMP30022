@@ -1,3 +1,8 @@
+/**
+ * @file Tests for the email configuration UI.
+ * Cover the read-only state, edit toggles, and validation paths for the save button.
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import EmailConfigPage from '../page'
 

@@ -1,3 +1,8 @@
+/**
+ * @file Unit tests for the Navbar component.
+ * Covers brand rendering, actions slot propagation, and accessibility landmarks.
+ */
+
 import { render, screen } from '@testing-library/react'
 import Navbar from '@/components/Navbar'
 

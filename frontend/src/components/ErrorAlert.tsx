@@ -1,3 +1,8 @@
+/**
+ * @file Small alert component for error and warning states with optional dismissal handling.
+ * Encapsulates iconography, color choices, and accessibility labelling for reuse across admin pages.
+ */
+
 interface ErrorAlertProps {
   message: string
   onDismiss?: () => void

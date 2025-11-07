@@ -1,3 +1,8 @@
+/**
+ * @file Chat session helpers for starting a conversation and submitting answer payloads.
+ * Keeps the chat page's state machine from duplicating fetch boilerplate.
+ */
+
 // src/lib/api/chats.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

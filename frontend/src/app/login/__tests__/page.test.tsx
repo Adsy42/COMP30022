@@ -1,3 +1,8 @@
+/**
+ * @file Tests for the admin login experience.
+ * Assert rendering of form controls plus successful and failed authentication flows.
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import LoginPage from '../page'
@@ -137,9 +142,7 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     // Check disabled states
-    expect(
-      screen.getByPlaceholderText('admin@unimelb.edu.au')
-    ).toBeDisabled()
+    expect(screen.getByPlaceholderText('admin@unimelb.edu.au')).toBeDisabled()
     expect(screen.getByPlaceholderText('Password')).toBeDisabled()
     expect(screen.getByLabelText('Remember Me')).toBeDisabled()
     expect(screen.getByText('Signing in...')).toBeInTheDocument()

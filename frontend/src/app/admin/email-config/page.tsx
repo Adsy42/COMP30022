@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Admin interface for editing the escalation recipient email.
+ * Loads the current config, surfaces validation, and toggles between read-only and edit modes.
+ */
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'

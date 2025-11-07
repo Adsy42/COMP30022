@@ -1,3 +1,8 @@
+/**
+ * @file Visualizes a single form question with metadata badges, option counts, and nested follow-up previews.
+ * Also surfaces edit/delete affordances that the admin builder wires into CRUD handlers.
+ */
+
 interface Option {
   label: string
   followUps?: FormQuestion[]

@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Responsive SVG illustration used on the login page background.
+ * Adjusts its viewBox on resize to keep decorative elements centered on ultra-wide screens.
+ */
+
 import React, { useEffect, useState } from 'react'
 
 export function BackgroundIllustration() {

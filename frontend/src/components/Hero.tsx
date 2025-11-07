@@ -1,5 +1,10 @@
 'use client'
 
+/**
+ * @file Landing-page hero section with headline, supporting copy, and a CTA into the chat flow.
+ * Keeps the marketing copy in one component so the main page stays minimal.
+ */
+
 import Link from 'next/link'
 
 export default function Hero() {

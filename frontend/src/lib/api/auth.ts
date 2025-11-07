@@ -1,3 +1,8 @@
+/**
+ * @file Login helper for admin authentication.
+ * Wraps the POST body/response typing so the login page can stay declarative.
+ */
+
 // src/lib/api/auth.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

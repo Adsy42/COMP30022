@@ -1,3 +1,8 @@
+/**
+ * @file Smoke test for the form configuration page.
+ * Confirms it shows the loading indicator and empty state while awaiting backend data.
+ */
+
 import { render, screen, waitFor } from '@testing-library/react'
 import FormConfigPage from '../page'
 import { fetchQuestions } from '@/lib/api'

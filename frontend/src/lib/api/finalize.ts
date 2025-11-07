@@ -1,3 +1,8 @@
+/**
+ * @file API call for finalizing a chat and retrieving the AI or escalation outcome.
+ * Used after all follow-up questions are answered so the workflow can resolve cleanly.
+ */
+
 // src/lib/api/finalize.ts
 /**
  * ──────────────────────────────────────────────────────────────────────────────

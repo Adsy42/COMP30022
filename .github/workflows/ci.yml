@@ -135,7 +135,7 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Link Railway Project
+      - name: Authenticate and Link Railway Project
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -150,32 +150,25 @@ jobs:
             echo "Please set RAILWAY_PROJECT_ID in GitHub repository secrets"
             exit 1
           fi
-          # Export token for Railway CLI
-          export RAILWAY_TOKEN
           # Verify token is set (without showing the actual value)
-          if [ -n "$RAILWAY_TOKEN" ]; then
-            echo "RAILWAY_TOKEN is set (length: ${#RAILWAY_TOKEN})"
-          fi
-          # Link to Railway project
-          railway link --project $RAILWAY_PROJECT_ID
+          echo "RAILWAY_TOKEN is set (length: ${#RAILWAY_TOKEN})"
+          # Link to Railway project using token flag
+          railway link $RAILWAY_PROJECT_ID --token $RAILWAY_TOKEN
 
       - name: Deploy Frontend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          export RAILWAY_TOKEN
-          railway up --service frontend --detach
+          railway up --service frontend --detach --token $RAILWAY_TOKEN
 
       - name: Deploy Backend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          export RAILWAY_TOKEN
-          railway up --service backend --detach
+          railway up --service backend --detach --token $RAILWAY_TOKEN
 
       - name: Deploy AI Service
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          export RAILWAY_TOKEN
-          railway up --service ai-service --detach
+          railway up --service ai-service --detach --token $RAILWAY_TOKEN

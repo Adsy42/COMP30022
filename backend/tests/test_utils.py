@@ -1,4 +1,5 @@
 """Tests for utility functions."""
+
 import pytest
 from app.utils.validators import validate_email, validate_template_type
 from app.utils.helpers import parse_date_range

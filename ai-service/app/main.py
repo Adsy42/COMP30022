@@ -18,7 +18,9 @@ app = FastAPI(
 # CORS middleware
 raw_origins = os.getenv("CORS_ALLOW_ORIGINS")
 if raw_origins:
-    allow_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+    allow_origins = [
+        origin.strip() for origin in raw_origins.split(",") if origin.strip()
+    ]
 else:
     default_origins = {
         os.getenv("FRONTEND_PUBLIC_URL", "http://localhost:3000"),

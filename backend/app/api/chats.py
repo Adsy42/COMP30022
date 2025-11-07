@@ -1,4 +1,5 @@
 """Chat session API endpoints."""
+
 from flask import Blueprint, jsonify, request, current_app
 from datetime import datetime
 from ..models.chat import Chat

@@ -62,9 +62,7 @@ class TestSaveTemplate:
         questions = [
             {"id": "q_test", "question": "Test?", "type": "freeform", "options": None}
         ]
-        response = client.post(
-            "/api/templates/save?template=simple", json=questions
-        )
+        response = client.post("/api/templates/save?template=simple", json=questions)
         assert response.status_code == 401
 
     def test_save_template_invalid_type(self, client, auth_headers):

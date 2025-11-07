@@ -1,4 +1,5 @@
 """Chat model for managing chat sessions."""
+
 from datetime import datetime
 import uuid
 

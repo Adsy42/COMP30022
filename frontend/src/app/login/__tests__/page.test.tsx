@@ -137,9 +137,7 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     // Check disabled states
-    expect(
-      screen.getByPlaceholderText('admin@unimelb.edu.au')
-    ).toBeDisabled()
+    expect(screen.getByPlaceholderText('admin@unimelb.edu.au')).toBeDisabled()
     expect(screen.getByPlaceholderText('Password')).toBeDisabled()
     expect(screen.getByLabelText('Remember Me')).toBeDisabled()
     expect(screen.getByText('Signing in...')).toBeInTheDocument()

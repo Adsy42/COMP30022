@@ -66,9 +66,7 @@ class TestChoiceAnalytics:
 
     def test_get_choice_analytics_missing_dates(self, client, auth_headers):
         """Test getting choice analytics without dates."""
-        response = client.post(
-            "/api/analytics/choice", headers=auth_headers, json={}
-        )
+        response = client.post("/api/analytics/choice", headers=auth_headers, json={})
         assert response.status_code == 400
 
     def test_get_choice_analytics_without_auth(self, client):

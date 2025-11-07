@@ -1,4 +1,5 @@
 """API endpoints for analytics dashboard with mock data support."""
+
 from flask import Blueprint, jsonify, current_app
 
 bp = Blueprint("analytics_dashboard", __name__)

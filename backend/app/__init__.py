@@ -41,7 +41,9 @@ def _auto_seed_database(app):
                 app.logger.info("Templates already present; skipping seed")
 
             users_count = seed_users(app.db)
+            app.logger.info(f"✓ Seeded {users_count} user records")
             config_count = seed_config(app.db)
+            app.logger.info(f"✓ Seeded {config_count} config records")
 
             if form_question_count == 0:
                 fq_count = seed_form_questions(app.db)
@@ -94,9 +96,7 @@ def create_app(config_name=None):
     app.logger.info(f"Connecting to MongoDB: {mongo_uri}")
     mongo_client = MongoClient(mongo_uri)
     app.db = mongo_client[app.config["MONGODB_DB_NAME"]]
-    app.logger.info(
-        f"Connected to MongoDB database: {app.config['MONGODB_DB_NAME']}"
-    )
+    app.logger.info(f"Connected to MongoDB database: {app.config['MONGODB_DB_NAME']}")
 
     # Auto-seed database if empty (essential data only)
     _auto_seed_database(app)

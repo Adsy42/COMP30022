@@ -44,7 +44,7 @@ export async function fetchAnalytics(token?: string): Promise<AnalyticsData> {
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE}/api/analytics`, {
+  const response = await fetch(`${API_BASE}/analytics`, {
     headers,
   })
 

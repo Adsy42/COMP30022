@@ -22,8 +22,8 @@ export interface FormQuestion {
 }
 
 export const API_ENDPOINTS = {
-  QUESTIONS: '/api/form-questions',
-  REORDER: '/api/form-questions/reorder',
+  QUESTIONS: '/form-questions',
+  REORDER: '/form-questions/reorder',
 } as const
 
 /**

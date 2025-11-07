@@ -121,32 +121,40 @@ jobs:
     if: github.ref == 'refs/heads/main'
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify Railway Token
+      - name: Verify Railway Secrets
         run: |
           if [ -z "$RAILWAY_TOKEN" ]; then
             echo "Error: RAILWAY_TOKEN secret is not set"
             echo "Please set RAILWAY_TOKEN in GitHub repository secrets"
-            echo "Note: This must be a PROJECT TOKEN from Railway project settings"
             exit 1
           fi
-          echo "✓ RAILWAY_TOKEN is configured (length: ${#RAILWAY_TOKEN})"
+          if [ -z "$RAILWAY_PROJECT_ID" ]; then
+            echo "Error: RAILWAY_PROJECT_ID secret is not set"
+            echo "Please set RAILWAY_PROJECT_ID in GitHub repository secrets"
+            echo "Find your project ID in Railway dashboard URL or project settings"
+            exit 1
+          fi
+          echo "✓ Railway secrets are configured"
+          echo "  - Token length: ${#RAILWAY_TOKEN}"
+          echo "  - Project ID: $RAILWAY_PROJECT_ID"
 
       - name: Deploy Frontend
         run: |
-          echo "🚀 Deploying Frontend service..."
-          railway up --service=frontend --detach
+          echo "🚀 Deploying Frontend service to project $RAILWAY_PROJECT_ID..."
+          railway up --service=frontend --detach --project=$RAILWAY_PROJECT_ID
 
       - name: Deploy Backend
         run: |
-          echo "🚀 Deploying Backend service..."
-          railway up --service=backend --detach
+          echo "🚀 Deploying Backend service to project $RAILWAY_PROJECT_ID..."
+          railway up --service=backend --detach --project=$RAILWAY_PROJECT_ID
 
       - name: Deploy AI Service
         run: |
-          echo "🚀 Deploying AI Service..."
-          railway up --service=ai-service --detach
+          echo "🚀 Deploying AI Service to project $RAILWAY_PROJECT_ID..."
+          railway up --service=ai-service --detach --project=$RAILWAY_PROJECT_ID

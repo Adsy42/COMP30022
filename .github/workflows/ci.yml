@@ -136,11 +136,6 @@ jobs:
           fi
           echo "✓ RAILWAY_TOKEN is configured (length: ${#RAILWAY_TOKEN})"
 
-      - name: Link Railway Project
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
-
       - name: Deploy Frontend
         run: |
           echo "🚀 Deploying Frontend service..."
